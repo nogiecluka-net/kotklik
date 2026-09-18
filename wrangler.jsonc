@@ -1,0 +1,8 @@
+json
+{
+  "name": "kotklik-git",
+  "compatibility_date": "2026-01-01",
+  "assets": {
+    "directory": "."
+  }
+}
