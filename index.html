@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KotKlik — gry edukacyjne dla dzieci bez reklam</title>
+<meta name="description" content="Gry edukacyjne dla dzieci w wieku 5–13 lat. Bez reklam, bez logowania, bez zbierania danych. Oprowadza kot Klik.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka h1 span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:40px 0 64px;position:relative;z-index:1}
+.hero-tresc{display:flex;flex-wrap:wrap;align-items:center;gap:32px}
+.hero-tekst{flex:1 1 320px}
+.hero-tekst h2{
+  font-family:'Fredoka',sans-serif;font-weight:600;color:var(--papier);
+  font-size:clamp(1.6rem,4vw,2.3rem);margin-bottom:14px;line-height:1.25;
+}
+.hero-tekst p{color:#C9D4E6;font-size:1.05rem;max-width:480px}
+.hero-kot{flex:0 0 auto;width:min(220px,40vw)}
+.hero-kot svg{width:100%;height:auto}
+
+.dymek-hero{
+  background:var(--papier);border-radius:20px;padding:16px 20px;
+  max-width:340px;margin-top:20px;position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);font-weight:600;
+}
+.dymek-hero::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+
+/* ---------- Gry ---------- */
+.gry{padding:56px 0}
+.gry h2{font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:600;margin-bottom:6px}
+.gry > .srodek > p{color:var(--szara);margin-bottom:28px}
+.karty-gier{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+
+.karta-gry{
+  background:#fff;border-radius:20px;padding:22px;
+  border-bottom:6px solid var(--mieta);
+  text-decoration:none;color:inherit;display:block;
+  box-shadow:0 4px 0 rgba(0,0,0,.06);
+  transition:transform .15s ease;
+}
+.karta-gry:hover{transform:translateY(-3px)}
+.karta-gry .emoji{font-size:2.4rem;margin-bottom:10px;display:block}
+.karta-gry strong{font-family:'Fredoka',sans-serif;font-size:1.15rem;display:block;margin-bottom:4px}
+.karta-gry span{color:var(--szara);font-size:.95rem}
+.karta-gry .wiek{
+  display:inline-block;margin-top:12px;font-size:.8rem;font-weight:700;
+  color:var(--noc);background:#EFF6FF;padding:4px 10px;border-radius:999px;
+}
+
+.karta-gry.wkrotce{
+  border-bottom-color:#E2E5EA;cursor:default;pointer-events:none;opacity:.7;
+}
+.karta-gry.wkrotce .wiek{background:#F0F1F3;color:var(--szara)}
+.karty-gier .karta-gry:nth-child(3){border-bottom-color:var(--slonce)}
+.karty-gier .karta-gry:nth-child(4){border-bottom-color:var(--klik)}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:44px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="srodek marka" href="index.html" aria-label="Strona główna KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+            stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek hero-tresc">
+    <div class="hero-tekst">
+      <h2>Gry, które uczą — bez reklam i bez zbierania danych</h2>
+      <p>KotKlik to bezpieczne miejsce dla dzieci w wieku 5–13 lat. Zero banerów, zero okienek, zero kont do zakładania. Tylko gry i mój kot Klik, który wszystkiego dopilnuje.</p>
+      <div class="dymek-hero">Cześć! Wybierz grę poniżej i zaczynajmy 🐾</div>
+    </div>
+    <div class="hero-kot">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+        <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+        <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+        <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+        <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+        <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+        <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+              stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="gry">
+  <div class="srodek">
+    <h2>Wybierz grę</h2>
+    <p>Nowe gry pojawiają się tu regularnie.</p>
+    <div class="karty-gier">
+      <a class="karta-gry" href="gry/pary-klika.html">
+        <span class="emoji">🃏</span>
+        <strong>Pary Klika</strong>
+        <span>Znajdź wszystkie pary zwierzątek i poćwicz pamięć.</span>
+        <span class="wiek">Od 5 lat</span>
+      </a>
+      <div class="karta-gry wkrotce">
+        <span class="emoji">🔤</span>
+        <strong>Literkowa spiżarnia</strong>
+        <span>Układanie wyrazów z rozsypanych liter.</span>
+        <span class="wiek">Wkrótce · od 6 lat</span>
+      </div>
+      <div class="karta-gry wkrotce">
+        <span class="emoji">🧮</span>
+        <strong>Liczydło na dachu</strong>
+        <span>Dodawanie i mnożenie na czas.</span>
+        <span class="wiek">Wkrótce · od 8 lat</span>
+      </div>
+      <div class="karta-gry wkrotce">
+        <span class="emoji">🔌</span>
+        <strong>Kabelkowy labirynt</strong>
+        <span>Pierwsze kroki w programowaniu.</span>
+        <span class="wiek">Wkrótce · od 9 lat</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+      <li>Wyniki zostają na tym urządzeniu i nigdzie nie są wysyłane</li>
+      <li>Gry działają na tablecie, telefonie i komputerze</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
