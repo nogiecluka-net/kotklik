@@ -40,9 +40,9 @@ header::after{
 .marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
 .marka h1 span{color:var(--klik)}
 .kot{width:54px;height:54px;flex-shrink:0}
-.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+.oko{transform-origin:center;animation:mrug 5.5s infinite}
 @keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
-@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+@media (prefers-reduced-motion:reduce){.oko{animation:none}}
 
 /* ---------- Hero ---------- */
 .hero{background:var(--noc);padding:40px 0 64px;position:relative;z-index:1}
@@ -53,19 +53,39 @@ header::after{
   font-size:clamp(1.6rem,4vw,2.3rem);margin-bottom:14px;line-height:1.25;
 }
 .hero-tekst p{color:#C9D4E6;font-size:1.05rem;max-width:480px}
-.hero-kot{flex:0 0 auto;width:min(220px,40vw)}
-.hero-kot svg{width:100%;height:auto}
+.hero-kot-wrap{
+  flex:0 0 auto;width:min(220px,40vw);
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.hero-kot{
+  width:100%;border:none;background:transparent;padding:0;cursor:pointer;
+  transition:transform .15s ease;
+}
+.hero-kot svg{width:100%;height:auto;display:block}
+.hero-kot:hover{transform:scale(1.04)}
+.hero-kot:active{transform:scale(.96)}
+.hero-kot.machnij svg{animation:machniecie .5s ease}
+@keyframes machniecie{
+  0%,100%{transform:rotate(0)}
+  25%{transform:rotate(-4deg)}
+  75%{transform:rotate(4deg)}
+}
+@media (prefers-reduced-motion:reduce){.hero-kot.machnij svg{animation:none}}
 
 .dymek-hero{
-  background:var(--papier);border-radius:20px;padding:16px 20px;
-  max-width:340px;margin-top:20px;position:relative;
-  box-shadow:0 6px 0 rgba(0,0,0,.18);font-weight:600;
+  background:var(--papier);border-radius:18px;padding:12px 18px;
+  max-width:220px;margin-bottom:10px;position:relative;text-align:center;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);font-weight:600;font-size:.95rem;
+  opacity:0;transform:translateY(6px) scale(.9);
+  transition:opacity .2s,transform .2s;
 }
-.dymek-hero::before{
-  content:"";position:absolute;top:-12px;left:28px;
-  border-left:14px solid transparent;border-right:14px solid transparent;
-  border-bottom:14px solid var(--papier);
+.dymek-hero::after{
+  content:"";position:absolute;bottom:-10px;left:50%;
+  transform:translateX(-50%);
+  border-left:11px solid transparent;border-right:11px solid transparent;
+  border-top:11px solid var(--papier);
 }
+.dymek-hero.widoczny{opacity:1;transform:translateY(0) scale(1)}
 
 /* ---------- Gry ---------- */
 .gry{padding:56px 0}
@@ -132,21 +152,23 @@ footer a{color:var(--papier)}
     <div class="hero-tekst">
       <h2>Gry, które uczą — bez reklam i bez zbierania danych</h2>
       <p>KotKlik to bezpieczne miejsce dla dzieci w wieku 5–13 lat. Zero banerów, zero okienek, zero kont do zakładania. Tylko gry i mój kot Klik, który wszystkiego dopilnuje.</p>
-      <div class="dymek-hero">Cześć! Wybierz grę poniżej i zaczynajmy 🐾</div>
     </div>
-    <div class="hero-kot">
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
-        <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
-        <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
-        <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
-        <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
-        <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
-        <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
-        <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
-        <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
-              stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
+    <div class="hero-kot-wrap">
+      <div class="dymek-hero" id="dymekHero"></div>
+      <button class="hero-kot" id="heroKot" aria-label="Kliknij kota Klika">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+          <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+          <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+          <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+          <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+          <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+          <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+          <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+          <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+                stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
@@ -202,6 +224,48 @@ footer a{color:var(--papier)}
     <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
   </div>
 </footer>
+
+<script>
+(function(){
+  const TEKSTY_KOTA = [
+    "Cześć! Wybierz grę poniżej 🐾",
+    "Miau! Gotowy na grę?",
+    "Kocięta śpią 16 godzin dziennie. Ja wolę grać!",
+    "Psst... spróbuj Par Klika!",
+    "Mrrr, dobrze Cię widzieć!",
+    "Założę się, że nie znajdziesz par szybciej niż ja.",
+    "Mam osiem żyć zapasowych na dzisiaj.",
+    "Łaskoczesz mnie!",
+    "Nowe gry pojawiają się tu co jakiś czas — zaglądaj!"
+  ];
+
+  const kot = document.getElementById("heroKot");
+  const dymek = document.getElementById("dymekHero");
+  let ostatni = -1;
+
+  function losowyTekst(){
+    let i;
+    do { i = Math.floor(Math.random() * TEKSTY_KOTA.length); }
+    while (i === ostatni && TEKSTY_KOTA.length > 1);
+    ostatni = i;
+    return TEKSTY_KOTA[i];
+  }
+
+  function pokazDymek(){
+    dymek.textContent = losowyTekst();
+    dymek.classList.add("widoczny");
+    kot.classList.remove("machnij");
+    void kot.offsetWidth;
+    kot.classList.add("machnij");
+  }
+
+  kot.addEventListener("click", pokazDymek);
+
+  // przywitanie od razu po wejściu na stronę
+  setTimeout(pokazDymek, 500);
+})();
+</script>
+
 
 </body>
 </html>
