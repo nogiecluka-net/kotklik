@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Powtórz melodię — KotKlik</title>
+<meta name="description" content="Muzyczna gra pamięciowa dla dzieci. Posłuchaj sekwencji dźwięków i powtórz ją na pianinie.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --noc-jasna:#2A3F68;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+  --zielona:#2FAE8F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+button{font:inherit}
+a{color:inherit}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Ekran startowy: mieści się w jednym widoku, bez przewijania ---------- */
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Nagłówek ---------- */
+header{
+  background:var(--noc);
+  padding:14px 0;
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media(prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 16px;position:relative;z-index:1;flex:1;min-height:0;display:flex;flex-direction:column}
+.hero > .srodek{flex:1;min-height:0;display:flex;flex-direction:column}
+.dymek{
+  background:var(--papier);
+  border-radius:20px;
+  padding:14px 20px;
+  max-width:560px;
+  margin-bottom:14px;
+  position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);
+  flex:0 0 auto;
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Panel gry ---------- */
+.gra,.gra *{
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+}
+.gra{
+  background:var(--papier);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 8px 0 rgba(0,0,0,.2);
+  flex:1;min-height:0;display:flex;flex-direction:column;
+}
+.gra-gora{
+  display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:space-between;
+  margin-bottom:12px;flex:0 0 auto;
+}
+.gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:flex;gap:8px;flex-wrap:wrap}
+.poziom{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:8px 14px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+  transition:transform .12s,background .12s,color .12s;
+}
+.poziom:hover{transform:translateY(-1px)}
+.poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
+.poziom:focus-visible,.znowu:focus-visible,.pianino button:focus-visible,.akcja:focus-visible,.link-wstecz:focus-visible{
+  outline:3px solid var(--klik);outline-offset:3px;
+}
+
+/* ---------- Wynik ---------- */
+.informacje{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:12px;
+  align-items:center;margin:6px 0 14px;flex:0 0 auto;
+}
+.pole-info{font-weight:700}
+.pole-info small{display:block;color:var(--szara);font-weight:600;font-size:.82rem}
+.pole-info strong{font-family:'Fredoka',sans-serif;font-size:1.4rem;line-height:1.1}
+.pole-info.srodek-info{text-align:center}
+.pole-info.prawo{text-align:right}
+
+.komunikat{
+  min-height:34px;
+  display:flex;justify-content:center;align-items:center;
+  margin-bottom:12px;
+  text-align:center;
+  font-weight:700;color:var(--noc);
+  flex:0 0 auto;
+}
+.komunikat.ok{color:var(--zielona)}
+.komunikat.blad{color:#B94B26}
+
+/* ---------- Pianino ---------- */
+.pianino-wrap{
+  background:#EEDFCB;
+  border-radius:18px;
+  padding:14px 12px 16px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.8), inset 0 -4px 0 rgba(93,63,36,.12);
+  overflow:hidden;
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+}
+.pianino{
+  position:relative;
+  height:270px;
+  width:min(900px,100%);
+  margin:0 auto;
+  user-select:none;
+  touch-action:manipulation;
+}
+.biale{
+  position:absolute;inset:0;
+  display:grid;
+  grid-template-columns:repeat(var(--liczba-bialych,7),1fr);
+  gap:2px;
+  z-index:1;
+}
+.pianino .bialy{
+  position:relative;
+  border:1px solid #D7D9DD;
+  border-radius:0 0 12px 12px;
+  background:#fff;
+  color:var(--noc);
+  min-width:0;
+  box-shadow:0 8px 0 #C7C9CD;
+  cursor:pointer;
+  padding:0 4px 16px;
+  display:flex;align-items:flex-end;justify-content:center;
+  font-weight:800;font-size:.76rem;
+  transition:transform .05s,box-shadow .05s,background .08s,opacity .15s;
+  z-index:1;
+  overflow:hidden;
+}
+.pianino .bialy::before{
+  content:"";
+  position:absolute;left:8px;right:8px;top:10px;height:10px;
+  border-radius:999px;
+  background:var(--kolor,#DDE3EA);
+  opacity:.95;
+}
+.pianino .bialy::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:7px;
+  background:var(--kolor,#DDE3EA);
+  opacity:.9;
+}
+.pianino .bialy:hover{background:#FFFDF7}
+.pianino .bialy:active,
+.pianino .bialy.aktywny{
+  transform:translateY(6px);
+  box-shadow:0 2px 0 #C7C9CD;
+  background:#FFF0D8;
+}
+.czarne{
+  position:absolute;
+  left:0;right:0;top:0;
+  height:165px;
+  z-index:4;
+  pointer-events:none;
+}
+.pianino .czarny{
+  position:absolute;
+  top:0;
+  width:8.6%;
+  height:165px;
+  border:0;
+  border-radius:0 0 10px 10px;
+  background:linear-gradient(#202B3D,#0F1725);
+  box-shadow:0 7px 0 #080D16, inset 0 1px 0 rgba(255,255,255,.15);
+  color:#fff;
+  cursor:pointer;
+  pointer-events:auto;
+  padding:0 3px 12px;
+  display:flex;align-items:flex-end;justify-content:center;
+  font-weight:700;font-size:.62rem;
+  transition:transform .05s,box-shadow .05s,background .08s,opacity .15s;
+  overflow:hidden;
+}
+.pianino .czarny::before{
+  content:"";
+  position:absolute;left:5px;right:5px;top:7px;height:8px;
+  border-radius:999px;
+  background:var(--kolor,#FFD447);
+  opacity:.95;
+}
+.pianino .czarny:hover{background:linear-gradient(#29374C,#111B2C)}
+.pianino .czarny:active,
+.pianino .czarny.aktywny{
+  transform:translateY(5px);
+  box-shadow:0 2px 0 #080D16;
+  background:linear-gradient(#354962,#17253A);
+}
+.pianino button.ukryty{display:none}
+.pianino button.niedostepny{opacity:.34;cursor:default}
+.pianino button.podswietlony{box-shadow:0 0 0 4px var(--kolor,#FFD447), 0 7px 0 #C7C9CD}
+.pianino .czarny.podswietlony{box-shadow:0 0 0 4px var(--kolor,#FFD447), 0 7px 0 #080D16}
+
+/* Układ czarnych klawiszy prawdziwej klawiatury C-D-E-F-G-A-B-C. */
+.czarny-1{left:calc(14.2857% - 4.3%)}
+.czarny-2{left:calc(28.5714% - 4.3%)}
+.czarny-3{left:calc(57.1429% - 4.3%)}
+.czarny-4{left:calc(71.4286% - 4.3%)}
+.czarny-5{left:calc(85.7143% - 4.3%)}
+
+/* Poziom 8: C, C#, D, D#, E, F, F#, G — układ 5 białych + 3 czarne. */
+.pianino.osiem .czarny-1{left:calc(20% - 4.3%)}
+.pianino.osiem .czarny-2{left:calc(40% - 4.3%)}
+.pianino.osiem .czarny-3{left:calc(80% - 4.3%)}
+.pianino.osiem .czarny-4,
+.pianino.osiem .czarny-5{display:none}
+
+/* Małe poziomy 3 i 6 — duże, łatwe do trafienia przyciski. */
+.pianino.prosty{height:220px}
+.pianino.prosty .biale{
+  gap:10px;
+  padding:0 14px;
+}
+.pianino.prosty .bialy{
+  border-radius:18px;
+  border:0;
+  box-shadow:0 7px 0 rgba(27,42,74,.22);
+  padding:16px;
+  font-size:1.15rem;
+  align-items:center;
+}
+.pianino.prosty .bialy::before{
+  left:12%;right:12%;top:16%;height:14px;
+}
+.pianino.prosty .bialy::after{height:10px}
+.pianino.prosty .bialy:active,
+.pianino.prosty .bialy.aktywny{
+  transform:translateY(5px);
+  box-shadow:0 2px 0 rgba(27,42,74,.22);
+}
+
+.legend{
+  display:flex;justify-content:center;gap:16px;flex-wrap:wrap;
+  color:var(--szara);font-size:.85rem;margin-top:10px;font-weight:600;
+}
+
+.legend{
+  display:flex;justify-content:center;gap:16px;flex-wrap:wrap;
+  color:var(--szara);font-size:.85rem;margin-top:10px;font-weight:600;
+}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.kropka{width:11px;height:11px;border-radius:50%;display:inline-block}
+.kropka-biala{background:#fff;border:1px solid #D7D9DD}
+.kropka-czarna{background:#1C2636}
+
+/* ---------- Sterowanie ---------- */
+.sterowanie{
+  margin-top:14px;
+  display:flex;justify-content:center;flex-wrap:wrap;gap:10px;
+  flex:0 0 auto;
+}
+.akcja,.znowu{
+  border:0;border-radius:999px;cursor:pointer;padding:10px 22px;font-weight:800;
+  transition:transform .1s,filter .1s;
+}
+.akcja:hover,.znowu:hover{filter:brightness(1.03)}
+.akcja:active,.znowu:active{transform:translateY(3px)}
+.akcja{background:var(--noc);color:var(--papier);box-shadow:0 4px 0 #0D172B}
+.akcja.dodatkowa{background:transparent;color:var(--noc);border:2px solid var(--noc);box-shadow:none}
+.znowu{background:var(--klik);color:#fff;box-shadow:0 4px 0 #C4621F}
+.znowu:disabled{opacity:.72;cursor:wait}
+
+/* ---------- Koniec / rekord ---------- */
+.rezultat{
+  margin-top:14px;
+  background:#fff;border-radius:16px;padding:14px 16px;
+  text-align:center;display:none;
+  flex:0 0 auto;
+}
+.rezultat.show{display:block}
+.rezultat strong{font-family:'Fredoka',sans-serif;font-size:1.2rem}
+.rezultat p{color:var(--szara);font-weight:600;margin-top:3px}
+
+.link-wstecz{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  font-weight:700;text-decoration:none;color:var(--papier);
+  opacity:.92;flex:0 0 auto;
+}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:700px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+@media(max-width:680px){
+  .gra{padding:18px}
+  .gra-gora{align-items:flex-start}
+  .informacje{grid-template-columns:1fr 1fr;}
+  .pole-info.srodek-info{grid-column:1/-1;grid-row:1;text-align:center;order:-1}
+  .pole-info.prawo{text-align:right}
+  .pianino{height:220px}
+  .pianino.prosty{height:205px}
+  .pianino .czarne{height:135px}
+  .pianino .czarny{height:135px}
+}
+@media(max-width:470px){
+  .poziom{font-size:.88rem;padding:7px 11px}
+  .pianino-wrap{padding:10px 7px 12px}
+  .pianino{height:190px}
+  .pianino.prosty{height:180px}
+  .pianino .czarne{height:115px}
+  .pianino .czarny{height:115px}
+  .pianino .bialy{font-size:.63rem;padding-bottom:10px}
+  .pianino .bialy::before{left:4px;right:4px;top:7px;height:7px}
+}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Cześć! Posłuchaj melodii i spróbuj ją powtórzyć.</p>
+      <p>Im dalej zajdziesz, tym dłuższa będzie sekwencja. Dasz radę dojść do 100 nut?</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Powtórz melodię</h2>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom trudności">
+          <button type="button" class="poziom" data-poziom="3" aria-pressed="true">3 dźwięki</button>
+          <button type="button" class="poziom" data-poziom="6" aria-pressed="false">6 dźwięków</button>
+          <button type="button" class="poziom" data-poziom="8" aria-pressed="false">8 dźwięków</button>
+          <button type="button" class="poziom" data-poziom="12" aria-pressed="false">12 dźwięków</button>
+        </div>
+      </div>
+
+      <div class="informacje" aria-live="polite">
+        <div class="pole-info">
+          <small>Zapamiętane</small>
+          <strong id="wynik">0</strong> <span style="font-weight:800">/ 100</span>
+        </div>
+        <div class="pole-info srodek-info">
+          <small>Poziom</small>
+          <strong id="poziom-tekst">3</strong>
+        </div>
+        <div class="pole-info prawo">
+          <small>Rekord</small>
+          <strong id="rekord">0</strong>
+        </div>
+      </div>
+
+      <div class="komunikat" id="komunikat" role="status">Kliknij „Zacznij grę”, aby rozpocząć.</div>
+
+      <div class="pianino-wrap">
+        <div class="pianino" id="pianino" aria-label="Pianino do powtarzania melodii">
+          <div class="biale">
+            <button type="button" class="bialy kolor-1" data-dzwiek="0" aria-label="Do">DO</button>
+            <button type="button" class="bialy kolor-3" data-dzwiek="2" aria-label="Re">RE</button>
+            <button type="button" class="bialy kolor-5" data-dzwiek="4" aria-label="Mi">MI</button>
+            <button type="button" class="bialy kolor-6" data-dzwiek="5" aria-label="Fa">FA</button>
+            <button type="button" class="bialy kolor-7" data-dzwiek="7" aria-label="Sol">SOL</button>
+            <button type="button" class="bialy kolor-8" data-dzwiek="9" aria-label="La">LA</button>
+            <button type="button" class="bialy kolor-9" data-dzwiek="11" aria-label="Si">SI</button>
+          </div>
+          <div class="czarne">
+            <button type="button" class="czarny czarny-1 kolor-2" data-dzwiek="1" aria-label="Do krzyżyk">DO#</button>
+            <button type="button" class="czarny czarny-2 kolor-4" data-dzwiek="3" aria-label="Re krzyżyk">RE#</button>
+            <button type="button" class="czarny czarny-3 kolor-6" data-dzwiek="6" aria-label="Fa krzyżyk">FA#</button>
+            <button type="button" class="czarny czarny-4 kolor-8" data-dzwiek="8" aria-label="Sol krzyżyk">SOL#</button>
+            <button type="button" class="czarny czarny-5 kolor-10" data-dzwiek="10" aria-label="La krzyżyk">LA#</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="kropka" style="background:var(--klik)"></i> kolory pomagają zapamiętać dźwięki</span>
+          <span>Widoczne klawisze zależą od poziomu</span>
+        </div>
+      </div>
+
+      <div class="sterowanie">
+        <button type="button" class="znowu" id="start">Zacznij grę</button>
+        <button type="button" class="akcja dodatkowa" id="powtorz" disabled>Powtórz sekwencję</button>
+      </div>
+
+      <div class="rezultat" id="rezultat">
+        <strong id="rezultat-tytul">Świetnie!</strong>
+        <p id="rezultat-opis"></p>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra nie potrzebuje konta ani dodatkowych danych dziecka</li>
+      <li>Gra korzysta z nagrań prawdziwego fortepianu ładowanych z biblioteki Tone.js</li>
+      <li>Rekord jest zapisywany tylko na tym urządzeniu</li>
+      <li>Gra działa na komputerze, tablecie i telefonie</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/tone@15.1.22/build/Tone.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const piano = document.getElementById("pianino");
+  const keys = Array.from(piano.querySelectorAll("button[data-dzwiek]"));
+  const poziomy = Array.from(document.querySelectorAll(".poziom"));
+  const wynikEl = document.getElementById("wynik");
+  const rekordEl = document.getElementById("rekord");
+  const poziomTekst = document.getElementById("poziom-tekst");
+  const komunikat = document.getElementById("komunikat");
+  const startBtn = document.getElementById("start");
+  const powtorzBtn = document.getElementById("powtorz");
+  const rezultat = document.getElementById("rezultat");
+  const rezultatTytul = document.getElementById("rezultat-tytul");
+  const rezultatOpis = document.getElementById("rezultat-opis");
+
+  // 12 kolejnych półtonów jednej oktawy (C4–B4) — jak w prawdziwym pianinie.
+  const DZWIEKI = [
+    {nazwa:"DO",   note:"C4",  freq:261.63},
+    {nazwa:"DO#",  note:"C#4", freq:277.18},
+    {nazwa:"RE",   note:"D4",  freq:293.66},
+    {nazwa:"RE#",  note:"D#4", freq:311.13},
+    {nazwa:"MI",   note:"E4",  freq:329.63},
+    {nazwa:"FA",   note:"F4",  freq:349.23},
+    {nazwa:"FA#",  note:"F#4", freq:369.99},
+    {nazwa:"SOL",  note:"G4",  freq:392.00},
+    {nazwa:"SOL#", note:"G#4", freq:415.30},
+    {nazwa:"LA",   note:"A4",  freq:440.00},
+    {nazwa:"LA#",  note:"A#4", freq:466.16},
+    {nazwa:"SI",   note:"B4",  freq:493.88}
+  ];
+
+  // Poziom określa liczbę dostępnych dźwięków. Na 8 i 12 poziomie
+  // wizualizacja przechodzi w prawdziwy układ białych i czarnych klawiszy.
+  const USTAWIENIA = {
+    3: [0,2,4],
+    6: [0,2,4,5,7,9],
+    8: [0,1,2,3,4,5,6,7],
+    12: DZWIEKI.map((_,i)=>i)
+  };
+
+  let poziom = 3;
+  let sekwencja = [];
+  let indeksOdpowiedzi = 0;
+  let graTrwa = false;
+  let odtwarzanie = false;
+  let koniecGry = false;
+  let audio = null;
+  let pianoSampler = null;
+  let pianoReady = false;
+  let pianoLoading = null;
+
+  function rekordKlucz(){ return "kotklik-melodia-rekord-" + poziom; }
+
+  function odczytajRekord(){
+    try { return Number(localStorage.getItem(rekordKlucz())) || 0; }
+    catch(e){ return 0; }
+  }
+
+  function ustawRekord(){ rekordEl.textContent = odczytajRekord(); }
+
+  async function inicjujAudio(){
+    if (typeof Tone === "undefined") return false;
+
+    if (!audio){
+      try {
+        await Tone.start();
+        audio = Tone.getContext();
+      } catch(e) {}
+    }
+
+    if (!pianoLoading){
+      pianoLoading = (async ()=>{
+        try {
+          pianoSampler = new Tone.Sampler({
+            urls: {
+              C4: "C4.mp3",
+              "D#4": "Ds4.mp3",
+              "F#4": "Fs4.mp3",
+              A4: "A4.mp3"
+            },
+            baseUrl: "https://tonejs.github.io/audio/salamander/",
+            release: 1.2,
+            volume: -4
+          }).toDestination();
+
+          await Tone.loaded();
+          pianoReady = true;
+        } catch(e){
+          pianoSampler = null;
+          pianoReady = false;
+        }
+      })();
+    }
+
+    await pianoLoading;
+    return pianoReady;
+  }
+
+  function dzwiek(nr, czas=0, dlugosc=0.58){
+    if (!DZWIEKI[nr] || !pianoReady || !pianoSampler) return;
+
+    try {
+      pianoSampler.triggerAttackRelease(
+        DZWIEKI[nr].note,
+        dlugosc,
+        Tone.now() + czas
+      );
+    } catch(e) {}
+  }
+
+  function podswietl(nr, ms=360){
+    const key = piano.querySelector('button[data-dzwiek="'+nr+'"]');
+    if (!key) return;
+    key.classList.add("aktywny","podswietlony");
+    window.setTimeout(()=>key.classList.remove("aktywny","podswietlony"), ms);
+  }
+
+  function klikNute(nr, zKomputera=false){
+    if (!DZWIEKI[nr]) return;
+    dzwiek(nr);
+    podswietl(nr, 330);
+
+    if (zKomputera || !graTrwa || odtwarzanie || koniecGry) return;
+
+    if (nr !== sekwencja[indeksOdpowiedzi]){
+      przegrana();
+      return;
+    }
+
+    indeksOdpowiedzi++;
+    wynikEl.textContent = indeksOdpowiedzi;
+
+    if (indeksOdpowiedzi === sekwencja.length){
+      if (sekwencja.length >= 100){
+        wygrana();
+        return;
+      }
+      komunikat.className = "komunikat ok";
+      komunikat.textContent = "Brawo! Zapamiętałeś całą sekwencję.";
+      window.setTimeout(()=>{
+        if (!graTrwa || koniecGry) return;
+        dodajNute();
+        odtworzSekwencje();
+      }, 800);
+    }
+  }
+
+  function losowaNuta(){
+    const pula = USTAWIENIA[poziom];
+    return pula[Math.floor(Math.random()*pula.length)];
+  }
+
+  function ustawWidoczneKlawisze(){
+    const dostepne = new Set(USTAWIENIA[poziom]);
+    keys.forEach(key=>{
+      const nr = Number(key.dataset.dzwiek);
+      key.classList.toggle("ukryty", !dostepne.has(nr));
+    });
+  }
+
+  function dodajNute(){
+    if (sekwencja.length >= 100) return;
+    sekwencja.push(losowaNuta());
+    indeksOdpowiedzi = 0;
+    wynikEl.textContent = "0";
+  }
+
+  function odtworzSekwencje(){
+    if (!sekwencja.length) return;
+    odtwarzanie = true;
+    powtorzBtn.disabled = true;
+    keys.forEach(k => k.classList.add("niedostepny"));
+    komunikat.className = "komunikat";
+    komunikat.textContent = "Słuchaj uważnie…";
+
+    const przerwa = sekwencja.length >= 30 ? 420 : 500;
+    sekwencja.forEach((nr,i)=>{
+      window.setTimeout(()=>klikNute(nr,true), i*przerwa);
+    });
+    window.setTimeout(()=>{
+      odtwarzanie = false;
+      keys.forEach(k => k.classList.remove("niedostepny"));
+      powtorzBtn.disabled = false;
+      komunikat.className = "komunikat";
+      komunikat.textContent = "Twoja kolej! Powtórz całą sekwencję.";
+    }, Math.max(0,sekwencja.length-1)*przerwa + 550);
+  }
+
+  const KOLORY = ["#FF6B6B","#FFD166","#4D96FF","#F15BB5","#2EC4B6","#9B5DE5","#F77F00","#43AA8B","#00BBF9","#577590","#F94144","#90BE6D"];
+
+  function pokazKlawisze(){
+    const pula = USTAWIENIA[poziom];
+    const aktywne = new Set(pula);
+    const prawdziwePianino = poziom === 8 || poziom === 12;
+
+    piano.classList.toggle("prosty", !prawdziwePianino);
+    piano.classList.toggle("osiem", poziom === 8);
+    piano.style.setProperty("--liczba-bialych", prawdziwePianino ? (poziom === 8 ? "5" : "7") : String(pula.length));
+
+    keys.forEach(key => {
+      const nr = Number(key.dataset.dzwiek);
+      const jestBialy = key.classList.contains("bialy");
+      let pokaz = false;
+
+      if (poziom === 3 || poziom === 6){
+        // Na łatwiejszych poziomach pokazujemy tylko duże białe przyciski.
+        pokaz = jestBialy && aktywne.has(nr);
+      } else {
+        // Na 8/12 poziomie widzimy pełną strukturę prawdziwej klawiatury.
+        pokaz = aktywne.has(nr);
+      }
+
+      key.classList.toggle("ukryty", !pokaz);
+      key.classList.toggle("kolorowy", pokaz);
+      if (pokaz) key.style.setProperty("--kolor", KOLORY[nr % KOLORY.length]);
+    });
+  }
+
+  function nowaGra(){
+    inicjujAudio().catch(()=>{});
+    sekwencja = [];
+    indeksOdpowiedzi = 0;
+    graTrwa = false;
+    odtwarzanie = false;
+    koniecGry = false;
+    wynikEl.textContent = "0";
+    poziomTekst.textContent = poziom;
+    pokazKlawisze();
+    ustawRekord();
+    rezultat.classList.remove("show");
+    powtorzBtn.disabled = true;
+    startBtn.textContent = "Zacznij grę";
+    keys.forEach(k => k.classList.remove("niedostepny","aktywny","podswietlony"));
+    komunikat.className = "komunikat";
+    komunikat.textContent = "Kliknij „Zacznij grę”, aby rozpocząć.";
+  }
+
+  async function startGry(){
+    if (odtwarzanie) return;
+
+    komunikat.className = "komunikat";
+    komunikat.textContent = "Ładuję brzmienie pianina…";
+    const gotowe = await inicjujAudio();
+    if (!gotowe){
+      komunikat.className = "komunikat blad";
+      komunikat.textContent = "Nie udało się załadować pianina. Sprawdź połączenie z internetem i spróbuj ponownie.";
+      return;
+    }
+
+    graTrwa = true;
+    koniecGry = false;
+    rezultat.classList.remove("show");
+    startBtn.textContent = "Nowa gra";
+    // Każda gra zaczyna się od dokładnie 1 nuty, niezależnie od poziomu.
+    sekwencja = [losowaNuta()];
+    indeksOdpowiedzi = 0;
+    wynikEl.textContent = "0";
+    odtworzSekwencje();
+  }
+
+  function przegrana(){
+    graTrwa = false;
+    koniecGry = true;
+    odtwarzanie = false;
+    keys.forEach(k => k.classList.remove("niedostepny"));
+    powtorzBtn.disabled = true;
+
+    const rekord = odczytajRekord();
+    const wynik = indeksOdpowiedzi;
+    if (wynik > rekord){
+      try { localStorage.setItem(rekordKlucz(), String(wynik)); } catch(e){}
+      ustawRekord();
+      rezultatTytul.textContent = "Nowy rekord! 🎉";
+    }else{
+      rezultatTytul.textContent = "Koniec gry";
+    }
+    rezultatOpis.textContent = "Zapamiętałeś " + wynik + " nut. Spróbuj jeszcze raz i pobij swój rekord!";
+    rezultat.classList.add("show");
+    komunikat.className = "komunikat blad";
+    komunikat.textContent = "Ups! To nie był ten dźwięk.";
+    startBtn.textContent = "Zagraj jeszcze raz";
+  }
+
+  function wygrana(){
+    graTrwa = false;
+    koniecGry = true;
+    odtwarzanie = false;
+    powtorzBtn.disabled = true;
+    try {
+      const rekord = odczytajRekord();
+      if (100 > rekord) localStorage.setItem(rekordKlucz(), "100");
+    } catch(e){}
+    ustawRekord();
+    wynikEl.textContent = "100";
+    rezultatTytul.textContent = "Niesamowite! 🏆";
+    rezultatOpis.textContent = "Powtórzyłeś pełne 100 nut!";
+    rezultat.classList.add("show");
+    komunikat.className = "komunikat ok";
+    komunikat.textContent = "100 nut — koniec sekwencji!";
+    startBtn.textContent = "Zagraj jeszcze raz";
+  }
+
+  // Kliknięcia w klawisze.
+  keys.forEach(key=>{
+    key.addEventListener("click", ()=>{
+      const nr = Number(key.dataset.dzwiek);
+      klikNute(nr,false);
+    });
+  });
+
+  poziomy.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      poziom = Number(btn.dataset.poziom);
+      poziomy.forEach(x=>x.setAttribute("aria-pressed", x === btn ? "true" : "false"));
+      nowaGra();
+    });
+  });
+
+  startBtn.addEventListener("click", async ()=>{
+    if (startBtn.disabled) return;
+    startBtn.disabled = true;
+    if (graTrwa || koniecGry || startBtn.textContent !== "Zacznij grę"){
+      nowaGra();
+      await startGry();
+    }else{
+      await startGry();
+    }
+    startBtn.disabled = false;
+  });
+
+  powtorzBtn.addEventListener("click", ()=>{
+    if (!graTrwa || odtwarzanie || !sekwencja.length) return;
+    indeksOdpowiedzi = 0;
+    wynikEl.textContent = "0";
+    odtworzSekwencje();
+  });
+
+  nowaGra();
+})();
+</script>
+</body>
+</html>
