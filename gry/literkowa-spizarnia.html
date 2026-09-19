@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Literkowa spiżarnia — układanie słów | KotKlik</title>
-<meta name="description" content="Ułóż słowo z liter razem z kotem Klikiem. Gra edukacyjna dla dzieci od 6 lat. Bez reklam, bez logowania.">
+<title>Pary Klika — gra pamięciowa dla dzieci | KotKlik</title>
+<meta name="description" content="Ćwicz pamięć razem z kotem Klikiem — znajdź wszystkie pary zwierzątek. Bez reklam, bez logowania.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
 <style>
 :root{
   --noc:#1B2A4A;
+  --noc-jasna:#2A3F68;
   --klik:#FF8A3D;
   --mieta:#3ECFB2;
   --slonce:#FFD447;
@@ -26,43 +27,77 @@ body{
   color:var(--tekst);
   line-height:1.6;
   -webkit-text-size-adjust:100%;
-  overscroll-behavior:none;
 }
 .srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
 
 /* ---------- Ekran startowy: mieści się w jednym widoku, bez przewijania ---------- */
 .ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
 
-header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden;flex:0 0 auto}
+/* ---------- Pasek górny ---------- */
+header{
+  background:var(--noc);
+  padding:14px 0;
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+}
 header::after{
   content:"";position:absolute;inset:0;
   background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
   background-size:26px 26px;opacity:.16;pointer-events:none;
 }
 .marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
-.marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
 .marka h1 span{color:var(--klik)}
-.kot{width:54px;height:54px;flex-shrink:0}
-.oko{transform-origin:center;animation:mrug 5.5s infinite}
-@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
-@media (prefers-reduced-motion:reduce){.oko{animation:none}}
 
-/* ---------- Hero / gra ---------- */
+/* ---------- Kot ---------- */
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
 .hero{background:var(--noc);padding:8px 0 16px;position:relative;z-index:1;flex:1;min-height:0;display:flex;flex-direction:column}
 .hero > .srodek{flex:1;min-height:0;display:flex;flex-direction:column}
+.dymek{
+  background:var(--papier);
+  border-radius:20px;
+  padding:14px 20px;
+  max-width:520px;
+  margin-bottom:14px;
+  position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);
+  flex:0 0 auto;
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
 
+/* ---------- Gra ---------- */
 .gra,.gra *{
   user-select:none;-webkit-user-select:none;-moz-user-select:none;
   -webkit-touch-callout:none;
 }
 .gra{
-  background:var(--papier);border-radius:24px;padding:16px;
+  background:var(--papier);
+  border-radius:24px;
+  padding:16px;
   box-shadow:0 8px 0 rgba(0,0,0,.2);
-  flex:1;min-height:0;display:flex;flex-direction:column;
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
 }
 .gra-gora{
-  display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
-  margin-bottom:10px;flex:0 0 auto;
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+  flex:0 0 auto;
 }
 .gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
 .poziomy{display:flex;gap:8px;flex-wrap:wrap}
@@ -72,60 +107,46 @@ header::after{
   background:transparent;color:var(--noc);cursor:pointer;
 }
 .poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
-.poziom:focus-visible,.znowu:focus-visible,.glosnik:focus-visible{
+.poziom:focus-visible,.znowu:focus-visible,.karta:focus-visible{
   outline:3px solid var(--klik);outline-offset:3px;
 }
 
-/* ---------- Plansza słowa ---------- */
-.plansza-liter{
-  flex:1;min-height:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4vh;
+.plansza{
+  display:grid;gap:8px;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  flex:1;min-height:0;
 }
-.obrazek-slowo{display:flex;align-items:center;gap:16px}
-.duzy-emoji{font-size:min(14vh,90px);line-height:1}
-.glosnik{
-  width:52px;height:52px;border-radius:999px;border:none;cursor:pointer;
-  background:var(--mieta);color:#fff;font-size:1.4rem;flex-shrink:0;
-  box-shadow:0 4px 0 #2BA98F;
-}
-.glosnik:active{transform:translateY(3px);box-shadow:none}
+.plansza.duza{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(min-width:620px){.plansza.duza{grid-template-columns:repeat(6,minmax(0,1fr))}}
 
-.sloty{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.slot{
-  width:min(11vw,52px);height:min(11vw,52px);
-  border:3px dashed #C9D4E6;border-radius:12px;
+.karta{
+  position:relative;min-width:0;min-height:0;width:100%;height:100%;
+  border:none;border-radius:14px;padding:0;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Fredoka',sans-serif;font-weight:600;
-  font-size:min(6vw,1.7rem);color:var(--noc);
-  background:#fff;
+  font-size:clamp(1.3rem,6vw,2.4rem);
+  background:var(--noc);
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.25);
+  transition:transform .12s ease;
 }
-.slot.wypelniony{border-style:solid;border-color:var(--mieta);background:#E6FBF5}
-.slot.potrzas{animation:potrzasniecie .35s}
-@keyframes potrzasniecie{
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-6px)}
-  75%{transform:translateX(6px)}
+.karta:active{transform:scale(.94)}
+.karta svg{width:46%;height:46%;opacity:.55}
+.karta .symbol{display:none}
+.karta[data-stan="odkryta"],
+.karta[data-stan="zdobyta"]{
+  background:#fff;border:3px solid var(--mieta);box-shadow:none;
 }
-@media (prefers-reduced-motion:reduce){.slot.potrzas{animation:none}}
-
-.bank-liter{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;touch-action:none}
-.kafelek{
-  width:min(13vw,58px);height:min(13vw,58px);
-  border-radius:12px;border:none;cursor:grab;
-  background:var(--klik);color:#fff;
-  font-family:'Fredoka',sans-serif;font-weight:600;
-  font-size:min(6.5vw,1.9rem);
-  box-shadow:0 4px 0 #C4621F;
-  touch-action:none;user-select:none;-webkit-user-select:none;
-  position:relative;z-index:2;
-}
-.kafelek.przeciagana{cursor:grabbing;z-index:10;box-shadow:0 8px 16px rgba(0,0,0,.25);transition:none}
-.kafelek:not(.przeciagana){transition:transform .18s ease}
-.kafelek.zablokowana{visibility:hidden}
+.karta[data-stan="zdobyta"]{background:#E6FBF5;border-color:var(--slonce)}
+.karta[data-stan="odkryta"] .logo,
+.karta[data-stan="zdobyta"] .logo{display:none}
+.karta[data-stan="odkryta"] .symbol,
+.karta[data-stan="zdobyta"] .symbol{display:block}
 
 .wynik{
-  margin-top:10px;display:flex;flex-wrap:wrap;gap:16px;
-  align-items:center;justify-content:space-between;font-weight:700;flex:0 0 auto;
+  margin-top:12px;display:flex;flex-wrap:wrap;gap:16px;
+  align-items:center;justify-content:space-between;
+  font-weight:700;
+  flex:0 0 auto;
 }
 .licznik{color:var(--szara);font-weight:600}
 .znowu{
@@ -137,7 +158,14 @@ header::after{
 .znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
 .brawo{color:var(--noc)}
 
-footer{background:var(--noc);color:#9FB2CE;padding:14px 0;font-size:.85rem;flex:0 0 auto}
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
 footer a{color:var(--papier)}
 
 /* ---------- Wędrujący kot ---------- */
@@ -158,16 +186,20 @@ footer a{color:var(--papier)}
   .kot-wedrowiec{transition:none}
   .kot-wedrowiec.chodzi .kot-idacy{animation:none}
 }
+
 .dymek-kota{
   background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;color:var(--noc);position:relative;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  color:var(--noc);position:relative;
   box-shadow:0 4px 0 rgba(0,0,0,.15);
   opacity:0;transform:translateY(6px) scale(.85);
   transition:opacity .25s,transform .25s;
 }
 .dymek-kota::after{
-  content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
-  border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff;
+  content:"";position:absolute;bottom:-8px;left:50%;
+  transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:8px solid #fff;
 }
 .dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
 </style>
@@ -195,38 +227,49 @@ footer a{color:var(--papier)}
 
 <section class="hero">
   <div class="srodek">
+    <div class="dymek">
+      <p>Cześć! Jestem Klik i mieszkam w Twoim komputerze.</p>
+      <p>Pod spodem schowałem moje ulubione zwierzaki — zawsze po dwa takie same. Znajdziesz wszystkie pary?</p>
+    </div>
+
     <div class="gra">
       <div class="gra-gora">
-        <h2>Literkowa spiżarnia</h2>
+        <h2>Pary Klika</h2>
         <div class="poziomy" role="group" aria-label="Wybierz poziom">
-          <button class="poziom" data-poziom="latwy"  aria-pressed="true">Łatwy</button>
-          <button class="poziom" data-poziom="sredni" aria-pressed="false">Średni</button>
-          <button class="poziom" data-poziom="trudny" aria-pressed="false">Trudny</button>
+          <button class="poziom" data-par="6"  aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-par="8"  aria-pressed="false">Średni</button>
+          <button class="poziom" data-par="12" aria-pressed="false">Trudny</button>
         </div>
       </div>
 
-      <div class="plansza-liter">
-        <div class="obrazek-slowo">
-          <span class="duzy-emoji" id="duzyEmoji">🐱</span>
-          <button class="glosnik" id="glosnik" aria-label="Odsłuchaj słowo">🔊</button>
-        </div>
-        <div class="sloty" id="sloty"></div>
-        <div class="bank-liter" id="bankLiter"></div>
-      </div>
+      <div class="plansza" id="plansza"></div>
 
       <div class="wynik">
-        <span class="licznik" id="licznik">Słowo 1 z 8</span>
+        <span class="licznik" id="licznik">Ruchy: 0</span>
         <span class="brawo" id="brawo" role="status"></span>
-        <button class="znowu" id="losuj">Następne słowo</button>
+        <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
       </div>
     </div>
   </div>
 </section>
 </div>
 
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+      <li>Wyniki zostają na tym urządzeniu i nigdzie nie są wysyłane</li>
+      <li>Gry działają na tablecie, telefonie i komputerze</li>
+    </ul>
+  </div>
+</section>
+
 <footer>
   <div class="srodek">
-    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat. <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
   </div>
 </footer>
 
@@ -248,180 +291,122 @@ footer a{color:var(--papier)}
 
 <script>
 (function(){
-  const SLOWA = {
-    latwy:  [["KOT","🐱"],["LIS","🦊"],["JEŻ","🦔"],["LEW","🦁"],["WĄŻ","🐍"],["RAK","🦀"]],
-    sredni: [["PIES","🐶"],["SOWA","🦉"],["RYBA","🐟"],["ŻABA","🐸"],["KOZA","🐐"],["MYSZ","🐭"],["KRAB","🦀"]],
-    trudny: [["PAJĄK","🕷️"],["MOTYL","🦋"],["ZAJĄC","🐇"],["DELFIN","🐬"],["PANDA","🐼"],["TYGRYS","🐯"]]
-  };
-
-  const emoji = document.getElementById("duzyEmoji");
-  const sloty = document.getElementById("sloty");
-  const bankLiter = document.getElementById("bankLiter");
+  const ZWIERZAKI = ["🦊","🐸","🐢","🦉","🐝","🐬","🦋","🐿️","🦔","🐳","🐞","🦩"];
+  const plansza = document.getElementById("plansza");
   const licznik = document.getElementById("licznik");
-  const brawo = document.getElementById("brawo");
-  const glosnik = document.getElementById("glosnik");
+  const brawo   = document.getElementById("brawo");
+  const znowu   = document.getElementById("znowu");
   const poziomy = document.querySelectorAll(".poziom");
 
-  let poziom = "latwy";
-  let kolejka = [];
-  let indeksSlowa = 0;
-  let aktualneSlowo = "";
+  const LOGO_KARTY = `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">      <path d="M12 26 L10 10 L24 20 Z" fill="#FFF7EC"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FFF7EC"/>
+      <circle cx="32" cy="36" r="21" fill="#FFF7EC"/>
+    </svg>`;
 
-  function przetasuj(t){
-    const kopia = t.slice();
-    for (let i = kopia.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [kopia[i], kopia[j]] = [kopia[j], kopia[i]];
+  let liczbaPar = 6, odkryte = [], ruchy = 0, znalezione = 0, blokada = false;
+
+  function tasuj(t){
+    for(let i=t.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [t[i],t[j]] = [t[j],t[i]];
     }
-    return kopia;
+    return t;
   }
 
-  function przygotujKolejke(){
-    kolejka = przetasuj(SLOWA[poziom]);
-    indeksSlowa = 0;
-  }
-
-  function odczytajSlowo(tekst){
-    try {
-      if (!("speechSynthesis" in window)) return;
-      window.speechSynthesis.cancel();
-      const wypowiedz = new SpeechSynthesisUtterance(tekst);
-      wypowiedz.lang = "pl-PL";
-      wypowiedz.rate = 0.85;
-      window.speechSynthesis.speak(wypowiedz);
-    } catch (e) { /* przeglądarka bez obsługi mowy — gramy dalej po cichu */ }
-  }
-
-  function ustawSlowo(){
-    if (indeksSlowa >= kolejka.length) przygotujKolejke();
-    const [slowo, ikonka] = kolejka[indeksSlowa];
-    aktualneSlowo = slowo;
-    emoji.textContent = ikonka;
+  function nowaGra(){
+    odkryte = []; ruchy = 0; znalezione = 0; blokada = false;
+    licznik.textContent = "Ruchy: 0";
     brawo.textContent = "";
-    licznik.textContent = "Słowo " + (indeksSlowa + 1) + " z " + kolejka.length;
+    plansza.classList.toggle("duza", liczbaPar === 12);
+    plansza.innerHTML = "";
 
-    sloty.innerHTML = "";
-    [...slowo].forEach((litera) => {
-      const s = document.createElement("div");
-      s.className = "slot";
-      s.dataset.litera = litera;
-      sloty.appendChild(s);
-    });
-
-    bankLiter.innerHTML = "";
-    przetasuj([...slowo]).forEach((litera) => {
-      const k = document.createElement("button");
-      k.className = "kafelek";
-      k.type = "button";
-      k.dataset.litera = litera;
-      k.textContent = litera;
-      bankLiter.appendChild(k);
-      inicjujPrzeciaganie(k);
-    });
-
-    setTimeout(() => odczytajSlowo(slowo), 400);
-  }
-
-  function znajdzSlotPod(x, y){
-    const wolneSloty = [...sloty.querySelectorAll(".slot:not(.wypelniony)")];
-    return wolneSloty.find((s) => {
-      const r = s.getBoundingClientRect();
-      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    tasuj(ZWIERZAKI.slice(0, liczbaPar).flatMap(z => [z, z])).forEach((symbol, i) => {
+      const karta = document.createElement("button");
+      karta.className = "karta";
+      karta.dataset.symbol = symbol;
+      karta.dataset.stan = "zakryta";
+      karta.setAttribute("aria-label", "Zakryta karta numer " + (i + 1));
+      karta.innerHTML =
+        '<span class="logo">' + LOGO_KARTY + '</span>' +
+        '<span class="symbol">' + symbol + '</span>';
+      karta.addEventListener("click", () => odkryj(karta));
+      plansza.appendChild(karta);
     });
   }
 
-  function umiescWSlocie(kafelek, slot){
-    slot.textContent = kafelek.dataset.litera;
-    slot.classList.add("wypelniony");
-    kafelek.classList.add("zablokowana");
-    zagrajDzwiekKlik();
+  function odkryj(karta){
+    if (blokada || karta.dataset.stan !== "zakryta") return;
 
-    const wszystkieWypelnione = sloty.querySelectorAll(".slot:not(.wypelniony)").length === 0;
-    if (wszystkieWypelnione) {
-      setTimeout(ukonczoneSlowo, 300);
+    karta.dataset.stan = "odkryta";
+    karta.setAttribute("aria-label", "Odkryta karta: " + karta.dataset.symbol);
+    odkryte.push(karta);
+    if (odkryte.length < 2) return;
+
+    ruchy++;
+    licznik.textContent = "Ruchy: " + ruchy;
+    const [a, b] = odkryte;
+
+    if (a.dataset.symbol === b.dataset.symbol){
+      a.dataset.stan = b.dataset.stan = "zdobyta";
+      odkryte = [];
+      znalezione++;
+      zagrajDzwiekPary();
+      if (znalezione === liczbaPar) koniec();
+    } else {
+      blokada = true;
+      setTimeout(() => {
+        [a, b].forEach((k, i) => {
+          k.dataset.stan = "zakryta";
+          k.setAttribute("aria-label", "Zakryta karta");
+        });
+        odkryte = [];
+        blokada = false;
+      }, 850);
     }
   }
 
-  function potrzasnijSlot(slot){
-    if (!slot) return;
-    slot.classList.remove("potrzas");
-    void slot.offsetWidth;
-    slot.classList.add("potrzas");
-  }
-
-  function inicjujPrzeciaganie(kafelek){
-    let startX = 0, startY = 0, aktywny = false;
-
-    kafelek.addEventListener("pointerdown", (e) => {
-      if (kafelek.classList.contains("zablokowana")) return;
-      e.preventDefault();
-      aktywny = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      kafelek.classList.add("przeciagana");
-      try { kafelek.setPointerCapture(e.pointerId); } catch (err) { /* starsza przeglądarka - gramy dalej bez przechwytywania wskaźnika */ }
-    });
-
-    kafelek.addEventListener("pointermove", (e) => {
-      if (!aktywny) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      kafelek.style.transform = "translate(" + dx + "px," + dy + "px)";
-    });
-
-    function zakonczPrzeciaganie(e){
-      if (!aktywny) return;
-      aktywny = false;
-      kafelek.classList.remove("przeciagana");
-
-      const r = kafelek.getBoundingClientRect();
-      const srodekX = r.left + r.width / 2;
-      const srodekY = r.top + r.height / 2;
-      const slot = znajdzSlotPod(srodekX, srodekY);
-
-      if (slot && slot.dataset.litera === kafelek.dataset.litera){
-        kafelek.style.transform = "translate(0,0)";
-        umiescWSlocie(kafelek, slot);
+  function koniec(){
+    let tekst = "Brawo! Wszystkie pary znalezione.";
+    try {
+      const klucz = "kotklik-rekord-" + liczbaPar;
+      const rekord = parseInt(localStorage.getItem(klucz), 10);
+      if (!rekord || ruchy < rekord){
+        localStorage.setItem(klucz, ruchy);
+        tekst = "Nowy rekord! " + ruchy + " ruchów.";
       } else {
-        kafelek.style.transform = "translate(0,0)";
-        if (slot) potrzasnijSlot(slot);
+        tekst += " Twój rekord to " + rekord + ".";
       }
-    }
-
-    kafelek.addEventListener("pointerup", zakonczPrzeciaganie);
-    kafelek.addEventListener("pointercancel", zakonczPrzeciaganie);
-  }
-
-  function ukonczoneSlowo(){
-    brawo.textContent = "Brawo! To jest: " + aktualneSlowo;
+    } catch(e){ /* prywatne okno — gramy dalej bez rekordu */ }
+    brawo.textContent = tekst;
     odwiedzinyKota();
-    indeksSlowa++;
-    setTimeout(ustawSlowo, 1600);
   }
 
-  // ---------- Dźwięk przy poprawnej literze ----------
+  // ---------- Dźwięk przy trafionej parze ----------
   let audioCtx = null;
-  function zagrajDzwiekKlik(){
+  function zagrajDzwiekPary(){
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       const start = audioCtx.currentTime;
-      const oscylator = audioCtx.createOscillator();
-      const glosnosc = audioCtx.createGain();
-      oscylator.type = "sine";
-      oscylator.frequency.value = 660;
-      glosnosc.gain.setValueAtTime(0, start);
-      glosnosc.gain.linearRampToValueAtTime(0.1, start + 0.01);
-      glosnosc.gain.exponentialRampToValueAtTime(0.001, start + 0.15);
-      oscylator.connect(glosnosc).connect(audioCtx.destination);
-      oscylator.start(start);
-      oscylator.stop(start + 0.16);
-    } catch (e) { /* przeglądarka bez obsługi dźwięku — gramy dalej po cichu */ }
+      [523.25, 659.25].forEach((czestotliwosc, i) => {
+        const oscylator = audioCtx.createOscillator();
+        const glosnosc = audioCtx.createGain();
+        oscylator.type = "sine";
+        oscylator.frequency.value = czestotliwosc;
+        const chwila = start + i * 0.09;
+        glosnosc.gain.setValueAtTime(0, chwila);
+        glosnosc.gain.linearRampToValueAtTime(0.12, chwila + 0.015);
+        glosnosc.gain.exponentialRampToValueAtTime(0.001, chwila + 0.22);
+        oscylator.connect(glosnosc).connect(audioCtx.destination);
+        oscylator.start(chwila);
+        oscylator.stop(chwila + 0.25);
+      });
+    } catch(e) { /* przeglądarka bez obsługi dźwięku — gramy dalej po cichu */ }
   }
 
   // ---------- Spacer kota z gratulacjami ----------
   const KOMPLEMENTY = [
-    "Super robota!", "Umiesz to napisać!", "Ale masz refleks!",
-    "Świetnie Ci poszło!", "Gratulacje, mistrzu liter!", "Wow, jestem pod wrażeniem!"
+    "Super robota!", "Brawo, wszystkie pary!", "Ale masz pamięć!",
+    "Świetnie Ci poszło!", "Gratulacje, mistrzu!", "Wow, jestem pod wrażeniem!"
   ];
   const kotWedrowiec = document.getElementById("kotWedrowiec");
   const dymekKota = document.getElementById("dymekKota");
@@ -433,40 +418,39 @@ footer a{color:var(--papier)}
     kotTimeouty = [];
     dymekKota.classList.remove("widoczna");
     kotWedrowiec.classList.remove("widoczny", "chodzi");
-    void kotWedrowiec.offsetWidth;
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+
     kotWedrowiec.classList.add("widoczny", "chodzi");
 
     const naMiejscu = () => {
       kotWedrowiec.classList.remove("chodzi");
       dymekKota.textContent = KOMPLEMENTY[Math.floor(Math.random() * KOMPLEMENTY.length)];
       dymekKota.classList.add("widoczna");
+
       kotTimeouty.push(setTimeout(() => {
         dymekKota.classList.remove("widoczna");
-        kotTimeouty.push(setTimeout(() => kotWedrowiec.classList.remove("widoczny"), 700));
-      }, 3200));
+        kotTimeouty.push(setTimeout(() => {
+          kotWedrowiec.classList.remove("widoczny");
+        }, 700));
+      }, 4500));
     };
 
-    if (bezRuchu) naMiejscu();
-    else kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+    if (bezRuchu){
+      naMiejscu();
+    } else {
+      kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+    }
   }
 
-  glosnik.addEventListener("click", () => odczytajSlowo(aktualneSlowo));
-
-  poziomy.forEach((p) => p.addEventListener("click", () => {
-    poziomy.forEach((x) => x.setAttribute("aria-pressed", "false"));
+  poziomy.forEach(p => p.addEventListener("click", () => {
+    poziomy.forEach(x => x.setAttribute("aria-pressed", "false"));
     p.setAttribute("aria-pressed", "true");
-    poziom = p.dataset.poziom;
-    przygotujKolejke();
-    ustawSlowo();
+    liczbaPar = parseInt(p.dataset.par, 10);
+    nowaGra();
   }));
 
-  document.getElementById("losuj").addEventListener("click", () => {
-    indeksSlowa++;
-    ustawSlowo();
-  });
-
-  przygotujKolejke();
-  ustawSlowo();
+  znowu.addEventListener("click", nowaGra);
+  nowaGra();
 })();
 </script>
 </body>
