@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kabelkowy labirynt — pierwsze kroki w programowaniu | KotKlik</title>
+<meta name="description" content="Ułóż program ze strzałek i doprowadź kota Klika do miski. Nauka programowania dla dzieci od 9 lat. Bez reklam, bez logowania.">
+<link rel="canonical" href="https://kotklik.pl/gry/kabelkowy-labirynt">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Kabelkowy labirynt — pierwsze kroki w programowaniu | KotKlik">
+<meta property="og:description" content="Ułóż program ze strzałek i doprowadź kota Klika do miski. Nauka programowania dla dzieci od 9 lat. Bez reklam, bez logowania.">
+<meta property="og:url" content="https://kotklik.pl/gry/kabelkowy-labirynt">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --noc-jasna:#2A3F68;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+  --blad:#E5484D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:1040px;margin:0 auto;padding:0 20px}
+
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Pasek górny ---------- */
+header{
+  background:var(--noc);
+  padding:14px 0;
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+
+/* ---------- Kot ---------- */
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 20px;position:relative;z-index:1;flex:1}
+.dymek{
+  background:var(--papier);
+  border-radius:20px;
+  padding:14px 20px;
+  max-width:620px;
+  margin-bottom:14px;
+  position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;
+  -webkit-touch-callout:none;
+}
+.gra{
+  background:var(--papier);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 8px 0 rgba(0,0,0,.2);
+}
+.gra-gora{
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:flex;gap:6px;flex-wrap:wrap}
+.poziom{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+  width:36px;height:36px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.poziom.zaliczony{background:#E6FBF5;border-color:var(--mieta)}
+.poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier);border-color:var(--noc)}
+.poziom:disabled{border-color:#D5D9E0;color:#B7C0CC;cursor:default;background:transparent}
+
+button:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+.gra-srodek{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:780px){.gra-srodek{grid-template-columns:minmax(0,1.15fr) minmax(300px,1fr);align-items:start}}
+
+/* ---------- Plansza ---------- */
+.plansza-ramka{
+  background:#fff;border-radius:18px;padding:10px;
+  box-shadow:inset 0 0 0 2px #F0E6D6;
+  display:flex;justify-content:center;
+}
+#plansza{display:block;width:100%;height:auto;max-height:62svh}
+.wtyczka-trzes{animation:trzes .35s ease}
+@keyframes trzes{
+  0%,100%{transform:translate(0,0)}
+  20%{transform:translate(-1.2px,0)}
+  40%{transform:translate(1.2px,0)}
+  60%{transform:translate(-.8px,0)}
+  80%{transform:translate(.8px,0)}
+}
+@media (prefers-reduced-motion:reduce){.wtyczka-trzes{animation:none}}
+
+/* ---------- Panel programu ---------- */
+.panel{display:flex;flex-direction:column;gap:12px}
+.panel h3{font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:600;color:var(--noc)}
+.paleta{display:flex;flex-wrap:wrap;gap:8px}
+.strzalka{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;line-height:1;
+  width:58px;height:58px;border:none;border-radius:16px;cursor:pointer;
+  background:var(--noc);color:#fff;
+  box-shadow:0 4px 0 #0E1830;
+}
+.strzalka:active{transform:translateY(3px);box-shadow:0 1px 0 #0E1830}
+.petla-btn{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  height:58px;padding:0 14px;border:none;border-radius:16px;cursor:pointer;
+  background:var(--mieta);color:var(--noc);
+  box-shadow:0 4px 0 #2A9E87;
+}
+.petla-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #2A9E87}
+.strzalka:disabled,.petla-btn:disabled{opacity:.35;cursor:default;transform:none}
+.petla-btn[hidden]{display:none}
+
+.program-gora{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.licznik{color:var(--szara);font-weight:700;font-size:.95rem}
+.licznik.pelny{color:var(--klik)}
+.program{
+  min-height:96px;border:2px dashed #D9CBB5;border-radius:16px;padding:10px;
+  display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;background:#fff;
+}
+.program:empty::before{
+  content:"Tu pojawi się Twój program. Kliknij strzałkę powyżej.";
+  color:var(--szara);font-size:.95rem;align-self:center;
+}
+.klocek{
+  position:relative;display:inline-flex;align-items:center;
+  border-radius:12px;background:var(--noc);color:#fff;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;line-height:1;
+}
+.klocek-glowny{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 12px;min-height:44px;border:none;background:transparent;color:inherit;
+  font:inherit;border-radius:12px;
+}
+button.klocek-glowny{cursor:pointer}
+.ile{
+  background:var(--slonce);color:var(--noc);border-radius:999px;
+  padding:2px 7px;font-size:.85rem;font-weight:700;
+}
+.klocek.petla,.klocek.koniec{background:var(--mieta);color:var(--noc)}
+.klocek.petla .ile{background:#fff}
+.klocek.koniec .klocek-glowny{font-size:.9rem;font-weight:600}
+.klocek.w-petli{box-shadow:0 0 0 3px var(--mieta)}
+.klocek.glebiej{box-shadow:0 0 0 3px var(--mieta),0 0 0 6px var(--slonce)}
+.klocek.aktywny{background:var(--klik);color:#fff}
+.klocek.zly{background:var(--blad);color:#fff}
+.usun{
+  position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:999px;
+  border:2px solid #fff;background:var(--szara);color:#fff;cursor:pointer;
+  font-size:.8rem;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;
+}
+.usun:disabled{display:none}
+
+.sterowanie{display:flex;flex-wrap:wrap;gap:8px}
+.uruchom{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
+  background:var(--klik);color:#fff;border:none;
+  padding:11px 24px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #C4621F;
+}
+.uruchom:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+.maly{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:9px 16px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.uruchom:disabled,.maly:disabled{opacity:.4;cursor:default;transform:none}
+.dalej{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
+  background:var(--mieta);color:var(--noc);border:none;
+  padding:11px 24px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #2A9E87;
+}
+.dalej[hidden]{display:none}
+
+.komunikat{font-weight:700;color:var(--noc);min-height:1.6em}
+.komunikat.zle{color:#B42328}
+.komunikat.dobrze{color:#1E8A73}
+
+.powrot{
+  display:inline-block;margin-top:22px;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
+  color:var(--papier);text-decoration:none;
+  padding:10px 22px;border:2px solid var(--papier);border-radius:999px;
+}
+.powrot:hover{background:var(--papier);color:var(--noc)}
+.powrot:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;
+  transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-6px) rotate(2deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .kot-wedrowiec{transition:none}
+  .kot-wedrowiec.chodzi .kot-idacy{animation:none}
+}
+
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);
+  opacity:0;transform:translateY(6px) scale(.85);
+  transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{
+  content:"";position:absolute;bottom:-8px;left:50%;
+  transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:8px solid #fff;
+}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+            stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Jestem głodny! Pomóż mi dojść do miski. Po drodze stoją pudła, a ja ciągnę za sobą nitkę z kłębka — nie może się poplątać!</p>
+      <p id="rada"></p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Kabelkowy labirynt</h2>
+        <div class="poziomy" id="poziomy" role="group" aria-label="Wybierz poziom"></div>
+      </div>
+
+      <div class="gra-srodek">
+        <div class="plansza-ramka">
+          <svg id="plansza" role="img" aria-label="Plansza z kotem Klikiem, miską i pudłami"></svg>
+        </div>
+
+        <div class="panel">
+          <h3>Klocki</h3>
+          <div class="paleta">
+            <button class="strzalka" data-kier="gora"  aria-label="Dodaj krok w górę">↑</button>
+            <button class="strzalka" data-kier="dol"   aria-label="Dodaj krok w dół">↓</button>
+            <button class="strzalka" data-kier="lewo"  aria-label="Dodaj krok w lewo">←</button>
+            <button class="strzalka" data-kier="prawo" aria-label="Dodaj krok w prawo">→</button>
+            <button class="petla-btn" id="dodajPetle" hidden>🔁 Powtórz</button>
+            <button class="petla-btn" id="zamknijPetle" hidden>Koniec powtórki</button>
+          </div>
+
+          <div class="program-gora">
+            <h3>Twój program</h3>
+            <span class="licznik" id="licznik"></span>
+          </div>
+          <div class="program" id="program" aria-label="Twój program" aria-live="polite"></div>
+
+          <div class="sterowanie">
+            <button class="uruchom" id="uruchom">▶ Uruchom</button>
+            <button class="maly" id="cofnij">⌫ Cofnij</button>
+            <button class="maly" id="wyczysc">Wyczyść</button>
+            <button class="dalej" id="dalej" hidden>Następny poziom →</button>
+          </div>
+          <p class="komunikat" id="komunikat" role="status"></p>
+        </div>
+      </div>
+    </div>
+
+    <a class="powrot" href="../index.html">← Wróć do wszystkich gier</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra uczy podstaw programowania: kolejności poleceń, liczenia kroków, pętli i szukania błędów</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+      <li>Postępy zostają na tym urządzeniu i nigdzie nie są wysyłane</li>
+      <li>Gry działają na tablecie, telefonie i komputerze — na komputerze działają też strzałki na klawiaturze</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+          stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+  // S = kot i kłębek (start), G = miska (cel), # = pudło, . = wolne pole
+  const POZIOMY = [
+    { mapa:["S..","##.","G.."],
+      rada:"Kliknij strzałki, żeby ułożyć program dla Klika. Każda strzałka to jeden krok. Potem naciśnij „Uruchom”." },
+    { mapa:["S.#.","#...","..#.",".#.G"],
+      rada:"Omijaj pudła! Klik idzie dokładnie tam, gdzie pokazują strzałki." },
+    { mapa:["S....","####.","G#...",".#.##","...##"],
+      rada:"Długa droga? Nic nie szkodzi — ułóż strzałkę za strzałką." },
+    { mapa:["..#..","S.#.G","..#..",".....","##..."],
+      rada:"Klik nie może przejść przez pudło ani po swojej nitce." },
+    { mapa:["S.....","......","......","......","......",".....G"], licznik:true, limit:2,
+      rada:"Nowość! Klikaj tę samą strzałkę kilka razy, a klocek policzy kroki. Masz tylko 2 klocki!" },
+    { mapa:["S....#","####.#","#....#","#.####","#.....","#####G"], licznik:true, limit:6,
+      rada:"Masz 6 klocków. Policz kratki, zanim ułożysz program. Kliknij klocek, żeby zmienić liczbę kroków." },
+    { mapa:["......",".####.",".#G...",".#####","S....."], licznik:true, limit:4,
+      rada:"Tylko 4 klocki. Która droga jest naprawdę otwarta?" },
+    { mapa:["S......","######.",".......",".######",".......","######.","G......"], licznik:true, limit:7,
+      rada:"Zygzak! 7 klocków wystarczy, jeśli dobrze policzysz kroki." },
+    { mapa:["S#####","..####","#..###","##..##","###..#","####.G"], licznik:true, petla:true, limit:3,
+      rada:"Nowość: Powtórz! Klocki włożone do powtórki wykonają się kilka razy. Kliknij klocek 🔁, żeby zmienić liczbę powtórzeń." },
+    { mapa:["S......","######.",".......",".######",".......","######.",".......",".######","G......"], licznik:true, petla:true, limit:5,
+      rada:"Ten zygzak się powtarza. Zmieść program w 5 klockach." },
+    { mapa:["S..####","##.####","##...##","####.##","####...","######.","######G"], licznik:true, petla:true, limit:3,
+      rada:"Schodki po dwie kratki. 3 klocki wystarczą!" },
+    { mapa:["...#...#.",".#.#.#.#.",".#.#.#.#.","S#...#..G"], licznik:true, petla:true, limit:5,
+      rada:"Ostatnie wyzwanie: mury zamku. Tylko 5 klocków — dasz radę?" }
+  ];
+
+  const KIERUNKI = {
+    gora:  { dx:0,  dy:-1, znak:"↑", kat:-90, nazwa:"w górę"  },
+    dol:   { dx:0,  dy:1,  znak:"↓", kat:90,  nazwa:"w dół"   },
+    lewo:  { dx:-1, dy:0,  znak:"←", kat:180, nazwa:"w lewo"  },
+    prawo: { dx:1,  dy:0,  znak:"→", kat:0,   nazwa:"w prawo" }
+  };
+  const MAKS_KLOCKOW = 30, MAKS_KROKOW = 300, MAKS_GLEBOKOSC = 2;
+  const TEMPO = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 160 : 260;
+  const KLUCZ_POSTEPU = "kotklik-kabelki-zaliczone";
+
+  const svg        = document.getElementById("plansza");
+  const poziomyEl  = document.getElementById("poziomy");
+  const programEl  = document.getElementById("program");
+  const licznikEl  = document.getElementById("licznik");
+  const komunikat  = document.getElementById("komunikat");
+  const radaEl     = document.getElementById("rada");
+  const strzalki   = document.querySelectorAll(".strzalka");
+  const dodajPetle = document.getElementById("dodajPetle");
+  const zamknijPetle = document.getElementById("zamknijPetle");
+  const uruchomBtn = document.getElementById("uruchom");
+  const cofnijBtn  = document.getElementById("cofnij");
+  const wyczyscBtn = document.getElementById("wyczysc");
+  const dalejBtn   = document.getElementById("dalej");
+
+  let nr = 0, poziom, W, H, start, cel, pudla;
+  let program = [];       // {typ:"ruch", kier, ile} | {typ:"petla", ile} | {typ:"koniec"}
+  let biegnie = false, przebieg = 0, pokazanyWynik = false;
+  let zaliczone = wczytajPostep();
+
+  function wczytajPostep(){
+    try {
+      const dane = JSON.parse(localStorage.getItem(KLUCZ_POSTEPU) || "[]");
+      return new Set(Array.isArray(dane) ? dane : []);
+    } catch(e){ return new Set(); }
+  }
+  function zapiszPostep(){
+    try { localStorage.setItem(KLUCZ_POSTEPU, JSON.stringify([...zaliczone])); }
+    catch(e){ /* prywatne okno — gramy dalej bez zapisu */ }
+  }
+  const odblokowany = i => i === 0 || zaliczone.has(i - 1);
+  const klucz = p => p.x + "," + p.y;
+
+  // ---------- Poziomy ----------
+  function rysujPoziomy(){
+    poziomyEl.innerHTML = "";
+    POZIOMY.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "poziom" + (zaliczone.has(i) ? " zaliczony" : "");
+      b.textContent = i + 1;
+      b.setAttribute("aria-pressed", i === nr ? "true" : "false");
+      b.disabled = !odblokowany(i);
+      b.setAttribute("aria-label", "Poziom " + (i + 1) +
+        (zaliczone.has(i) ? ", ukończony" : b.disabled ? ", zablokowany" : ""));
+      b.addEventListener("click", () => wczytajPoziom(i));
+      poziomyEl.appendChild(b);
+    });
+  }
+
+  function wczytajPoziom(i){
+    przebieg++; biegnie = false;
+    nr = i; poziom = POZIOMY[i]; program = [];
+    H = poziom.mapa.length; W = poziom.mapa[0].length;
+    pudla = new Set();
+    poziom.mapa.forEach((wiersz, y) => [...wiersz].forEach((z, x) => {
+      if (z === "#") pudla.add(x + "," + y);
+      if (z === "S") start = { x, y };
+      if (z === "G") cel = { x, y };
+    }));
+    radaEl.textContent = "Poziom " + (i + 1) + ": " + poziom.rada;
+    dodajPetle.hidden = zamknijPetle.hidden = !poziom.petla;
+    ustawKomunikat("");
+    rysujPoziomy();
+    rysujPlansze();
+    rysujProgram();
+  }
+
+  // ---------- Plansza ----------
+  function rysujPlansze(){
+    let s = `<rect x="-1" y="-1" width="${W*10+2}" height="${H*10+2}" rx="3" fill="#fff"/>`;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
+      const px = x*10, py = y*10;
+      if (pudla.has(x + "," + y)){
+        s += `<rect x="${px+.6}" y="${py+.6}" width="8.8" height="8.8" rx="1.6" fill="#2A3F68"/>` +
+             `<path d="M${px+2.4} ${py+2.4} L${px+7.6} ${py+7.6} M${px+7.6} ${py+2.4} L${px+2.4} ${py+7.6}" stroke="#3E5A8F" stroke-width=".9" stroke-linecap="round"/>`;
+      } else {
+        s += `<rect x="${px+.6}" y="${py+.6}" width="8.8" height="8.8" rx="1.6" fill="#F6EFE3"/>`;
+      }
+    }
+    const sx = start.x*10, sy = start.y*10, gx = cel.x*10+5, gy = cel.y*10+5;
+    // pole startu (miętowe) z kłębkiem wełny
+    s += `<rect x="${sx+.6}" y="${sy+.6}" width="8.8" height="8.8" rx="1.6" fill="#CFF5EC" stroke="#3ECFB2" stroke-width=".7"/>` +
+         `<circle cx="${sx+5}" cy="${sy+5}" r="2.6" fill="#E8577E"/>` +
+         `<path d="M${sx+3} ${sy+4} q2 -1.6 4 0 M${sx+2.7} ${sy+5.4} q2.3 -1.6 4.6 0 M${sx+3.2} ${sy+6.7} q1.8 -1.2 3.6 0" stroke="#B83A5E" stroke-width=".45" fill="none" stroke-linecap="round"/>`;
+    // pole mety (słoneczne) z miską
+    s += `<rect x="${cel.x*10+.6}" y="${cel.y*10+.6}" width="8.8" height="8.8" rx="1.6" fill="#FFF1B8" stroke="#FFD447" stroke-width=".7"/>` +
+         `<circle id="blask" cx="${gx}" cy="${gy}" r="4.9" fill="#FFD447" opacity="0"/>` +
+         `<ellipse cx="${gx-1.6}" cy="${gy+.1}" rx="1" ry=".75" fill="#B5703A"/>` +
+         `<ellipse cx="${gx}" cy="${gy-.3}" rx="1.1" ry=".85" fill="#C98247"/>` +
+         `<ellipse cx="${gx+1.6}" cy="${gy+.1}" rx="1" ry=".75" fill="#B5703A"/>` +
+         `<path d="M${gx-3.6} ${gy+.4} h7.2 l-1 2.9 q-.2 .6 -.8 .6 h-3.6 q-.6 0 -.8 -.6 Z" fill="#3E7BD6"/>` +
+         `<rect x="${gx-3.9}" y="${gy}" width="7.8" height="1" rx=".5" fill="#5B93E6"/>`;
+    s += `<polyline id="kabelCien" fill="none" stroke="#B83A5E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" points=""/>` +
+         `<polyline id="kabel" fill="none" stroke="#F27A9B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" points=""/>`;
+    s += `<g id="kot"><g id="kotWnetrze"><g id="kotObrot">` +
+         `<path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D" stroke="#1B2A4A" stroke-width="1.5"/>` +
+         `<path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D" stroke="#1B2A4A" stroke-width="1.5"/>` +
+         `<circle cx="32" cy="36" r="21" fill="#FF8A3D" stroke="#1B2A4A" stroke-width="1.5"/>` +
+         `<circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>` +
+         `<circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>` +
+         `<circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>` +
+         `<circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>` +
+         `<path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>` +
+         `<path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>` +
+         `</g></g></g>`;
+    svg.setAttribute("viewBox", `-2 -2 ${W*10+4} ${H*10+4}`);
+    svg.innerHTML = s;
+    ustawKota(start, "prawo");
+    pokazanyWynik = false;
+    dalejBtn.hidden = true;
+  }
+
+  // Kot stoi na środku pola; idąc w lewo patrzy w lewo (odbicie lustrzane).
+  function ustawKota(p, kier){
+    svg.querySelector("#kot").setAttribute("transform", `translate(${p.x*10+5} ${p.y*10+5})`);
+    const skala = kier === "lewo" ? -.15 : .15;
+    svg.querySelector("#kotObrot").setAttribute("transform", `scale(${skala} .15) translate(-32 -33)`);
+  }
+
+  function rysujKabel(sciezka, kier){
+    const pkt = sciezka.map(p => (p.x*10+5) + "," + (p.y*10+5)).join(" ");
+    svg.querySelector("#kabel").setAttribute("points", pkt);
+    svg.querySelector("#kabelCien").setAttribute("points", pkt);
+    ustawKota(sciezka[sciezka.length - 1], kier);
+  }
+
+  function nakarmKota(){
+    svg.querySelector("#blask").setAttribute("opacity", ".55");
+  }
+
+  // ---------- Program ----------
+  const liczKlocki = () => program.filter(t => t.typ !== "koniec").length;
+  function glebokosc(){
+    let g = 0;
+    program.forEach(t => { if (t.typ === "petla") g++; else if (t.typ === "koniec" && g > 0) g--; });
+    return g;
+  }
+  const limit = () => poziom.limit || MAKS_KLOCKOW;
+
+  function zmianaProgramu(){
+    if (pokazanyWynik || biegnie){ przebieg++; biegnie = false; rysujPlansze(); }
+    ustawKomunikat("");
+    rysujProgram();
+  }
+
+  function dodajRuch(kier){
+    if (biegnie) return;
+    const ost = program[program.length - 1];
+    if (poziom.licznik && ost && ost.typ === "ruch" && ost.kier === kier && ost.ile < 9){
+      ost.ile++;
+    } else {
+      if (liczKlocki() >= limit()) return pokazLimit();
+      program.push({ typ:"ruch", kier, ile:1 });
+    }
+    tik(600);
+    zmianaProgramu();
+  }
+
+  function pokazLimit(){
+    ustawKomunikat("Nie ma już wolnych klocków! Zmień liczbę kroków w klockach albo usuń któryś.", "zle");
+  }
+
+  dodajPetle.addEventListener("click", () => {
+    if (biegnie || glebokosc() >= MAKS_GLEBOKOSC) return;
+    if (liczKlocki() >= limit()) return pokazLimit();
+    program.push({ typ:"petla", ile:2 });
+    tik(700);
+    zmianaProgramu();
+  });
+  zamknijPetle.addEventListener("click", () => {
+    if (biegnie || glebokosc() === 0) return;
+    program.push({ typ:"koniec" });
+    tik(500);
+    zmianaProgramu();
+  });
+
+  function usunKlocek(i){
+    const t = program[i];
+    if (t.typ === "petla"){
+      // usuwamy też pasujący „koniec”, a klocki ze środka zostają
+      let g = 0;
+      for (let j = i + 1; j < program.length; j++){
+        if (program[j].typ === "petla") g++;
+        else if (program[j].typ === "koniec"){ if (g === 0){ program.splice(j, 1); break; } g--; }
+      }
+    }
+    program.splice(i, 1);
+    zmianaProgramu();
+  }
+
+  function zmienIle(i){
+    const t = program[i];
+    if (t.typ === "petla") t.ile = t.ile >= 9 ? 2 : t.ile + 1;
+    else t.ile = t.ile >= 9 ? 1 : t.ile + 1;
+    tik(650);
+    zmianaProgramu();
+  }
+
+  function rysujProgram(){
+    programEl.innerHTML = "";
+    let g = 0;
+    program.forEach((t, i) => {
+      if (t.typ === "koniec" && g > 0) g--;
+      const el = document.createElement("div");
+      el.className = "klocek " + t.typ + (g > 0 ? " w-petli" : "") + (g > 1 ? " glebiej" : "");
+      el.dataset.i = i;
+
+      const moznaZmieniac = t.typ === "petla" || (t.typ === "ruch" && poziom.licznik);
+      const glowny = document.createElement(moznaZmieniac ? "button" : "span");
+      glowny.className = "klocek-glowny";
+      if (t.typ === "ruch"){
+        const k = KIERUNKI[t.kier];
+        glowny.innerHTML = k.znak + (poziom.licznik ? ` <span class="ile">×${t.ile}</span>` : "");
+        glowny.setAttribute("aria-label", "Krok " + k.nazwa + (poziom.licznik ? ", razy " + t.ile + ". Kliknij, aby zmienić" : ""));
+      } else if (t.typ === "petla"){
+        glowny.innerHTML = `🔁 <span class="ile">×${t.ile}</span>`;
+        glowny.setAttribute("aria-label", "Powtórz " + t.ile + " razy. Kliknij, aby zmienić");
+      } else {
+        glowny.textContent = "koniec 🔁";
+      }
+      if (moznaZmieniac) glowny.addEventListener("click", () => { if (!biegnie) zmienIle(i); });
+      el.appendChild(glowny);
+
+      const usun = document.createElement("button");
+      usun.className = "usun";
+      usun.textContent = "×";
+      usun.setAttribute("aria-label", "Usuń ten klocek");
+      usun.disabled = biegnie;
+      usun.addEventListener("click", () => { if (!biegnie) usunKlocek(i); });
+      el.appendChild(usun);
+
+      programEl.appendChild(el);
+      if (t.typ === "petla") g++;
+    });
+    odswiezPrzyciski();
+  }
+
+  function odswiezPrzyciski(){
+    const n = liczKlocki(), pelny = n >= limit(), g = glebokosc();
+    const ost = program[program.length - 1];
+    strzalki.forEach(b => {
+      const scal = poziom.licznik && ost && ost.typ === "ruch" && ost.kier === b.dataset.kier && ost.ile < 9;
+      b.disabled = biegnie || (pelny && !scal);
+    });
+    dodajPetle.disabled = biegnie || pelny || g >= MAKS_GLEBOKOSC;
+    zamknijPetle.disabled = biegnie || g === 0;
+    uruchomBtn.disabled = biegnie;
+    cofnijBtn.disabled = wyczyscBtn.disabled = biegnie || program.length === 0;
+    programEl.querySelectorAll(".usun, button.klocek-glowny").forEach(b => b.disabled = biegnie);
+    licznikEl.textContent = poziom.limit ? `Klocki: ${n} / ${poziom.limit}` : `Klocki: ${n}`;
+    licznikEl.classList.toggle("pelny", !!poziom.limit && pelny);
+  }
+
+  // Zamienia program na listę pojedynczych kroków; „zrodlo” wskazuje klocek do podświetlenia.
+  function rozwin(){
+    let i = 0;
+    function blok(){
+      const kroki = [];
+      while (i < program.length){
+        const t = program[i];
+        if (t.typ === "koniec"){ i++; return kroki; }
+        if (t.typ === "ruch"){
+          for (let n = 0; n < t.ile; n++) kroki.push({ kier:t.kier, zrodlo:i });
+          i++;
+        } else {
+          i++;
+          const wnetrze = blok();
+          for (let r = 0; r < t.ile && kroki.length <= MAKS_KROKOW; r++) kroki.push(...wnetrze);
+        }
+        if (kroki.length > MAKS_KROKOW) return kroki;
+      }
+      return kroki;
+    }
+    const wszystkie = [];
+    while (i < program.length && wszystkie.length <= MAKS_KROKOW) wszystkie.push(...blok());
+    return wszystkie;
+  }
+
+  function podswietl(i, klasa){
+    programEl.querySelectorAll(".klocek").forEach(k => k.classList.remove("aktywny", "zly"));
+    if (i != null){
+      const k = programEl.querySelector(`.klocek[data-i="${i}"]`);
+      if (k) k.classList.add(klasa || "aktywny");
+    }
+  }
+
+  const czekaj = ms => new Promise(r => setTimeout(r, ms));
+
+  async function uruchom(){
+    if (biegnie) return;
+    if (!program.some(t => t.typ === "ruch")){
+      return ustawKomunikat("Najpierw ułóż program ze strzałek.", "zle");
+    }
+    const kroki = rozwin();
+    if (kroki.length > MAKS_KROKOW){
+      return ustawKomunikat("Ten program jest za długi — Klik by się zmęczył! Zmniejsz liczby.", "zle");
+    }
+    rysujPlansze();
+    const moj = ++przebieg;
+    biegnie = true;
+    odswiezPrzyciski();
+    ustawKomunikat("Klik idzie…");
+
+    let poz = { ...start };
+    const sciezka = [poz], odwiedzone = new Set([klucz(poz)]);
+    let ostKier = "prawo";
+
+    for (const krok of kroki){
+      podswietl(krok.zrodlo);
+      await czekaj(TEMPO);
+      if (moj !== przebieg) return;
+      const k = KIERUNKI[krok.kier];
+      const nast = { x: poz.x + k.dx, y: poz.y + k.dy };
+      ostKier = krok.kier;
+
+      let powod = null;
+      if (nast.x < 0 || nast.y < 0 || nast.x >= W || nast.y >= H) powod = "Ups! Klik wyszedł poza planszę.";
+      else if (pudla.has(klucz(nast))) powod = "Bum! Klik wpadł na pudło.";
+      else if (odwiedzone.has(klucz(nast))) powod = "Nitka nie może się plątać — Klik nie może przejść po swoim śladzie!";
+      if (powod) return koniecBledem(krok.zrodlo, powod + " Sprawdź czerwony klocek.", sciezka, ostKier);
+
+      poz = nast;
+      sciezka.push(poz);
+      odwiedzone.add(klucz(poz));
+      rysujKabel(sciezka, ostKier);
+      tik(420 + sciezka.length * 12);
+
+      if (poz.x === cel.x && poz.y === cel.y) return sukces();
+    }
+    koniecBledem(null, "Klik nie doszedł do miski. Dodaj klocki.", sciezka, ostKier);
+  }
+
+  function koniecBledem(zrodlo, tekst, sciezka, kier){
+    biegnie = false; pokazanyWynik = true;
+    if (sciezka.length > 1) rysujKabel(sciezka, kier);
+    podswietl(zrodlo, "zly");
+    if (zrodlo != null){
+      const w = svg.querySelector("#kotWnetrze");
+      w.classList.remove("wtyczka-trzes"); void w.getBoundingClientRect(); w.classList.add("wtyczka-trzes");
+    }
+    dzwiekBledu();
+    ustawKomunikat(tekst, "zle");
+    odswiezPrzyciski();
+  }
+
+  function sukces(){
+    biegnie = false; pokazanyWynik = true;
+    podswietl(null);
+    nakarmKota();
+    dzwiekSukcesu();
+    zaliczone.add(nr);
+    zapiszPostep();
+    rysujPoziomy();
+    const ostatni = nr === POZIOMY.length - 1;
+    ustawKomunikat(ostatni && zaliczone.size === POZIOMY.length
+      ? "Klik najedzony — cały labirynt ukończony. Brawo!"
+      : "Mniam! Klik dotarł do miski.", "dobrze");
+    dalejBtn.hidden = ostatni;
+    odswiezPrzyciski();
+    odwiedzinyKota();
+    if (!ostatni) dalejBtn.focus({ preventScroll:true });
+  }
+
+  function ustawKomunikat(tekst, rodzaj){
+    komunikat.textContent = tekst;
+    komunikat.className = "komunikat" + (rodzaj ? " " + rodzaj : "");
+  }
+
+  // ---------- Dźwięki ----------
+  let audioCtx = null;
+  function ton(czestotliwosc, chwila, dlugosc, glosnosc, typ){
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = typ || "sine";
+    o.frequency.value = czestotliwosc;
+    g.gain.setValueAtTime(0, chwila);
+    g.gain.linearRampToValueAtTime(glosnosc, chwila + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, chwila + dlugosc);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(chwila); o.stop(chwila + dlugosc + 0.02);
+  }
+  function graj(fn){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      fn(audioCtx.currentTime);
+    } catch(e) { /* przeglądarka bez obsługi dźwięku — gramy dalej po cichu */ }
+  }
+  const tik = f => graj(t => ton(Math.min(f, 1400), t, 0.06, 0.05, "triangle"));
+  const dzwiekBledu = () => graj(t => { ton(220, t, 0.18, 0.08, "square"); ton(165, t + 0.12, 0.25, 0.08, "square"); });
+  const dzwiekSukcesu = () => graj(t => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => ton(f, t + i * 0.09, 0.3, 0.1)));
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const KOMPLEMENTY = [
+    "Mniam, dziękuję!", "Super program!", "Pełny brzuszek!",
+    "Programujesz jak zawodowiec!", "Nitka ani razu się nie splątała!", "Mrrr, pyszne!"
+  ];
+  const kotWedrowiec = document.getElementById("kotWedrowiec");
+  const dymekKota = document.getElementById("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+
+  function odwiedzinyKota(){
+    kotTimeouty.forEach(clearTimeout);
+    kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = KOMPLEMENTY[Math.floor(Math.random() * KOMPLEMENTY.length)];
+      dymekKota.classList.add("widoczna");
+
+      kotTimeouty.push(setTimeout(() => {
+        dymekKota.classList.remove("widoczna");
+        kotTimeouty.push(setTimeout(() => {
+          kotWedrowiec.classList.remove("widoczny");
+        }, 700));
+      }, 4500));
+    };
+
+    if (bezRuchu){
+      naMiejscu();
+    } else {
+      kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+    }
+  }
+
+  // ---------- Sterowanie ----------
+  strzalki.forEach(b => b.addEventListener("click", () => dodajRuch(b.dataset.kier)));
+  uruchomBtn.addEventListener("click", uruchom);
+  cofnijBtn.addEventListener("click", () => { if (!biegnie && program.length){ program.pop(); zmianaProgramu(); } });
+  wyczyscBtn.addEventListener("click", () => { if (!biegnie){ program = []; zmianaProgramu(); } });
+  dalejBtn.addEventListener("click", () => { if (nr < POZIOMY.length - 1) wczytajPoziom(nr + 1); });
+
+  const KLAWISZE = { ArrowUp:"gora", ArrowDown:"dol", ArrowLeft:"lewo", ArrowRight:"prawo" };
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (KLAWISZE[e.key]){ e.preventDefault(); dodajRuch(KLAWISZE[e.key]); }
+    else if (e.key === "Backspace" && !biegnie && program.length){ e.preventDefault(); program.pop(); zmianaProgramu(); }
+    else if (e.key === "Enter" && e.target === document.body){ e.preventDefault(); uruchom(); }
+  });
+
+  // zaczynamy od pierwszego nieukończonego poziomu
+  let startowy = 0;
+  while (startowy < POZIOMY.length - 1 && zaliczone.has(startowy)) startowy++;
+  wczytajPoziom(startowy);
+})();
+</script>
+</body>
+</html>
