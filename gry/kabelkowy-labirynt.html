@@ -223,14 +223,13 @@ button.klocek-glowny{cursor:pointer}
 .komunikat.zle{color:#B42328}
 .komunikat.dobrze{color:#1E8A73}
 
-.powrot{
-  display:inline-block;margin-top:22px;
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
-  color:var(--papier);text-decoration:none;
-  padding:10px 22px;border:2px solid var(--papier);border-radius:999px;
+.link-wstecz{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  font-weight:700;text-decoration:none;color:var(--papier);
+  opacity:.92;
 }
-.powrot:hover{background:var(--papier);color:var(--noc)}
-.powrot:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+.link-wstecz:hover{text-decoration:underline}
+.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
 
 /* ---------- Dla rodziców ---------- */
 .rodzice{background:var(--mieta);padding:40px 0}
@@ -345,7 +344,7 @@ footer a{color:var(--papier)}
       </div>
     </div>
 
-    <a class="powrot" href="../index.html">← Wróć do wszystkich gier</a>
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
   </div>
 </section>
 </div>
