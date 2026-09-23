@@ -14,9 +14,7 @@
 <meta property="og:description" content="Gry edukacyjne dla dzieci w wieku 5–13 lat. Bez reklam, bez logowania, bez zbierania danych. Oprowadza kot Klik.">
 <meta property="og:url" content="https://kotklik.pl/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root{
   --noc:#1B2A4A;
@@ -44,7 +42,15 @@ header::after{
   background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
   background-size:26px 26px;opacity:.16;pointer-events:none;
 }
+.pasek{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
 .marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.link-rodzic{
+  flex-shrink:0;font-weight:700;font-size:.9rem;text-decoration:none;
+  color:var(--papier);border:2px solid rgba(255,247,236,.55);
+  padding:6px 14px;border-radius:999px;
+}
+.link-rodzic:hover{background:var(--papier);color:var(--noc)}
+.link-rodzic:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
 .marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
 .marka h1 span{color:var(--klik)}
 .kot{width:54px;height:54px;flex-shrink:0}
@@ -99,7 +105,15 @@ header::after{
 .gry{padding:56px 0}
 .gry h2{font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:600;margin-bottom:6px}
 .gry > .srodek > p{color:var(--szara);margin-bottom:28px}
-.karty-gier{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.grupa{margin-bottom:36px}
+.grupa:last-child{margin-bottom:0}
+.grupa[hidden]{display:none}
+.grupa h3{
+  font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:600;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:14px;
+}
+.grupa h3 small{font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:600;color:var(--szara)}
+.karty-gier{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
 
 .karta-gry{
   background:#fff;border-radius:20px;padding:22px;
@@ -124,6 +138,8 @@ header::after{
 .karty-gier .karta-gry:nth-child(3){border-bottom-color:var(--slonce)}
 .karty-gier .karta-gry:nth-child(4){border-bottom-color:var(--klik)}
 .karty-gier .karta-gry:nth-child(5){border-bottom-color:var(--mieta)}
+.karty-gier .karta-gry:nth-child(even){border-bottom-color:var(--klik)}
+#gryTygodnia .karta-gry{border-bottom-color:var(--slonce)}
 
 /* ---------- Dla rodziców ---------- */
 .rodzice{background:var(--mieta);padding:44px 0}
@@ -131,6 +147,12 @@ header::after{
 .rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
 .rodzice li{padding-left:30px;position:relative;font-weight:600}
 .rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+.rodzice .wiecej{
+  display:inline-block;margin-top:22px;font-weight:700;text-decoration:none;
+  color:var(--papier);background:var(--noc);padding:10px 20px;border-radius:999px;
+}
+.rodzice .wiecej:hover{background:#2A3F68}
+.rodzice .wiecej:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
 
 footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
 footer a{color:var(--papier)}
@@ -139,7 +161,8 @@ footer a{color:var(--papier)}
 <body>
 
 <header>
-  <a class="srodek marka" href="index.html" aria-label="Strona główna KotKlik">
+  <div class="srodek pasek">
+  <a class="marka" href="index.html" aria-label="Strona główna KotKlik">
     <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
       <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
       <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
@@ -154,6 +177,8 @@ footer a{color:var(--papier)}
     </svg>
     <h1>Kot<span>Klik</span></h1>
   </a>
+  <a class="link-rodzic" href="strefa-rodzica.html">Dla rodziców</a>
+  </div>
 </header>
 
 <section class="hero">
@@ -186,37 +211,59 @@ footer a{color:var(--papier)}
   <div class="srodek">
     <h2>Wybierz grę</h2>
     <p>Nowe gry pojawiają się tu regularnie.</p>
-    <div class="karty-gier">
-      <a class="karta-gry" href="gry/pary-klika.html">
-        <span class="emoji">🃏</span>
-        <strong>Pary Klika</strong>
-        <span>Znajdź wszystkie pary zwierzątek i poćwicz pamięć.</span>
-        <span class="wiek">Od 5 lat</span>
-      </a>
-      <a class="karta-gry" href="gry/literkowa-spizarnia.html">
-        <span class="emoji">🔤</span>
-        <strong>Literkowa spiżarnia</strong>
-        <span>Układanie wyrazów z rozsypanych liter.</span>
-        <span class="wiek">Od 6 lat</span>
-      </a>
-      <a class="karta-gry" href="gry/powtorz-melodie.html">
-        <span class="emoji">🎹</span>
-        <strong>Powtórz melodię</strong>
-        <span>Posłuchaj sekwencji dźwięków i zagraj ją na pianinie.</span>
-        <span class="wiek">Od 6 lat</span>
-      </a>
-      <div class="karta-gry wkrotce">
-        <span class="emoji">🧮</span>
-        <strong>Liczydło na dachu</strong>
-        <span>Dodawanie i mnożenie na czas.</span>
-        <span class="wiek">Wkrótce · od 8 lat</span>
+
+    <div class="grupa">
+      <h3>🎁 Zawsze za darmo</h3>
+      <div class="karty-gier">
+        <a class="karta-gry" href="gry/pary-klika.html">
+          <span class="emoji">🃏</span>
+          <strong>Pary Klika</strong>
+          <span>Znajdź wszystkie pary zwierzątek i poćwicz pamięć.</span>
+          <span class="wiek">Od 5 lat</span>
+        </a>
+        <a class="karta-gry" href="gry/literkowa-spizarnia.html">
+          <span class="emoji">🔤</span>
+          <strong>Literkowa spiżarnia</strong>
+          <span>Układanie wyrazów z rozsypanych liter.</span>
+          <span class="wiek">Od 6 lat</span>
+        </a>
       </div>
-      <a class="karta-gry" href="gry/kabelkowy-labirynt.html">
-        <span class="emoji">🔌</span>
-        <strong>Kabelkowy labirynt</strong>
-        <span>Ułóż program ze strzałek i doprowadź Klika do miski.</span>
-        <span class="wiek">Od 9 lat</span>
-      </a>
+    </div>
+
+    <div class="grupa">
+      <h3>⭐ Gry tygodnia <small id="gryTygodniaData">za darmo przez cały tydzień</small></h3>
+      <div class="karty-gier" id="gryTygodnia">
+        <a class="karta-gry" href="gry/powtorz-melodie.html" data-gra="powtorz-melodie">
+          <span class="emoji">🎹</span>
+          <strong>Powtórz melodię</strong>
+          <span>Posłuchaj sekwencji dźwięków i zagraj ją na pianinie.</span>
+          <span class="wiek">Od 6 lat</span>
+        </a>
+        <a class="karta-gry" href="gry/kabelkowy-labirynt.html" data-gra="kabelkowy-labirynt">
+          <span class="emoji">🔌</span>
+          <strong>Kabelkowy labirynt</strong>
+          <span>Ułóż program ze strzałek i doprowadź Klika do miski.</span>
+          <span class="wiek">Od 9 lat</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Gry z rotacji, które w tym tygodniu nie są grami tygodnia. Na razie bez kłódki. -->
+    <div class="grupa" id="grupaWiecej" hidden>
+      <h3>🎲 Więcej gier</h3>
+      <div class="karty-gier" id="wiecejGier"></div>
+    </div>
+
+    <div class="grupa">
+      <h3>🔜 Wkrótce</h3>
+      <div class="karty-gier">
+        <div class="karta-gry wkrotce">
+          <span class="emoji">🧮</span>
+          <strong>Liczydło na dachu</strong>
+          <span>Dodawanie i mnożenie na czas.</span>
+          <span class="wiek">Wkrótce · od 8 lat</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -230,6 +277,7 @@ footer a{color:var(--papier)}
       <li>Wyniki zostają na tym urządzeniu i nigdzie nie są wysyłane</li>
       <li>Gry działają na tablecie, telefonie i komputerze</li>
     </ul>
+    <a class="wiecej" href="strefa-rodzica.html">Jak działają darmowe gry? Zajrzyj do Strefy rodzica →</a>
   </div>
 </section>
 
@@ -237,9 +285,30 @@ footer a{color:var(--papier)}
   <div class="srodek">
     <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
     <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+    <p><a href="strefa-rodzica.html">Strefa rodzica</a></p>
   </div>
 </footer>
 
+<script src="gry-tygodnia.js"></script>
+<script>
+// Gry tygodnia: przenosimy karty zgodnie z rotacją z gry-tygodnia.js
+(function(){
+  if (!window.KotKlikGry) return;
+  const t = KotKlikGry.gryTygodnia();
+  const tydzien = document.getElementById("gryTygodnia");
+  const wiecej = document.getElementById("wiecejGier");
+  const karty = Array.from(document.querySelectorAll("[data-gra]"));
+
+  karty.forEach(k => { if (!t.gry.includes(k.dataset.gra)) wiecej.appendChild(k); });
+  t.gry.forEach(id => {
+    const k = karty.find(x => x.dataset.gra === id);
+    if (k) tydzien.appendChild(k);
+  });
+  document.getElementById("grupaWiecej").hidden = wiecej.children.length === 0;
+  document.getElementById("gryTygodniaData").textContent =
+    "za darmo do niedzieli " + KotKlikGry.data(t.doKiedy);
+})();
+</script>
 <script>
 (function(){
   const TEKSTY_KOTA = [

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strefa rodzica — zasady KotKlik | KotKlik</title>
+<meta name="description" content="Jak działa KotKlik: które gry są zawsze za darmo, jak działają gry tygodnia, czym będzie subskrypcja i czego nigdy nie robimy. Bez reklam i bez zakupów w grach.">
+<link rel="canonical" href="https://kotklik.pl/strefa-rodzica">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Strefa rodzica — zasady KotKlik">
+<meta property="og:description" content="Które gry są zawsze za darmo, jak działają gry tygodnia i czego nigdy nie robimy.">
+<meta property="og:url" content="https://kotklik.pl/strefa-rodzica">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+a:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.pasek{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+.marka{display:flex;align-items:center;gap:12px;text-decoration:none}
+.marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka h1 span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.oko{animation:none}}
+.link-rodzic{
+  flex-shrink:0;font-weight:700;font-size:.9rem;text-decoration:none;
+  color:var(--papier);border:2px solid rgba(255,247,236,.55);
+  padding:6px 14px;border-radius:999px;
+}
+.link-rodzic:hover{background:var(--papier);color:var(--noc)}
+
+/* ---------- Nagłówek strony ---------- */
+.hero{background:var(--noc);padding:32px 0 48px}
+.hero h2{
+  font-family:'Fredoka',sans-serif;font-weight:600;color:var(--papier);
+  font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.25;margin-bottom:10px;
+}
+.hero p{color:#C9D4E6;font-size:1.05rem;max-width:560px}
+
+/* ---------- Sekcje ---------- */
+.sekcja{padding:48px 0}
+.sekcja + .sekcja{padding-top:0}
+.sekcja h2{font-family:'Fredoka',sans-serif;font-size:1.45rem;font-weight:600;margin-bottom:6px}
+.sekcja .wstep{color:var(--szara);margin-bottom:24px;max-width:640px}
+
+.zasady{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.zasada{
+  background:#fff;border-radius:20px;padding:22px;
+  border-bottom:6px solid var(--mieta);
+  box-shadow:0 4px 0 rgba(0,0,0,.06);
+}
+.zasada.tydzien{border-bottom-color:var(--slonce)}
+.zasada.subskrypcja{border-bottom-color:var(--klik)}
+.zasada .ikona{font-size:2.2rem;display:block;margin-bottom:8px}
+.zasada h3{font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:600;margin-bottom:6px}
+.zasada p{color:#3A475C}
+.zasada p + p{margin-top:8px}
+.zasada .gry{font-weight:700;color:var(--noc)}
+.plakietka{
+  display:inline-block;margin-bottom:10px;font-size:.75rem;font-weight:800;
+  padding:3px 10px;border-radius:999px;background:#FFE7D6;color:#9A4610;
+}
+
+.lista{list-style:none;display:grid;gap:12px;max-width:680px}
+.lista li{padding-left:32px;position:relative;font-weight:600}
+.lista li span{display:block;font-weight:400;color:#3A475C}
+.lista.nigdy li::before{content:"✕";position:absolute;left:4px;color:#C0392B;font-weight:800}
+.lista.tak li::before{content:"✔";position:absolute;left:2px;color:#1E8A73;font-weight:800}
+.lista.plan li::before{content:"🔜";position:absolute;left:0;font-size:.95rem}
+
+.ramka{background:var(--mieta);}
+.ramka .sekcja{padding:44px 0}
+.ramka .wstep{color:#1B3A3A}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="srodek pasek">
+    <a class="marka" href="index.html" aria-label="Strona główna KotKlik">
+      <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+        <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+        <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+        <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+        <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+        <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+        <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+              stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <h1>Kot<span>Klik</span></h1>
+    </a>
+    <a class="link-rodzic" href="index.html">← Do gier</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <h2>Strefa rodzica</h2>
+    <p>Tu wyjaśniamy zasady KotKlik: które gry są za darmo, co będzie płatne i czego nigdy nie zrobimy. Wolimy, żeby wszystko było jasne od pierwszego dnia.</p>
+  </div>
+</section>
+
+<main>
+  <section class="sekcja">
+    <div class="srodek">
+      <h2>Jak działają gry w KotKlik</h2>
+      <p class="wstep">Część gier jest darmowa na stałe, część zmienia się co tydzień, a pełny dostęp da subskrypcja.</p>
+
+      <div class="zasady">
+        <article class="zasada">
+          <span class="ikona" aria-hidden="true">🎁</span>
+          <h3>Zawsze za darmo</h3>
+          <p class="gry" id="zawszeDarmowe">Pary Klika, Literkowa spiżarnia</p>
+          <p>Te gry zostają bezpłatne na stałe. Dziecko zawsze ma w KotKlik coś swojego.</p>
+        </article>
+
+        <article class="zasada tydzien">
+          <span class="ikona" aria-hidden="true">⭐</span>
+          <h3>Gry tygodnia</h3>
+          <p>Co poniedziałek dwie kolejne gry są za darmo przez cały tydzień, do niedzieli włącznie.</p>
+          <p id="gryTygodniaOpis">W tym tygodniu: <span class="gry">Powtórz melodię, Kabelkowy labirynt</span>.</p>
+        </article>
+
+        <article class="zasada subskrypcja">
+          <span class="plakietka">Wkrótce</span>
+          <span class="ikona" aria-hidden="true">🔓</span>
+          <h3>Subskrypcja</h3>
+          <p>Odblokuje wszystkie gry naraz, także te, które nie są akurat grami tygodnia. Wykupić ją będzie mógł tylko rodzic, tutaj w Strefie rodzica.</p>
+          <p>Dopóki subskrypcja nie ruszy, wszystkie obecne gry są dostępne bez opłat.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="srodek">
+      <h2>Czego nigdy nie zrobimy</h2>
+      <p class="wstep">To nasze obietnice wobec rodziców, niezależnie od tego, czy korzystacie z subskrypcji.</p>
+      <ul class="lista nigdy">
+        <li>Reklam<span>Ani banerów, ani filmów, ani okienek — także w darmowych grach.</span></li>
+        <li>Zakupów w grach<span>Żadnych „kup więcej żyć”, monet ani dodatków za pieniądze.</span></li>
+        <li>Namawiania dziecka do zakupu<span>Dziecko nigdy nie zobaczy przycisku „kup”. Płatności będą tylko tutaj, za zabezpieczeniem dla dorosłych.</span></li>
+        <li>Sprzedawania danych<span>Nie przekazujemy żadnych informacji o dziecku ani o rodzinie firmom zewnętrznym.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sekcja">
+    <div class="srodek">
+      <h2>Prywatność dziś</h2>
+      <ul class="lista tak">
+        <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+        <li>Niektóre gry zapamiętują postęp, np. ukończone poziomy — tylko na tym urządzeniu, w przeglądarce</li>
+        <li>Nic nie jest wysyłane na nasz serwer</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<div class="ramka">
+  <section class="sekcja">
+    <div class="srodek">
+      <h2>Nad czym pracujemy</h2>
+      <p class="wstep">Razem z subskrypcją pojawi się w tym miejscu panel rodzica.</p>
+      <ul class="lista plan">
+        <li>Konto rodzica<span>Zakłada je wyłącznie dorosły. Dziecko dalej gra bez konta.</span></li>
+        <li>Czas i historia gry<span>Zobaczysz, w co i jak długo dziecko grało.</span></li>
+        <li>Zarządzanie subskrypcją<span>Do kiedy trwa, jak ją przedłużyć lub zrezygnować w każdej chwili.</span></li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Pytania o zasady? Napisz: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<script src="gry-tygodnia.js"></script>
+<script>
+(function(){
+  if (!window.KotKlikGry) return;
+  const G = KotKlikGry;
+  const t = G.gryTygodnia();
+  document.getElementById("zawszeDarmowe").textContent =
+    G.ZAWSZE_DARMOWE.map(id => G.NAZWY[id]).join(", ");
+  const opis = document.getElementById("gryTygodniaOpis");
+  opis.textContent = "W tym tygodniu (do niedzieli " + G.data(t.doKiedy) + "): ";
+  const gry = document.createElement("span");
+  gry.className = "gry";
+  gry.textContent = t.gry.map(id => G.NAZWY[id]).join(", ") + ".";
+  opis.appendChild(gry);
+})();
+</script>
+</body>
+</html>
