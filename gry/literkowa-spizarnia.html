@@ -78,9 +78,15 @@ header::after{
   background:transparent;color:var(--noc);cursor:pointer;
 }
 .poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
-.poziom:focus-visible,.znowu:focus-visible,.glosnik:focus-visible{
+.poziom:focus-visible,.znowu:focus-visible,.glosnik:focus-visible,.link-wstecz:focus-visible{
   outline:3px solid var(--klik);outline-offset:3px;
 }
+.link-wstecz{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;align-self:flex-start;
+  font-weight:700;text-decoration:none;color:var(--papier);
+  opacity:.92;flex:0 0 auto;
+}
+.link-wstecz:hover{text-decoration:underline}
 
 /* ---------- Plansza słowa ---------- */
 .plansza-liter{
@@ -248,6 +254,8 @@ footer a{color:var(--papier)}
         <button class="znowu" id="losuj">Następne słowo</button>
       </div>
     </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
   </div>
 </section>
 </div>
