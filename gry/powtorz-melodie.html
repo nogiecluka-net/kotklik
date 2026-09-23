@@ -113,21 +113,8 @@ header::after{
   outline:3px solid var(--klik);outline-offset:3px;
 }
 
-/* ---------- Wynik ---------- */
-.informacje{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  align-items:center;margin:6px 0 20px;
-}
-.informacje.informacje-pojedyncza{
-  grid-template-columns:1fr;justify-items:center;
-}
-.pole-info{font-weight:700}
-.pole-info small{display:block;color:var(--szara);font-weight:600;font-size:.82rem}
-.pole-info strong{font-family:'Fredoka',sans-serif;font-size:1.4rem;line-height:1.1}
-.pole-info.srodek-info{text-align:center}
-.pole-info.prawo{text-align:right}
-
-.miski{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+/* ---------- Postęp ---------- */
+.miski{display:flex;gap:10px;justify-content:center;margin:10px 0 16px}
 .miska{
   font-size:1.9rem;filter:grayscale(1);opacity:.35;
   transition:filter .3s,opacity .3s,transform .3s;
@@ -318,7 +305,7 @@ header::after{
 .znowu{background:var(--klik);color:#fff;box-shadow:0 4px 0 #C4621F}
 .znowu:disabled{opacity:.72;cursor:wait}
 
-/* ---------- Koniec / rekord ---------- */
+/* ---------- Koniec gry ---------- */
 .rezultat{
   position:absolute;inset:0;z-index:30;
   background:rgba(238,223,203,.97);
@@ -353,9 +340,6 @@ footer a{color:var(--papier)}
 @media(max-width:680px){
   .gra{padding:18px}
   .gra-gora{align-items:flex-start}
-  .informacje{grid-template-columns:1fr 1fr;}
-  .pole-info.srodek-info{grid-column:1/-1;grid-row:1;text-align:center;order:-1}
-  .pole-info.prawo{text-align:right}
   .pianino{height:220px}
   .pianino.prosty{height:205px}
   .pianino .czarne{height:135px}
@@ -412,13 +396,6 @@ footer a{color:var(--papier)}
 
       <span id="wynik" style="display:none">0</span>
       <strong id="poziom-tekst" style="display:none">3</strong>
-      <div class="informacje informacje-pojedyncza" aria-live="polite">
-        <div class="pole-info">
-          <small>Rekord</small>
-          <strong id="rekord">0</strong>
-        </div>
-      </div>
-
       <div class="miski" id="miski" aria-hidden="true">
         <span class="miska">🥣</span>
         <span class="miska">🥣</span>
@@ -480,7 +457,7 @@ footer a{color:var(--papier)}
     <ul>
       <li>Gra nie potrzebuje konta ani dodatkowych danych dziecka</li>
       <li>Gra korzysta z nagrań prawdziwego fortepianu ładowanych z biblioteki Tone.js</li>
-      <li>Rekord jest zapisywany tylko na tym urządzeniu</li>
+      <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
       <li>Gra działa na komputerze, tablecie i telefonie</li>
     </ul>
   </div>
@@ -502,7 +479,6 @@ footer a{color:var(--papier)}
   const keys = Array.from(piano.querySelectorAll("button[data-dzwiek]"));
   const poziomy = Array.from(document.querySelectorAll(".poziom"));
   const wynikEl = document.getElementById("wynik");
-  const rekordEl = document.getElementById("rekord");
   const poziomTekst = document.getElementById("poziom-tekst");
   const komunikat = document.getElementById("komunikat");
   const startBtn = document.getElementById("start");
@@ -551,15 +527,6 @@ footer a{color:var(--papier)}
   let pianoSampler = null;
   let pianoReady = false;
   let pianoLoading = null;
-
-  function rekordKlucz(){ return "kotklik-melodia-rekord-" + poziom; }
-
-  function odczytajRekord(){
-    try { return Number(localStorage.getItem(rekordKlucz())) || 0; }
-    catch(e){ return 0; }
-  }
-
-  function ustawRekord(){ rekordEl.textContent = odczytajRekord(); }
 
   async function inicjujAudio(){
     if (typeof Tone === "undefined") return false;
@@ -734,7 +701,6 @@ footer a{color:var(--papier)}
     wynikEl.textContent = "0";
     poziomTekst.textContent = poziom;
     pokazKlawisze();
-    ustawRekord();
     aktualizujMiski(0);
     rezultat.classList.remove("show");
     powtorzBtn.disabled = true;
@@ -774,18 +740,10 @@ footer a{color:var(--papier)}
     keys.forEach(k => k.classList.remove("niedostepny"));
     powtorzBtn.disabled = true;
 
-    const rekord = odczytajRekord();
     const wynik = najlepszaUkonczonaSekwencja;
-    if (wynik > rekord){
-      try { localStorage.setItem(rekordKlucz(), String(wynik)); } catch(e){}
-      ustawRekord();
-      rezultatTytul.textContent = "Nowy rekord! 🎉";
-      rezultatIkona.textContent = "🎉";
-    }else{
-      rezultatTytul.textContent = "Koniec gry";
-      rezultatIkona.textContent = "🔁";
-    }
-    rezultatOpis.textContent = "Zapamiętałeś " + wynik + " nut. Spróbuj jeszcze raz i pobij swój rekord!";
+    rezultatTytul.textContent = "Koniec gry";
+    rezultatIkona.textContent = "🔁";
+    rezultatOpis.textContent = "Zapamiętałeś " + wynik + " nut. Spróbuj jeszcze raz!";
     rezultat.classList.add("show");
     komunikat.className = "komunikat blad";
     komunikat.textContent = "Ups! To nie był ten dźwięk.";
@@ -797,11 +755,6 @@ footer a{color:var(--papier)}
     koniecGry = true;
     odtwarzanie = false;
     powtorzBtn.disabled = true;
-    try {
-      const rekord = odczytajRekord();
-      if (100 > rekord) localStorage.setItem(rekordKlucz(), "100");
-    } catch(e){}
-    ustawRekord();
     wynikEl.textContent = "100";
     rezultatTytul.textContent = "Niesamowite! 🏆";
     rezultatIkona.textContent = "🏆";
