@@ -454,7 +454,7 @@ footer a{color:var(--papier)}
     <h2>Dla rodziców i nauczycieli</h2>
     <ul>
       <li>Gra nie potrzebuje konta ani dodatkowych danych dziecka</li>
-      <li>Gra korzysta z nagrań prawdziwego fortepianu ładowanych z biblioteki Tone.js</li>
+      <li>Gra korzysta z nagrań prawdziwego fortepianu (Salamander Grand Piano, Alexander Holm, licencja CC BY 3.0) — wszystko ładuje się z naszego serwera</li>
       <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
       <li>Gra działa na komputerze, tablecie i telefonie</li>
     </ul>
@@ -468,7 +468,7 @@ footer a{color:var(--papier)}
   </div>
 </footer>
 
-<script src="https://unpkg.com/tone@15.1.22/build/Tone.js"></script>
+<script src="biblioteki/tone-15.1.22.js"></script>
 <script>
 (function(){
   "use strict";
@@ -546,7 +546,7 @@ footer a{color:var(--papier)}
               "F#4": "Fs4.mp3",
               A4: "A4.mp3"
             },
-            baseUrl: "https://tonejs.github.io/audio/salamander/",
+            baseUrl: "muzyka/pianino/",
             release: 1.2,
             volume: -4
           }).toDestination();
