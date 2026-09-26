@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liczydło na dachu — dodawanie, odejmowanie, mnożenie i dzielenie | KotKlik</title>
+<meta name="description" content="Dodawanie, odejmowanie, mnożenie i dzielenie razem z kotem Klikiem. Każda dobra odpowiedź zapala gwiazdę nad dachem. Gra matematyczna dla dzieci od 7 lat. Bez reklam, bez logowania.">
+<link rel="canonical" href="https://kotklik.pl/gry/liczydlo-na-dachu">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Liczydło na dachu — dodawanie, odejmowanie, mnożenie i dzielenie | KotKlik">
+<meta property="og:description" content="Dodawanie, odejmowanie, mnożenie i dzielenie razem z kotem Klikiem. Gra matematyczna dla dzieci. Bez reklam, bez logowania.">
+<meta property="og:url" content="https://kotklik.pl/gry/liczydlo-na-dachu">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --noc-jasna:#2A3F68;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+  --blad:#E5484D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+button{font:inherit}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Pasek górny ---------- */
+header{
+  background:var(--noc);
+  padding:14px 0;
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+
+/* ---------- Kot ---------- */
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media(prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 20px;position:relative;z-index:1;flex:1}
+.dymek{
+  background:var(--papier);
+  border-radius:20px;
+  padding:14px 20px;
+  max-width:620px;
+  margin-bottom:14px;
+  position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;
+  -webkit-touch-callout:none;
+}
+.gra{
+  background:var(--papier);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 8px 0 rgba(0,0,0,.2);
+}
+.gra-gora{
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
+/* Działy i poziomy: przyciski w równych kolumnach, jednakowej szerokości i wysokości */
+.dzialy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+.dzial{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;line-height:1.2;
+  padding:8px 10px;border:2px solid var(--noc);border-radius:14px;
+  background:transparent;color:var(--noc);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  text-align:center;text-wrap:balance;
+}
+.dzial span{font-weight:700;font-size:1.25rem;letter-spacing:2px;white-space:nowrap}
+.dzial[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
+.poziomy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+@media(min-width:760px){.poziomy{max-width:420px}}
+.poziom{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:6px 10px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--klik);border-color:var(--klik);color:#fff}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+.gra-srodek{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.gra-srodek{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}}
+
+/* ---------- Dach i niebo ---------- */
+.scena{border-radius:18px;overflow:hidden;background:#22335A;line-height:0}
+.scena svg{display:block;width:100%;height:auto}
+.gwiazda{fill:#3B4C74;transition:fill .3s}
+.gwiazda.zapalona{fill:var(--slonce);filter:drop-shadow(0 0 4px rgba(255,212,71,.9))}
+.gwiazda.zapalona{animation:blysk .5s ease}
+@keyframes blysk{0%{transform:scale(.6)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+.gwiazda{transform-box:fill-box;transform-origin:center}
+.koralik{transition:transform .35s ease}
+.koralik.przesuniety{transform:translateX(-58px)}
+@media(prefers-reduced-motion:reduce){
+  .gwiazda.zapalona{animation:none}
+  .koralik{transition:none}
+}
+
+/* ---------- Panel zadań ---------- */
+.panel{display:flex;flex-direction:column;gap:12px;justify-content:center}
+.pasek-info{display:flex;justify-content:space-between;gap:10px;font-weight:700;color:var(--szara);font-size:.95rem}
+.pasek-info strong{color:var(--noc)}
+.zadanie{
+  font-family:'Fredoka',sans-serif;font-weight:700;
+  font-size:clamp(2.2rem,8vw,3.2rem);line-height:1.1;
+  text-align:center;color:var(--noc);
+  background:#fff;border-radius:18px;padding:18px 10px;
+  box-shadow:inset 0 0 0 2px #F0E6D6;
+}
+
+.odpowiedzi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.odp{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  min-height:64px;border:none;border-radius:16px;cursor:pointer;
+  background:var(--noc);color:#fff;box-shadow:0 5px 0 #0E1830;
+  transition:transform .08s;
+}
+.odp:active{transform:translateY(3px);box-shadow:0 2px 0 #0E1830}
+.odp:disabled{cursor:default}
+.odp.dobra{background:#1E9E80;box-shadow:0 5px 0 #13705A}
+.odp.zla{background:var(--blad);box-shadow:0 5px 0 #A32F33}
+.odp.przygaszona{opacity:.45}
+
+.komunikat{min-height:28px;text-align:center;font-weight:700;color:var(--noc)}
+.komunikat.dobrze{color:#1E8A73}
+.komunikat.zle{color:#B94B26}
+
+.znowu{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.1rem;
+  background:var(--klik);color:#fff;border:none;
+  padding:12px 26px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #C4621F;align-self:center;
+}
+.znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+
+.ekran{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;justify-content:center;min-height:260px}
+.ekran[hidden]{display:none}
+.ekran h3{font-family:'Fredoka',sans-serif;font-size:1.4rem;color:var(--noc)}
+.ekran p{color:#3A475C;max-width:360px}
+.gwiazdki-wynik{font-size:1.8rem;letter-spacing:2px}
+.gra-wlasciwa[hidden]{display:none}
+.gra-wlasciwa{display:flex;flex-direction:column;gap:12px}
+
+.link-wstecz{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  font-weight:700;text-decoration:none;color:var(--papier);
+  opacity:.92;
+}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:700px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;
+  transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-6px) rotate(2deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .kot-wedrowiec{transition:none}
+  .kot-wedrowiec.chodzi .kot-idacy{animation:none}
+}
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);
+  opacity:0;transform:translateY(6px) scale(.85);
+  transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{
+  content:"";position:absolute;bottom:-8px;left:50%;
+  transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:8px solid #fff;
+}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+            stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Wszedłem na dach z moim liczydłem, ale niebo jest zupełnie ciemne!</p>
+      <p>Każda dobra odpowiedź zapala jedną gwiazdę. Liczymy spokojnie, we własnym tempie. Zapalisz wszystkie 10?</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Liczydło na dachu</h2>
+        <div class="dzialy" role="group" aria-label="Wybierz dział">
+          <button class="dzial" data-dzial="pm" aria-pressed="true"><span aria-hidden="true">+ −</span> Dodawanie i odejmowanie</button>
+          <button class="dzial" data-dzial="md" aria-pressed="false"><span aria-hidden="true">× ÷</span> Mnożenie i dzielenie</button>
+        </div>
+      </div>
+      <div class="poziomy" role="group" aria-label="Wybierz poziom trudności">
+        <button class="poziom" data-poziom="0" aria-pressed="true">Łatwy</button>
+        <button class="poziom" data-poziom="1" aria-pressed="false">Średni</button>
+        <button class="poziom" data-poziom="2" aria-pressed="false">Trudny</button>
+      </div>
+
+      <div class="gra-srodek">
+        <div class="scena">
+          <svg viewBox="0 0 360 230" role="img" aria-label="Nocne niebo nad dachem, kot Klik z liczydłem" id="scena">
+            <defs>
+              <linearGradient id="niebo" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#16223F"/>
+                <stop offset="1" stop-color="#2C4270"/>
+              </linearGradient>
+            </defs>
+            <rect width="360" height="230" fill="url(#niebo)"/>
+            <circle cx="318" cy="36" r="17" fill="#FFF3C4"/>
+            <circle cx="326" cy="30" r="15" fill="#1C2A4D"/>
+            <g id="gwiazdy"></g>
+            <!-- komin z dymem -->
+            <rect x="262" y="118" width="26" height="46" fill="#B4553A"/>
+            <rect x="258" y="112" width="34" height="9" rx="2" fill="#8E3F2B"/>
+            <circle cx="275" cy="100" r="7" fill="#C9D4E6" opacity=".35"/>
+            <circle cx="284" cy="86" r="9" fill="#C9D4E6" opacity=".22"/>
+            <!-- dach -->
+            <path d="M0 230 L0 172 L360 150 L360 230 Z" fill="#8E3F2B"/>
+            <path d="M0 172 L360 150" stroke="#6E2F1F" stroke-width="6"/>
+            <g stroke="#7A3524" stroke-width="2" opacity=".7">
+              <path d="M0 192 L360 172"/><path d="M0 212 L360 194"/>
+              <path d="M40 170 L40 230"/><path d="M100 166 L100 230"/><path d="M160 162 L160 230"/>
+              <path d="M220 158 L220 230"/><path d="M280 155 L280 230"/><path d="M340 151 L340 230"/>
+            </g>
+            <!-- Klik -->
+            <g transform="translate(40 104)">
+              <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+              <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+              <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+              <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+              <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+              <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+              <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+              <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+              <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+            </g>
+            <!-- liczydło: górny pręt liczy dobre odpowiedzi -->
+            <g transform="translate(118 108)">
+              <rect x="0" y="0" width="128" height="58" rx="6" fill="none" stroke="#C98A4B" stroke-width="6"/>
+              <path d="M6 16 H122 M6 30 H122 M6 44 H122" stroke="#E8D5B5" stroke-width="2"/>
+              <g id="koraliki"></g>
+              <g fill="#3ECFB2">
+                <circle cx="18" cy="30" r="5"/><circle cx="29" cy="30" r="5"/><circle cx="40" cy="30" r="5"/>
+              </g>
+              <g fill="#FF8A3D">
+                <circle cx="18" cy="44" r="5"/><circle cx="29" cy="44" r="5"/>
+              </g>
+              <rect x="6" y="58" width="6" height="14" fill="#C98A4B"/>
+              <rect x="116" y="58" width="6" height="14" fill="#C98A4B"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="panel">
+          <div class="ekran" id="ekranStart">
+            <h3 id="startTytul">Dodawanie do 20</h3>
+            <p id="startOpis">10 zadań. Wybierz dobrą odpowiedź — liczysz we własnym tempie.</p>
+            <button class="znowu" id="start">Zaczynamy!</button>
+          </div>
+
+          <div class="gra-wlasciwa" id="graWlasciwa" hidden>
+            <div class="pasek-info">
+              <span>Zadanie <strong id="numer">1</strong> z 10</span>
+              <span>Gwiazdy: <strong id="trafione">0</strong></span>
+            </div>
+            <div class="zadanie" id="zadanie" aria-live="polite">7 + 5 = ?</div>
+            <div class="odpowiedzi" id="odpowiedzi"></div>
+            <p class="komunikat" id="komunikat" role="status"></p>
+          </div>
+
+          <div class="ekran" id="ekranKoniec" hidden>
+            <div class="gwiazdki-wynik" id="wynikGwiazdki" aria-hidden="true"></div>
+            <h3 id="wynikTytul"></h3>
+            <p id="wynikOpis"></p>
+            <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra ćwiczy dodawanie i odejmowanie w zakresie 20, 50 i 100 oraz mnożenie i dzielenie do 100 (tabliczka mnożenia do 10 × 10)</li>
+      <li>Nie ma limitu czasu — dziecko liczy we własnym tempie, a po błędzie gra od razu pokazuje poprawny wynik</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+      <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
+      <li>Działa na tablecie, telefonie i komputerze — na komputerze odpowiedzi można wybierać klawiszami 1–4</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+          stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+  const ZADAN = 10;
+
+  function los(od, doo){ return od + Math.floor(Math.random() * (doo - od + 1)); }
+
+  // Generatory zadań. Wyniki odejmowania i dzielenia są zawsze dodatnimi liczbami całkowitymi.
+  function dodaj(maks, odA){ const a = los(odA, maks - 5), b = los(3, maks - a); return { a, b, znak: "+", wynik: a + b }; }
+  function odejmij(maks, odA){ const a = los(odA, maks), b = los(2, a - 2); return { a, b, znak: "−", wynik: a - b }; }
+  function pomnoz(){ const a = los(2, 10), b = los(2, 10); return { a, b, znak: "×", wynik: a * b }; }
+  function podziel(){ const b = los(2, 10), w = los(2, 10); return { a: b * w, b, znak: "÷", wynik: w }; }
+  function jedno(){ return arguments[Math.floor(Math.random() * arguments.length)](); }
+
+  // Dwa działy, w każdym trzy poziomy: Łatwy, Średni, Trudny
+  const DZIALY = {
+    pm: [
+      { nazwa: "Dodawanie i odejmowanie do 20",  maks: 20,  nowe(){ return jedno(() => dodaj(20, 3), () => odejmij(20, 6)); } },
+      { nazwa: "Dodawanie i odejmowanie do 50",  maks: 50,  nowe(){ return jedno(() => dodaj(50, 5), () => odejmij(50, 12)); } },
+      { nazwa: "Dodawanie i odejmowanie do 100", maks: 100, nowe(){ return jedno(() => dodaj(100, 11), () => odejmij(100, 20)); } }
+    ],
+    md: [
+      { nazwa: "Mnożenie do 100",             maks: 100, nowe: pomnoz },
+      { nazwa: "Dzielenie do 100",            maks: 100, nowe: podziel },
+      { nazwa: "Mnożenie i dzielenie do 100", maks: 100, nowe(){ return jedno(pomnoz, podziel); } }
+    ]
+  };
+
+  const $ = id => document.getElementById(id);
+  const ekranStart = $("ekranStart"), graWlasciwa = $("graWlasciwa"), ekranKoniec = $("ekranKoniec");
+  const zadanieEl = $("zadanie"), odpowiedziEl = $("odpowiedzi"), komunikat = $("komunikat");
+  const numerEl = $("numer"), trafioneEl = $("trafione");
+  const poziomyBtn = document.querySelectorAll(".poziom");
+  const dzialyBtn = document.querySelectorAll(".dzial");
+  const aktualny = () => DZIALY[dzial][poziom];
+
+  let dzial = "pm", poziom = 0, nr = 0, trafione = 0, biezace = null, blokada = true;
+  let ostatnie = [], czekaNaNastepne = null;
+
+  // ---------- Gwiazdy na niebie i koraliki na liczydle ----------
+  const MIEJSCA_GWIAZD = [[30,30],[72,54],[110,22],[150,50],[190,26],[228,58],[262,24],[250,86],[200,94],[140,84]];
+  function rysujScene(){
+    const ns = "http://www.w3.org/2000/svg";
+    const g = $("gwiazdy");
+    g.innerHTML = "";
+    MIEJSCA_GWIAZD.forEach(([x, y]) => {
+      const s = document.createElementNS(ns, "path");
+      s.setAttribute("class", "gwiazda");
+      s.setAttribute("d", gwiazdka(x, y, 9, 4));
+      g.appendChild(s);
+    });
+    const k = $("koraliki");
+    k.innerHTML = "";
+    for (let i = 0; i < ZADAN; i++){
+      const c = document.createElementNS(ns, "circle");
+      c.setAttribute("class", "koralik");
+      c.setAttribute("cx", 68 + i * 5.6);
+      c.setAttribute("cy", 16);
+      c.setAttribute("r", 3.2);
+      c.setAttribute("fill", "#FFD447");
+      k.appendChild(c);
+    }
+  }
+  function gwiazdka(cx, cy, R, r){
+    let d = "";
+    for (let i = 0; i < 10; i++){
+      const kat = Math.PI / 5 * i - Math.PI / 2, pr = i % 2 ? r : R;
+      d += (i ? "L" : "M") + (cx + pr * Math.cos(kat)).toFixed(1) + " " + (cy + pr * Math.sin(kat)).toFixed(1);
+    }
+    return d + "Z";
+  }
+  function zapalGwiazde(i){
+    const s = document.querySelectorAll(".gwiazda")[i];
+    if (s) s.classList.add("zapalona");
+    // koraliki przesuwamy od prawej, jak na prawdziwym liczydle
+    const k = document.querySelectorAll(".koralik");
+    const kor = k[k.length - 1 - (i)];
+    if (kor) kor.classList.add("przesuniety");
+  }
+
+  // ---------- Odpowiedzi do wyboru: bliskie wynikowi, żeby trzeba było policzyć ----------
+  function propozycje(z, maks){
+    const w = z.wynik;
+    const kandydaci = z.znak === "×"
+      ? [z.a * (z.b + 1), z.a * (z.b - 1), (z.a + 1) * z.b, (z.a - 1) * z.b, w + 1, w - 1, w + 2, w - 2]
+      : [w + 1, w - 1, w + 2, w - 2, w + 10, w - 10, w + 3];
+    // błędne odpowiedzi też mieszczą się w zakresie trybu, żeby nie dało się ich odrzucić bez liczenia
+    const pasuje = c => c > 0 && c <= maks && c !== w;
+    const zestaw = new Set([w]);
+    tasuj(kandydaci).forEach(c => { if (zestaw.size < 4 && pasuje(c)) zestaw.add(c); });
+    for (let d = 3; zestaw.size < 4; d++){
+      if (pasuje(w - d)) zestaw.add(w - d);
+      if (zestaw.size < 4 && pasuje(w + d)) zestaw.add(w + d);
+    }
+    return tasuj([...zestaw]);
+  }
+  function tasuj(t){
+    for (let i = t.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [t[i], t[j]] = [t[j], t[i]];
+    }
+    return t;
+  }
+
+  // ---------- Przebieg gry ----------
+  function pokazStart(){
+    clearTimeout(czekaNaNastepne);
+    blokada = true;
+    const p = aktualny();
+    $("startTytul").textContent = p.nazwa;
+    $("startOpis").textContent = ZADAN + " zadań. Wybierz dobrą odpowiedź — liczysz we własnym tempie.";
+    ekranStart.hidden = false;
+    graWlasciwa.hidden = true;
+    ekranKoniec.hidden = true;
+    rysujScene();
+  }
+
+  function start(){
+    clearTimeout(czekaNaNastepne);
+    nr = 0; trafione = 0; ostatnie = [];
+    trafioneEl.textContent = "0";
+    rysujScene();
+    ekranStart.hidden = true;
+    ekranKoniec.hidden = true;
+    graWlasciwa.hidden = false;
+    nastepne();
+  }
+
+  function nastepne(){
+    if (nr >= ZADAN){ koniec(); return; }
+    // unikamy powtórki tego samego zadania w jednej rundzie
+    let z, klucz, proby = 0;
+    do { z = aktualny().nowe(); klucz = z.a + z.znak + z.b; proby++; }
+    while (ostatnie.includes(klucz) && proby < 20);
+    ostatnie.push(klucz);
+    biezace = z;
+
+    numerEl.textContent = nr + 1;
+    zadanieEl.textContent = z.a + " " + z.znak + " " + z.b + " = ?";
+    komunikat.textContent = "";
+    komunikat.className = "komunikat";
+    odpowiedziEl.innerHTML = "";
+    propozycje(z, aktualny().maks).forEach((w, i) => {
+      const b = document.createElement("button");
+      b.className = "odp";
+      b.textContent = w;
+      b.dataset.wartosc = w;
+      b.setAttribute("aria-label", "Odpowiedź " + (i + 1) + ": " + w);
+      b.addEventListener("click", () => odpowiedz(b));
+      odpowiedziEl.appendChild(b);
+    });
+    blokada = false;
+  }
+
+  function oznaczPoprawna(){
+    odpowiedziEl.querySelectorAll(".odp").forEach(b => {
+      b.disabled = true;
+      if (Number(b.dataset.wartosc) === biezace.wynik) b.classList.add("dobra");
+      else if (!b.classList.contains("zla")) b.classList.add("przygaszona");
+    });
+  }
+
+  function odpowiedz(btn){
+    if (blokada) return;
+    blokada = true;
+    const dobrze = Number(btn.dataset.wartosc) === biezace.wynik;
+    const pelne = biezace.a + " " + biezace.znak + " " + biezace.b + " = " + biezace.wynik;
+    if (dobrze){
+      zapalGwiazde(trafione);
+      trafione++;
+      trafioneEl.textContent = trafione;
+      zadanieEl.textContent = pelne;
+      komunikat.textContent = losowy(["Brawo!", "Świetnie!", "Tak jest!", "Super liczenie!"]);
+      komunikat.className = "komunikat dobrze";
+      dzwiek(true);
+    } else {
+      btn.classList.add("zla");
+      zadanieEl.textContent = pelne;
+      komunikat.textContent = "Prawie! " + pelne;
+      komunikat.className = "komunikat zle";
+      dzwiek(false);
+    }
+    oznaczPoprawna();
+    nr++;
+    czekaNaNastepne = setTimeout(nastepne, dobrze ? 900 : 1900);
+  }
+
+  function koniec(){
+    graWlasciwa.hidden = true;
+    ekranKoniec.hidden = false;
+    $("wynikGwiazdki").textContent = "★".repeat(trafione) + "☆".repeat(ZADAN - trafione);
+    $("wynikTytul").textContent = "Zapaliłeś " + trafione + " z " + ZADAN + " gwiazd!";
+    $("wynikOpis").textContent =
+      trafione === ZADAN ? "Całe niebo świeci! Jesteś mistrzem liczenia." :
+      trafione >= 7 ? "Pięknie! Jeszcze kilka gwiazd i całe niebo będzie jasne." :
+      trafione >= 4 ? "Dobra robota! Spróbuj jeszcze raz — z każdą rundą liczy się szybciej." :
+      "Każdy mistrz kiedyś zaczynał. Zagraj jeszcze raz, a gwiazd będzie więcej!";
+    if (trafione >= 7) odwiedzinyKota();
+  }
+
+  // ---------- Dźwięki ----------
+  let audioCtx = null;
+  function dzwiek(dobrze){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const start = audioCtx.currentTime;
+      const tony = dobrze ? [523.25, 659.25, 783.99] : [220, 196];
+      tony.forEach((f, i) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = dobrze ? "sine" : "triangle";
+        o.frequency.value = f;
+        const t = start + i * (dobrze ? 0.08 : 0.14);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(dobrze ? 0.12 : 0.08, t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t);
+        o.stop(t + 0.25);
+      });
+    } catch(e) { /* przeglądarka bez obsługi dźwięku — gramy dalej po cichu */ }
+  }
+
+  function losowy(t){ return t[Math.floor(Math.random() * t.length)]; }
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const KOMPLEMENTY = ["Ale liczysz!", "Niebo świeci!", "Mistrz liczydła!", "Brawo, gwiazdo!", "Szybciej niż kot!"];
+  const kotWedrowiec = $("kotWedrowiec");
+  const dymekKota = $("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+
+  function odwiedzinyKota(){
+    kotTimeouty.forEach(clearTimeout);
+    kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = losowy(KOMPLEMENTY);
+      dymekKota.classList.add("widoczna");
+      kotTimeouty.push(setTimeout(() => {
+        dymekKota.classList.remove("widoczna");
+        kotTimeouty.push(setTimeout(() => kotWedrowiec.classList.remove("widoczny"), 700));
+      }, 4500));
+    };
+    if (bezRuchu) naMiejscu();
+    else kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+  }
+
+  // ---------- Sterowanie ----------
+  function zaznacz(przyciski, wybrany){
+    przyciski.forEach(x => x.setAttribute("aria-pressed", String(x === wybrany)));
+  }
+  dzialyBtn.forEach(d => d.addEventListener("click", () => {
+    zaznacz(dzialyBtn, d);
+    dzial = d.dataset.dzial;
+    pokazStart();
+  }));
+  poziomyBtn.forEach(p => p.addEventListener("click", () => {
+    zaznacz(poziomyBtn, p);
+    poziom = Number(p.dataset.poziom);
+    pokazStart();
+  }));
+  $("start").addEventListener("click", start);
+  $("znowu").addEventListener("click", start);
+
+  document.addEventListener("keydown", e => {
+    if (graWlasciwa.hidden || blokada) return;
+    const i = ["1","2","3","4"].indexOf(e.key);
+    if (i >= 0){
+      const b = odpowiedziEl.querySelectorAll(".odp")[i];
+      if (b){ e.preventDefault(); odpowiedz(b); }
+    }
+  });
+
+  pokazStart();
+})();
+</script>
+</body>
+</html>
