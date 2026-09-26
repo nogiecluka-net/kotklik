@@ -74,7 +74,11 @@ header::after{
 .hero-kot{
   width:100%;border:none;background:transparent;padding:0;cursor:pointer;
   transition:transform .15s ease;
+  border-radius:50%;
+  -webkit-tap-highlight-color:transparent; /* bez szarego kwadratu po dotknięciu na telefonie */
 }
+.hero-kot:focus{outline:none}
+.hero-kot:focus-visible{outline:3px solid var(--klik);outline-offset:4px}
 .hero-kot svg{width:100%;height:auto;display:block}
 .hero-kot:hover{transform:scale(1.04)}
 .hero-kot:active{transform:scale(.96)}
