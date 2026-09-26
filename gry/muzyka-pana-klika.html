@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muzyka Pana Klika — słuchowa gra pamięciowa | KotKlik</title>
+<meta name="description" content="Posłuchaj fragmentów słynnych utworów muzyki klasycznej i znajdź pary razem z kotem Klikiem. Gra ćwiczy pamięć słuchową. Bez reklam, bez logowania.">
+<link rel="canonical" href="https://kotklik.pl/gry/muzyka-pana-klika">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Muzyka Pana Klika — słuchowa gra pamięciowa | KotKlik">
+<meta property="og:description" content="Posłuchaj fragmentów słynnych utworów muzyki klasycznej i znajdź pary razem z kotem Klikiem. Bez reklam, bez logowania.">
+<meta property="og:url" content="https://kotklik.pl/gry/muzyka-pana-klika">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --noc-jasna:#2A3F68;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Ekran startowy: mieści się w jednym widoku, bez przewijania ---------- */
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Pasek górny ---------- */
+header{
+  background:var(--noc);
+  padding:14px 0;
+  position:relative;
+  overflow:hidden;
+  flex:0 0 auto;
+}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+
+/* ---------- Kot ---------- */
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 24px;position:relative;z-index:1;flex:1;min-height:0;display:flex;flex-direction:column}
+.hero > .srodek{flex:1;min-height:0;display:flex;flex-direction:column}
+.dymek{
+  background:var(--papier);
+  border-radius:20px;
+  padding:14px 20px;
+  max-width:560px;
+  margin-bottom:14px;
+  position:relative;
+  box-shadow:0 6px 0 rgba(0,0,0,.18);
+  flex:0 0 auto;
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+.dymek .wskazowka{font-size:.9rem;color:#B45A1C;font-weight:700}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;
+  -webkit-touch-callout:none;
+}
+.gra{
+  background:var(--papier);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 8px 0 rgba(0,0,0,.2);
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+}
+.gra-gora{
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+  flex:0 0 auto;
+}
+.gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:flex;gap:8px;flex-wrap:wrap}
+.poziom{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:8px 16px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
+.poziom:focus-visible,.znowu:focus-visible,.karta:focus-visible,.link-wstecz:focus-visible{
+  outline:3px solid var(--klik);outline-offset:3px;
+}
+
+.plansza{
+  display:grid;gap:8px;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:minmax(84px,1fr);
+  flex:1;min-height:0;
+}
+.plansza.duza{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(min-width:620px){.plansza.duza{grid-template-columns:repeat(6,minmax(0,1fr))}}
+
+.karta{
+  position:relative;min-width:0;min-height:0;width:100%;height:100%;
+  border:none;border-radius:14px;padding:6px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:clamp(1.5rem,6vw,2.4rem);
+  background:var(--noc);
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.25);
+  transition:transform .12s ease;
+}
+.karta:active{transform:scale(.94)}
+.karta .logo{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.karta svg{width:52%;height:52%;max-height:64px;opacity:.55}
+.karta .nuta,.karta .symbol,.karta .podpis{display:none}
+.karta .podpis{
+  font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.15;
+  font-size:clamp(.62rem,1.9vw,.85rem);color:var(--noc);text-align:center;
+}
+.karta[data-stan="odkryta"],
+.karta[data-stan="zdobyta"]{
+  background:#fff;border:3px solid var(--mieta);box-shadow:none;
+}
+.karta[data-stan="zdobyta"]{background:#E6FBF5;border-color:var(--slonce)}
+.karta[data-stan="odkryta"] .logo,
+.karta[data-stan="zdobyta"] .logo{display:none}
+/* Odkryta karta nie zdradza utworu — rozpoznaje się go tylko słuchem */
+.karta[data-stan="odkryta"] .nuta{display:block}
+.karta[data-stan="zdobyta"] .symbol,
+.karta[data-stan="zdobyta"] .podpis{display:block}
+
+.karta.gra-teraz{border-color:var(--klik)}
+.karta.gra-teraz .nuta{animation:podskok .6s ease-in-out infinite}
+@keyframes podskok{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.karta.gra-teraz .nuta{animation:none}}
+
+.wynik{
+  margin-top:12px;display:flex;flex-wrap:wrap;gap:12px 16px;
+  align-items:center;justify-content:space-between;
+  font-weight:700;
+  flex:0 0 auto;
+}
+.licznik{color:var(--szara);font-weight:600}
+.znowu{
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  background:var(--klik);color:#fff;border:none;
+  padding:10px 22px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #C4621F;
+}
+.znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+.brawo{color:var(--noc);flex:1 1 220px;text-align:center}
+
+.link-wstecz{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;align-self:flex-start;
+  font-weight:700;text-decoration:none;color:var(--papier);
+  opacity:.92;flex:0 0 auto;
+}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;
+  transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-6px) rotate(2deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .kot-wedrowiec{transition:none}
+  .kot-wedrowiec.chodzi .kot-idacy{animation:none}
+}
+
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);
+  opacity:0;transform:translateY(6px) scale(.85);
+  transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{
+  content:"";position:absolute;bottom:-8px;left:50%;
+  transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:8px solid #fff;
+}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+            stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Cześć! Mam dla Ciebie muzyczną zagadkę.</p>
+      <p>Pod kartami ukryłem fragmenty słynnych utworów — zawsze po dwa takie same. Karty nie mają obrazków, więc pary znajdziesz tylko uchem!</p>
+      <p class="wskazowka">🎧 Włącz dźwięk i kliknij kartę, żeby posłuchać.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Muzyka Pana Klika</h2>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom">
+          <button class="poziom" data-par="4" aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-par="6" aria-pressed="false">Średni</button>
+          <button class="poziom" data-par="9" aria-pressed="false">Trudny</button>
+        </div>
+      </div>
+
+      <div class="plansza" id="plansza"></div>
+
+      <div class="wynik">
+        <span class="licznik" id="licznik">Ruchy: 0</span>
+        <span class="brawo" id="brawo" role="status"></span>
+        <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
+      <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
+      <li>Ćwiczy pamięć słuchową i oswaja ze słynnymi utworami muzyki klasycznej</li>
+      <li>Nagrania pochodzą z serwisu Musopen.org</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci 5–13 lat.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
+          stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+  // Fragmenty (15 s) leżą w gry/muzyka/. Tytuł i kompozytor pokazują się dopiero po znalezieniu pary.
+  const UTWORY = [
+    { id:"carmen",       tytul:"Carmen",                 kompozytor:"Georges Bizet",        ikona:"🌹", plik:"muzyka/carmen.mp3" },
+    { id:"elizy",        tytul:"Dla Elizy",              kompozytor:"Ludwig van Beethoven", ikona:"🎹", plik:"muzyka/dla-elizy.mp3" },
+    { id:"turecki",      tytul:"Marsz turecki",          kompozytor:"Wolfgang Amadeus Mozart", ikona:"🥁", plik:"muzyka/marsz-turecki.mp3" },
+    { id:"symfonia",     tytul:"V Symfonia",             kompozytor:"Ludwig van Beethoven", ikona:"🎼", plik:"muzyka/v-symfonia.mp3" },
+    { id:"grota",        tytul:"W grocie Króla Gór",     kompozytor:"Edvard Grieg",         ikona:"⛰️", plik:"muzyka/w-grocie-krola-gor.mp3" },
+    { id:"figaro",       tytul:"Cyrulik sewilski",       kompozytor:"Gioachino Rossini",    ikona:"💈", plik:"muzyka/largo-al-factotum.mp3" },
+    { id:"kankan",       tytul:"Kankan",                 kompozytor:"Jacques Offenbach",    ikona:"💃", plik:"muzyka/kankan.mp3" },
+    { id:"karnawal",     tytul:"Karnawał zwierząt",      kompozytor:"Camille Saint-Saëns",  ikona:"🦁", plik:"muzyka/karnawal-zwierzat-final.mp3" },
+    { id:"wegierski",    tytul:"Taniec węgierski nr 5",  kompozytor:"Johannes Brahms",      ikona:"🎻", plik:"muzyka/taniec-wegierski-5.mp3" },
+    { id:"trzmiel",      tytul:"Lot trzmiela",           kompozytor:"Nikołaj Rimski-Korsakow", ikona:"🐝", plik:"muzyka/lot-trzmiela.mp3" },
+    { id:"labedzie",     tytul:"Jezioro łabędzie",       kompozytor:"Piotr Czajkowski",     ikona:"🦢", plik:"muzyka/jezioro-labedzie.mp3" },
+    { id:"wiosna",       tytul:"Wiosna",                 kompozytor:"Antonio Vivaldi",      ikona:"🌸", plik:"muzyka/wiosna-vivaldi.mp3" },
+    { id:"walc",         tytul:"Walc wiedeński",         kompozytor:"Johann Strauss (ojciec)", ikona:"🎩", plik:"muzyka/walc-strauss.mp3" },
+    { id:"poranek",      tytul:"Poranek",                kompozytor:"Edvard Grieg",         ikona:"🌅", plik:"muzyka/poranek-grieg.mp3" }
+  ];
+  const CZAS_ODSLUCHU = 10000;   // ile ms gra fragment po odkryciu karty
+  const CZAS_WYCISZANIA = 2000;  // jak długo trwa łagodne wyciszenie na końcu
+  const GLOSNOSC = 0.85;
+
+  const plansza = document.getElementById("plansza");
+  const licznik = document.getElementById("licznik");
+  const brawo   = document.getElementById("brawo");
+  const znowu   = document.getElementById("znowu");
+  const poziomy = document.querySelectorAll(".poziom");
+
+  const LOGO_KARTY = `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FFF7EC"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FFF7EC"/>
+      <circle cx="32" cy="36" r="21" fill="#FFF7EC"/>
+    </svg>`;
+
+  let liczbaPar = 4, odkryte = [], ruchy = 0, znalezione = 0, blokada = false;
+
+  function tasuj(t){
+    for(let i=t.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [t[i],t[j]] = [t[j],t[i]];
+    }
+    return t;
+  }
+
+  // ---------- Odtwarzanie fragmentów ----------
+  const nagrania = {};
+  let grajace = null, grajacaKarta = null, limitOdsluchu = null, wyciszanie = null;
+
+  function nagranie(plik){
+    if (!nagrania[plik]){
+      const a = new Audio(plik);
+      a.preload = "auto";
+      nagrania[plik] = a;
+    }
+    return nagrania[plik];
+  }
+
+  function zatrzymaj(){
+    clearTimeout(limitOdsluchu);
+    clearInterval(wyciszanie);
+    if (grajace){ grajace.pause(); grajace.volume = GLOSNOSC; }
+    if (grajacaKarta) grajacaKarta.classList.remove("gra-teraz");
+    grajace = grajacaKarta = null;
+  }
+
+  // Łagodne wyciszenie zamiast urwania dźwięku w pół taktu
+  function wycisz(){
+    if (!grajace) return;
+    clearTimeout(limitOdsluchu);
+    clearInterval(wyciszanie);
+    const a = grajace;
+    const krok = GLOSNOSC * 60 / CZAS_WYCISZANIA;
+    wyciszanie = setInterval(() => {
+      const v = a.volume - krok;
+      if (v <= 0 || a !== grajace){ zatrzymaj(); return; }
+      a.volume = v;
+    }, 60);
+  }
+
+  function zagraj(karta){
+    zatrzymaj();
+    try {
+      const a = nagranie(karta.dataset.plik);
+      a.volume = GLOSNOSC;
+      a.currentTime = 0;
+      a.play().catch(() => {});
+      grajace = a;
+      grajacaKarta = karta;
+      karta.classList.add("gra-teraz");
+      a.onended = () => { if (grajace === a) zatrzymaj(); };
+      limitOdsluchu = setTimeout(wycisz, CZAS_ODSLUCHU);
+    } catch(e){ /* przeglądarka bez obsługi dźwięku */ }
+  }
+
+  // ---------- Gra ----------
+  function nowaGra(){
+    zatrzymaj();
+    odkryte = []; ruchy = 0; znalezione = 0; blokada = false;
+    licznik.textContent = "Ruchy: 0";
+    brawo.textContent = "";
+    plansza.classList.toggle("duza", liczbaPar === 9);
+    plansza.innerHTML = "";
+
+    const wybrane = tasuj([...UTWORY]).slice(0, liczbaPar);
+    wybrane.forEach(u => nagranie(u.plik));   // wczytujemy z wyprzedzeniem, żeby nie było ciszy po kliknięciu
+
+    tasuj(wybrane.flatMap(u => [u, u])).forEach((u, i) => {
+      const karta = document.createElement("button");
+      karta.className = "karta";
+      karta.dataset.id = u.id;
+      karta.dataset.plik = u.plik;
+      karta.dataset.tytul = u.tytul;
+      karta.dataset.kompozytor = u.kompozytor;
+      karta.dataset.stan = "zakryta";
+      karta.setAttribute("aria-label", "Zakryta karta numer " + (i + 1));
+      karta.innerHTML =
+        '<span class="logo">' + LOGO_KARTY + '</span>' +
+        '<span class="nuta" aria-hidden="true">🎵</span>' +
+        '<span class="symbol" aria-hidden="true">' + u.ikona + '</span>' +
+        '<span class="podpis">' + u.tytul + '</span>';
+      karta.addEventListener("click", () => kliknij(karta));
+      plansza.appendChild(karta);
+    });
+  }
+
+  function kliknij(karta){
+    // Znalezioną parę można kliknąć, żeby posłuchać jej jeszcze raz
+    if (karta.dataset.stan === "zdobyta"){ zagraj(karta); return; }
+    if (blokada || karta.dataset.stan !== "zakryta") return;
+
+    karta.dataset.stan = "odkryta";
+    karta.setAttribute("aria-label", "Odkryta karta — słuchaj");
+    zagraj(karta);
+    odkryte.push(karta);
+    if (odkryte.length < 2) return;
+
+    ruchy++;
+    licznik.textContent = "Ruchy: " + ruchy;
+    const [a, b] = odkryte;
+
+    if (a.dataset.id === b.dataset.id){
+      a.dataset.stan = b.dataset.stan = "zdobyta";
+      [a, b].forEach(k => k.setAttribute("aria-label", k.dataset.tytul + " — " + k.dataset.kompozytor));
+      odkryte = [];
+      znalezione++;
+      setTimeout(zagrajDzwiekPary, 150);
+      if (znalezione === liczbaPar){
+        koniec();
+      } else {
+        brawo.textContent = "Para! " + a.dataset.tytul + " — " + a.dataset.kompozytor;
+      }
+    } else {
+      // Dajemy chwilę na posłuchanie drugiej karty, zanim obie się zakryją
+      blokada = true;
+      setTimeout(() => {
+        [a, b].forEach(k => {
+          k.dataset.stan = "zakryta";
+          k.setAttribute("aria-label", "Zakryta karta");
+        });
+        wycisz();
+        odkryte = [];
+        blokada = false;
+      }, 2200);
+    }
+  }
+
+  function koniec(){
+    brawo.textContent = "Brawo! Wszystkie pary znalezione w " + ruchy + " ruchach.";
+    odwiedzinyKota();
+  }
+
+  // ---------- Dźwięk przy trafionej parze ----------
+  let audioCtx = null;
+  function zagrajDzwiekPary(){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const start = audioCtx.currentTime;
+      [523.25, 659.25].forEach((czestotliwosc, i) => {
+        const oscylator = audioCtx.createOscillator();
+        const glosnosc = audioCtx.createGain();
+        oscylator.type = "sine";
+        oscylator.frequency.value = czestotliwosc;
+        const chwila = start + i * 0.09;
+        glosnosc.gain.setValueAtTime(0, chwila);
+        glosnosc.gain.linearRampToValueAtTime(0.12, chwila + 0.015);
+        glosnosc.gain.exponentialRampToValueAtTime(0.001, chwila + 0.22);
+        oscylator.connect(glosnosc).connect(audioCtx.destination);
+        oscylator.start(chwila);
+        oscylator.stop(chwila + 0.25);
+      });
+    } catch(e) { /* przeglądarka bez obsługi dźwięku — gramy dalej po cichu */ }
+  }
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const KOMPLEMENTY = [
+    "Super słuch!", "Brawo, wszystkie pary!", "Ale masz ucho!",
+    "Świetnie Ci poszło!", "Gratulacje, maestro!", "Wow, jestem pod wrażeniem!"
+  ];
+  const kotWedrowiec = document.getElementById("kotWedrowiec");
+  const dymekKota = document.getElementById("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+
+  function odwiedzinyKota(){
+    kotTimeouty.forEach(clearTimeout);
+    kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = KOMPLEMENTY[Math.floor(Math.random() * KOMPLEMENTY.length)];
+      dymekKota.classList.add("widoczna");
+
+      kotTimeouty.push(setTimeout(() => {
+        dymekKota.classList.remove("widoczna");
+        kotTimeouty.push(setTimeout(() => {
+          kotWedrowiec.classList.remove("widoczny");
+        }, 700));
+      }, 4500));
+    };
+
+    if (bezRuchu){
+      naMiejscu();
+    } else {
+      kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+    }
+  }
+
+  poziomy.forEach(p => p.addEventListener("click", () => {
+    poziomy.forEach(x => x.setAttribute("aria-pressed", "false"));
+    p.setAttribute("aria-pressed", "true");
+    liczbaPar = parseInt(p.dataset.par, 10);
+    nowaGra();
+  }));
+
+  znowu.addEventListener("click", nowaGra);
+  nowaGra();
+})();
+</script>
+</body>
+</html>
