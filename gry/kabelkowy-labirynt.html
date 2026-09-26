@@ -100,10 +100,10 @@ header::after{
   align-items:center;justify-content:space-between;
   margin-bottom:14px;
 }
-.gra-gora h2{font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600}
+.gra-gora h2{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
 .poziomy{display:flex;gap:6px;flex-wrap:wrap}
 .poziom{
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:.95rem;
   width:36px;height:36px;border:2px solid var(--noc);border-radius:999px;
   background:transparent;color:var(--noc);cursor:pointer;
   display:inline-flex;align-items:center;justify-content:center;
@@ -136,17 +136,20 @@ button:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
 
 /* ---------- Panel programu ---------- */
 .panel{display:flex;flex-direction:column;gap:12px}
-.panel h3{font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:600;color:var(--noc)}
+.panel h3{font-family:'Baloo 2',sans-serif;font-size:1.05rem;font-weight:600;color:var(--noc)}
 .paleta{display:flex;flex-wrap:wrap;gap:8px}
+/* Strzałki ← ↑ → ↓ zawsze z jednej, systemowej czcionki — Baloo 2 ma tylko ↑ ↓, więc bez tego
+   strzałki pionowe i poziome wyglądały inaczej. Reszta tekstu na klockach zostaje w Baloo 2. */
+@font-face{font-family:'Strzalki';src:local('Arial'),local('Roboto'),local('Helvetica'),local('Segoe UI');unicode-range:U+2190-2193;}
 .strzalka{
-  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;line-height:1;
+  font-family:'Strzalki','Baloo 2',sans-serif;font-weight:700;font-size:1.6rem;line-height:1;
   width:58px;height:58px;border:none;border-radius:16px;cursor:pointer;
   background:var(--noc);color:#fff;
   box-shadow:0 4px 0 #0E1830;
 }
 .strzalka:active{transform:translateY(3px);box-shadow:0 1px 0 #0E1830}
 .petla-btn{
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1rem;
   height:58px;padding:0 14px;border:none;border-radius:16px;cursor:pointer;
   background:var(--mieta);color:var(--noc);
   box-shadow:0 4px 0 #2A9E87;
@@ -169,7 +172,7 @@ button:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
 .klocek{
   position:relative;display:inline-flex;align-items:center;
   border-radius:12px;background:var(--noc);color:#fff;
-  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;line-height:1;
+  font-family:'Strzalki','Baloo 2',sans-serif;font-weight:700;font-size:1.3rem;line-height:1;
 }
 .klocek-glowny{
   display:inline-flex;align-items:center;gap:6px;
@@ -197,7 +200,7 @@ button.klocek-glowny{cursor:pointer}
 
 .sterowanie{display:flex;flex-wrap:wrap;gap:8px}
 .uruchom{
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.05rem;
   background:var(--klik);color:#fff;border:none;
   padding:11px 24px;border-radius:999px;cursor:pointer;
   box-shadow:0 4px 0 #C4621F;
@@ -210,7 +213,7 @@ button.klocek-glowny{cursor:pointer}
 }
 .uruchom:disabled,.maly:disabled{opacity:.4;cursor:default;transform:none}
 .dalej{
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.05rem;
   background:var(--mieta);color:var(--noc);border:none;
   padding:11px 24px;border-radius:999px;cursor:pointer;
   box-shadow:0 4px 0 #2A9E87;
@@ -231,7 +234,7 @@ button.klocek-glowny{cursor:pointer}
 
 /* ---------- Dla rodziców ---------- */
 .rodzice{background:var(--mieta);padding:40px 0}
-.rodzice h2{font-family:'Fredoka',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
 .rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
 .rodzice li{padding-left:30px;position:relative;font-weight:600}
 .rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
@@ -260,7 +263,7 @@ footer a{color:var(--papier)}
 
 .dymek-kota{
   background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
-  font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1rem;
   color:var(--noc);position:relative;
   box-shadow:0 4px 0 rgba(0,0,0,.15);
   opacity:0;transform:translateY(6px) scale(.85);
