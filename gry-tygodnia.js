@@ -5,14 +5,15 @@
     "pary-klika": "Pary Klika",
     "literkowa-spizarnia": "Literkowa spiżarnia",
     "powtorz-melodie": "Powtórz melodię",
-    "kabelkowy-labirynt": "Kabelkowy labirynt"
+    "kabelkowy-labirynt": "Kabelkowy labirynt",
+    "muzyka-pana-klika": "Muzyka Pana Klika"
   };
 
   // Te gry są darmowe na stałe.
   const ZAWSZE_DARMOWE = ["pary-klika", "literkowa-spizarnia"];
 
   // Z tej listy co tydzień (od poniedziałku) wybierane są kolejne dwie gry.
-  const ROTACJA = ["powtorz-melodie", "kabelkowy-labirynt"];
+  const ROTACJA = ["powtorz-melodie", "kabelkowy-labirynt", "muzyka-pana-klika"];
   const GIER_W_TYGODNIU = 2;
 
   // Poniedziałek, od którego liczymy tygodnie rotacji.
