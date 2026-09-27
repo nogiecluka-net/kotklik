@@ -129,7 +129,8 @@ header::after{
   display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:14px;
 }
 .grupa h3 small{font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:600;color:var(--szara)}
-.karty-gier{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+/* auto-fit: karty w grupie wypełniają całą szerokość, bez pustego miejsca po prawej na komputerze */
+.karty-gier{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 
 .karta-gry{
   background:#fff;border-radius:20px;padding:22px;
@@ -142,6 +143,8 @@ header::after{
 .karta-gry .emoji{font-size:2.4rem;margin-bottom:10px;display:block}
 .karta-gry strong{font-family:'Baloo 2',sans-serif;font-size:1.15rem;display:block;margin-bottom:4px}
 .karta-gry span{color:var(--szara);font-size:.95rem}
+/* opis w osobnym bloku, żeby etykieta wieku nie stawała w jednej linii z tekstem */
+.karta-gry strong + span{display:block}
 .karta-gry .wiek{
   display:inline-block;margin-top:12px;font-size:.8rem;font-weight:700;
   color:var(--noc);background:#EFF6FF;padding:4px 10px;border-radius:999px;
