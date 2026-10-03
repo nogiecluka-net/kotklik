@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gdzie jest Klik? — na, pod, nad, w, za, przed, obok | KotKlik</title>
+<meta name="description" content="Na, pod, nad, w, za, przed, obok, między, po lewej i po prawej. Popatrz na pokój kota Klika i wybierz słowo, które mówi, gdzie co jest. Gra dla dzieci od 5 lat. Bez reklam.">
+<link rel="canonical" href="https://kotklik.pl/gry/gdzie-jest-klik">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Gdzie jest Klik? — na, pod, nad, w, za, przed, obok | KotKlik">
+<meta property="og:description" content="Popatrz na pokój kota Klika i wybierz słowo, które mówi, gdzie co jest. Nauka określania położenia dla dzieci od 5 lat.">
+<meta property="og:url" content="https://kotklik.pl/gry/gdzie-jest-klik">
+<meta property="og:image" content="https://kotklik.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KotKlik - gry edukacyjne dla dzieci. Kot Klik na tle nocnego nieba.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+  --blad:#E5484D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+button{font:inherit}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden;flex:0 0 auto}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media(prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 20px;position:relative;z-index:1;flex:1}
+.dymek{
+  background:var(--papier);border-radius:20px;padding:14px 20px;max-width:620px;
+  margin-bottom:14px;position:relative;box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.gra{background:var(--papier);border-radius:24px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.gra-gora{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.gra-gora h2{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:min(100%,330px)}
+.poziom{
+  font-weight:700;font-size:.95rem;padding:6px 10px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--klik);border-color:var(--klik);color:#fff}
+/* przełącznik lektora: przy pasku z wynikiem i na ekranie startowym */
+.lektor{display:inline-flex;align-items:center;gap:8px;border:none;background:none;font:inherit;font-weight:700;color:inherit;cursor:pointer;padding:4px 2px}
+.lektor .suwak{flex:0 0 auto;width:40px;height:22px;border-radius:999px;background:#CFC8BC;position:relative;transition:background .2s}
+.lektor .suwak::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s}
+.lektor[aria-checked="true"] .suwak{background:var(--mieta)}
+.lektor .stan{color:#8A8378}
+.lektor[aria-checked="true"] .stan{color:var(--noc)}
+.lektor[aria-checked="true"] .suwak::after{transform:translateX(18px)}
+@media(prefers-reduced-motion:reduce){.lektor .suwak,.lektor .suwak::after{transition:none}}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+.gra-wlasciwa{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:780px){.gra-wlasciwa{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center}}
+
+/* ---------- Obrazek ---------- */
+.scena{border-radius:18px;overflow:hidden;line-height:0;background:#FDF0DC;box-shadow:inset 0 0 0 2px #F0E6D6}
+.scena svg{display:block;width:100%;height:auto}
+.kot-na-scenie{animation:hop .35s ease}
+@keyframes hop{0%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.kot-na-scenie{animation:none}}
+
+/* ---------- Pytanie i odpowiedzi ---------- */
+.prawa{display:flex;flex-direction:column;gap:14px}
+.pytanie{display:flex;align-items:center;justify-content:center;gap:12px}
+.pytanie p{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:clamp(1.4rem,5vw,1.8rem);line-height:1.2;color:var(--noc)}
+.glosnik{
+  flex:0 0 auto;width:48px;height:48px;border:none;border-radius:50%;cursor:pointer;
+  background:var(--mieta);font-size:1.3rem;box-shadow:0 4px 0 #2A9E87;
+}
+.glosnik:active{transform:translateY(3px);box-shadow:none}
+.odpowiedzi{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.odp{
+  font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.6rem;line-height:1.1;
+  min-width:92px;min-height:62px;padding:8px 18px;border:none;border-radius:14px;cursor:pointer;
+  background:var(--noc);color:#fff;box-shadow:0 5px 0 #0E1830;transition:transform .08s;
+  -webkit-tap-highlight-color:transparent;
+}
+.odp:active{transform:translateY(3px);box-shadow:0 2px 0 #0E1830}
+.odp:disabled{cursor:default}
+.odp.dobra{background:#1E9E80;box-shadow:0 5px 0 #13705A}
+.odp.zla{background:var(--blad);box-shadow:0 5px 0 #A32F33}
+.odp.przygaszona{opacity:.4}
+
+.pasek-info{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 10px;font-weight:700;color:var(--szara);font-size:.95rem}
+.pasek-info strong{color:var(--noc)}
+.pasek-info span{white-space:nowrap}
+/* na pasku przełącznik lektora ma własny wiersz pod wynikiem — inaczej napisy łamały się na średnich ekranach */
+.pasek-info .lektor{order:3;flex-basis:100%;justify-content:center}
+.komunikat{min-height:30px;text-align:center;font-weight:700;color:var(--noc)}
+.komunikat.dobrze{color:#1E8A73}
+.komunikat.zle{color:#B94B26}
+
+.znowu{
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.15rem;
+  background:var(--klik);color:#fff;border:none;padding:10px 28px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #C4621F;
+}
+.znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+.ekran{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;justify-content:center;padding:28px 10px}
+.ekran[hidden],.gra-wlasciwa[hidden]{display:none}
+.ekran h3{font-family:'Baloo 2',sans-serif;font-size:1.4rem;color:var(--noc)}
+.ekran p{color:#3A475C;max-width:420px}
+.gwiazdki-wynik{font-size:1.8rem;letter-spacing:2px}
+
+.link-wstecz{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;text-decoration:none;color:var(--papier);opacity:.92}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:700px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.kot-wedrowiec{transition:none}.kot-wedrowiec.chodzi .kot-idacy{animation:none}}
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1rem;color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transform:translateY(6px) scale(.85);transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>W moim pokoju wszystko się poprzestawiało! Pomożesz mi znaleźć, gdzie co jest?</p>
+      <p>Popatrz na obrazek i wybierz właściwe słowo. Kliknij głośnik, a przeczytam Ci pytanie.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Pokój Klika</h2>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom">
+          <button class="poziom" data-poziom="0" aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-poziom="1" aria-pressed="false">Średni</button>
+          <button class="poziom" data-poziom="2" aria-pressed="false">Trudny</button>
+        </div>
+      </div>
+
+      <div class="ekran" id="ekranStart">
+        <h3 id="startTytul">Łatwy: na, pod, w, obok</h3>
+        <p>10 zadań. Popatrz na obrazek i wybierz słowo, które mówi, gdzie co jest.</p>
+        <p><button class="lektor" role="switch" aria-checked="false"><span class="suwak"></span><span class="stan">🔇 Lektor wyłączony</span></button></p>
+        <button class="znowu" id="start">Zaczynamy!</button>
+      </div>
+
+      <div class="gra-wlasciwa" id="graWlasciwa" hidden>
+        <div class="scena">
+          <svg id="scena" viewBox="0 0 400 250" role="img" aria-label="Pokój Klika: stół, krzesło, domek, drzewo albo miski"></svg>
+        </div>
+        <div class="prawa">
+          <div class="pytanie">
+            <p id="pytanie">Gdzie jest Klik?</p>
+            <button class="glosnik" id="glosnik" aria-label="Posłuchaj pytania jeszcze raz">🔊</button>
+          </div>
+          <div class="odpowiedzi" id="odpowiedzi" role="group" aria-label="Odpowiedzi"></div>
+          <p class="komunikat" id="komunikat" role="status"></p>
+          <div class="pasek-info">
+            <span>Zadanie <strong id="numer">1</strong> z 10</span>
+            <button class="lektor" role="switch" aria-checked="false"><span class="suwak"></span><span class="stan">🔇 Lektor wyłączony</span></button>
+            <span>Gwiazdy: <strong id="trafione">0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ekran" id="ekranKoniec" hidden>
+        <div class="gwiazdki-wynik" id="wynikGwiazdki" aria-hidden="true"></div>
+        <h3 id="wynikTytul"></h3>
+        <p id="wynikOpis"></p>
+        <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra uczy określania położenia: na, pod, nad, w, za, przed, obok, między, po lewej i po prawej</li>
+      <li>Pytania dotyczą różnych rzeczy — kota, miski, piłki, kłębka, ptaszka i wiewiórki — przy stole, krześle, domku i drzewie</li>
+      <li>Po każdym wyborze dziecko widzi całe zdanie, np. „Piłka jest pod krzesłem”; pytanie można odsłuchać przyciskiem z głośnikiem</li>
+      <li>Lektor jest domyślnie wyłączony — dla dziecka, które jeszcze nie czyta, włącz go przełącznikiem „Lektor”; gra zapamięta ten wybór</li>
+      <li>Po błędzie gra od razu pokazuje i mówi poprawną odpowiedź</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+  const ZADAN = 10;
+  const PODLOGA = 222;
+  const S = 0.85;   // skala Klika na obrazku (cały kot ma ok. 72 px wysokości)
+
+  // ---------- Rzeczy, o które pytamy ----------
+  const RZECZY = {
+    klik:    { nazwa: "Klik",    pytanie: "Gdzie jest Klik?" },
+    miska:   { nazwa: "Miska",   pytanie: "Gdzie jest miska?" },
+    pilka:   { nazwa: "Piłka",   pytanie: "Gdzie jest piłka?" },
+    klebek:  { nazwa: "Kłębek",  pytanie: "Gdzie jest kłębek?" },
+    ptaszek: { nazwa: "Ptaszek", pytanie: "Gdzie jest ptaszek?" },
+    wiewiorka: { nazwa: "Wiewiórka", pytanie: "Gdzie jest wiewiórka?" }
+  };
+  const ZWYKLE = ["klik", "miska", "pilka", "klebek"];
+
+  // ---------- Przedmioty i miejsca ----------
+  // formy: miejscownik (na, w), narzędnik (pod, nad, za, przed), dopełniacz (obok, po lewej stronie)
+  // x — środek rzeczy, y — wysokość, na której rzecz stoi; yMaly — inna wysokość dla małych rzeczy
+  // warstwa: "tyl" (za przedmiotem), "srodek" (w domku), domyślnie przed przedmiotem
+  // rzeczy — tylko to, co naprawdę może się tam znaleźć (pod krzesło nie zmieści się kot, miska nie lata)
+  const SCENY = {
+    stol: { formy: { msc: "stole", narz: "stołem", dop: "stołu" }, miejsca: [
+      { slowo: "na",        x: 200, y: 101,             rzeczy: ZWYKLE.concat("ptaszek") },
+      { slowo: "pod",       x: 200, y: 220,             rzeczy: ZWYKLE },
+      { slowo: "nad",       x: 200, y: 64,              rzeczy: ["pilka", "ptaszek"] },
+      { slowo: "obok",      x: 62,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po lewej",  x: 62,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po prawej", x: 338, y: 220,             rzeczy: ZWYKLE }
+    ]},
+    krzeslo: { formy: { msc: "krześle", narz: "krzesłem", dop: "krzesła" }, miejsca: [
+      { slowo: "na",        x: 192, y: 146,             rzeczy: ZWYKLE },
+      { slowo: "pod",       x: 196, y: 220,             rzeczy: ["miska", "pilka", "klebek"] },
+      { slowo: "nad",       x: 192, y: 92,              rzeczy: ["pilka", "ptaszek"] },
+      { slowo: "obok",      x: 72,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po lewej",  x: 72,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po prawej", x: 330, y: 220,             rzeczy: ZWYKLE }
+    ]},
+    domek: { formy: { msc: "domku", narz: "domkiem", dop: "domku" }, miejsca: [
+      { slowo: "w",         x: 200, y: 218, yMaly: 204, warstwa: "srodek", rzeczy: ["klik", "pilka", "klebek"] },
+      { slowo: "na",        x: 200, y: 82,              rzeczy: ["klik", "ptaszek"] },
+      { slowo: "za",        x: 266, y: 220,             warstwa: "tyl", rzeczy: ["klik"] },
+      { slowo: "przed",     x: 168, y: 232,             rzeczy: ZWYKLE },
+      { slowo: "obok",      x: 62,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po lewej",  x: 62,  y: 220,             rzeczy: ZWYKLE },
+      { slowo: "po prawej", x: 338, y: 220,             rzeczy: ZWYKLE }
+    ]},
+    drzewo: { formy: { msc: "drzewie", narz: "drzewem", dop: "drzewa" }, miejsca: [
+      { slowo: "na",        x: 334, y: 127,             rzeczy: ["ptaszek", "wiewiorka"] },   // na gałęzi — kot na drzewie wyglądał na wklejonego
+      { slowo: "pod",       x: 145, y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
+      { slowo: "obok",      x: 40,  y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
+      { slowo: "po lewej",  x: 40,  y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
+      { slowo: "po prawej", x: 370, y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") }
+    ]},
+    miski: { formy: {}, miejsca: [
+      { slowo: "między",    x: 200, y: 220,             rzeczy: ["klik", "pilka", "klebek"] }
+    ]}
+  };
+
+  // Od którego poziomu pojawia się dane słowo; „obok” tylko do Średniego (na Trudnym są „po lewej / po prawej”)
+  const POZIOM_SLOWA = { "na": 0, "pod": 0, "w": 0, "obok": 0, "nad": 1, "za": 1, "przed": 1, "między": 2, "po lewej": 2, "po prawej": 2 };
+  const SLOWA_POZIOMU = [
+    ["na", "pod", "w", "obok"],
+    ["na", "pod", "w", "obok", "nad", "za", "przed"],
+    ["na", "pod", "w", "nad", "za", "przed", "między", "po lewej", "po prawej"]
+  ];
+  const ILE_ODPOWIEDZI = [3, 4, 5];
+  const OPISY_POZIOMOW = ["Łatwy: na, pod, w, obok", "Średni: nad, za, przed", "Trudny: między, po lewej, po prawej"];
+  const POCHWALY = ["Brawo!", "Świetnie!", "Tak jest!", "Dokładnie!", "Super!"];
+
+  const $ = id => document.getElementById(id);
+  const svg = $("scena"), NS = "http://www.w3.org/2000/svg";
+  let poziom = 0, nr = 0, trafione = 0, biezace = null, blokada = true, czeka = null, runda = [];
+  let tura = 0; // zmienia się przy starcie i zmianie poziomu — stare oczekiwania wtedy nic nie robią
+
+  function gdzie(scena, slowo){
+    if (scena === "miski") return "między miskami";
+    const f = SCENY[scena].formy;
+    if (slowo === "na" || slowo === "w") return slowo + " " + f.msc;
+    if (slowo === "obok") return "obok " + f.dop;
+    if (slowo === "po lewej" || slowo === "po prawej") return slowo + " stronie " + f.dop;
+    return slowo + " " + f.narz;
+  }
+
+  // ---------- Rysowanie ----------
+  function el(nazwa, atr, rodzic){
+    const e = document.createElementNS(NS, nazwa);
+    for (const k in atr) e.setAttribute(k, atr[k]);
+    (rodzic || svg).appendChild(e);
+    return e;
+  }
+  // grupa z animacją podskoku wewnątrz grupy z pozycją — inaczej CSS nadpisałby pozycję
+  function grupa(transform){
+    const pozycja = el("g", { transform: transform });
+    return el("g", { class: "kot-na-scenie" }, pozycja);
+  }
+  // Klik z ciałem: siedzący kot w układzie 64 × 96 (łapki na dole, y = 95)
+  function kot(x, stop){
+    const g = grupa("translate(" + (x - 32 * S) + " " + (stop - 95 * S) + ") scale(" + S + ")");
+    el("path", { d: "M48 86 C66 84 68 60 57 52", fill: "none", stroke: "#FF8A3D", "stroke-width": 7, "stroke-linecap": "round" }, g);
+    el("ellipse", { cx: 32, cy: 72, rx: 20, ry: 22, fill: "#FF8A3D" }, g);
+    el("ellipse", { cx: 32, cy: 76, rx: 10, ry: 14, fill: "#FFC08F" }, g);
+    el("path", { d: "M14 66 h6 M13 75 h6 M44 66 h6 M45 75 h6", stroke: "#E86F22", "stroke-width": 2.6, "stroke-linecap": "round" }, g);
+    el("ellipse", { cx: 24, cy: 93, rx: 7.5, ry: 4.5, fill: "#F27A2E" }, g);
+    el("ellipse", { cx: 40, cy: 93, rx: 7.5, ry: 4.5, fill: "#F27A2E" }, g);
+    el("path", { d: "M12 26 L10 10 L24 20 Z", fill: "#FF8A3D" }, g);
+    el("path", { d: "M52 26 L54 10 L40 20 Z", fill: "#FF8A3D" }, g);
+    el("circle", { cx: 32, cy: 36, r: 21, fill: "#FF8A3D" }, g);
+    el("circle", { cx: 24, cy: 33, r: 4.2, fill: "#1B2A4A" }, g);
+    el("circle", { cx: 40, cy: 33, r: 4.2, fill: "#1B2A4A" }, g);
+    el("circle", { cx: 25.4, cy: 31.6, r: 1.4, fill: "#fff" }, g);
+    el("circle", { cx: 41.4, cy: 31.6, r: 1.4, fill: "#fff" }, g);
+    el("path", { d: "M32 41 l-3 2.6 h6 Z", fill: "#1B2A4A" }, g);
+    el("path", { d: "M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10", stroke: "#1B2A4A", "stroke-width": 1.6, "stroke-linecap": "round" }, g);
+  }
+  function miskaRzecz(x, stop){
+    const g = grupa("translate(" + x + " " + stop + ")");
+    el("path", { d: "M-28 -20 H28 L21 0 H-21 Z", fill: "#4D96FF" }, g);
+    el("ellipse", { cx: 0, cy: -20, rx: 28, ry: 5, fill: "#3A78CC" }, g);
+    el("ellipse", { cx: 0, cy: -21, rx: 21, ry: 3, fill: "#B5733F" }, g);
+  }
+  function pilka(x, stop){
+    const g = grupa("translate(" + x + " " + (stop - 15) + ")");
+    el("circle", { cx: 0, cy: 0, r: 15, fill: "#E5484D" }, g);
+    el("path", { d: "M-15 0 Q0 -9 15 0", fill: "none", stroke: "#fff", "stroke-width": 3.5 }, g);
+    el("path", { d: "M-15 0 Q0 9 15 0", fill: "none", stroke: "#FFD447", "stroke-width": 3.5 }, g);
+    el("circle", { cx: -5, cy: -7, r: 3, fill: "#fff", opacity: ".7" }, g);
+  }
+  function klebek(x, stop){
+    const g = grupa("translate(" + x + " " + (stop - 14) + ")");
+    el("path", { d: "M10 10 C24 14 26 4 34 10", fill: "none", stroke: "#C2378F", "stroke-width": 2.5, "stroke-linecap": "round" }, g);
+    el("circle", { cx: 0, cy: 0, r: 14, fill: "#F15BB5" }, g);
+    el("path", { d: "M-11 -6 Q0 2 11 -8 M-13 2 Q0 10 12 2 M-6 -12 Q-2 0 -8 12 M5 -13 Q8 0 3 13", fill: "none", stroke: "#C2378F", "stroke-width": 2, "stroke-linecap": "round" }, g);
+  }
+  // Wiewiórka siedząca bokiem (głowa w prawo), z dużym puszystym ogonem
+  function wiewiorka(x, stop){
+    const g = grupa("translate(" + x + " " + stop + ")");
+    el("ellipse", { cx: -11, cy: -22, rx: 9, ry: 17, fill: "#C8763F", transform: "rotate(-15 -11 -22)" }, g);
+    el("ellipse", { cx: -10, cy: -23, rx: 4.5, ry: 11, fill: "#E39A5F", transform: "rotate(-15 -10 -23)" }, g);
+    el("ellipse", { cx: 2, cy: -11, rx: 9, ry: 11, fill: "#A0522D" }, g);
+    el("ellipse", { cx: 5, cy: -9, rx: 4.5, ry: 7, fill: "#F2C79A" }, g);
+    el("path", { d: "M3 -29 L4 -38 L9 -30 Z", fill: "#A0522D" }, g);
+    el("circle", { cx: 7, cy: -24, r: 7, fill: "#A0522D" }, g);
+    el("circle", { cx: 9.5, cy: -25, r: 1.5, fill: "#1B2A4A" }, g);
+    el("circle", { cx: 13.6, cy: -22.5, r: 1.2, fill: "#1B2A4A" }, g);
+    el("ellipse", { cx: 4, cy: -1, rx: 6, ry: 2.2, fill: "#8A4422" }, g);
+  }
+  function ptaszek(x, stop){
+    const g = grupa("translate(" + x + " " + stop + ")");
+    el("path", { d: "M-3 0 V-6 M3 0 V-6", stroke: "#F77F00", "stroke-width": 2, "stroke-linecap": "round" }, g);
+    el("path", { d: "M-12 -14 L-22 -18 L-20 -10 Z", fill: "#2F6FC9" }, g);
+    el("ellipse", { cx: 0, cy: -14, rx: 13, ry: 9, fill: "#4D96FF" }, g);
+    el("ellipse", { cx: -2, cy: -14, rx: 7, ry: 5, fill: "#8DBBFF" }, g);
+    el("circle", { cx: 10, cy: -21, r: 7, fill: "#4D96FF" }, g);
+    el("path", { d: "M16 -22 L22 -20 L16 -18 Z", fill: "#F77F00" }, g);
+    el("circle", { cx: 12, cy: -23, r: 1.6, fill: "#1B2A4A" }, g);
+  }
+  const RYSUJ_RZECZ = { klik: kot, miska: miskaRzecz, pilka: pilka, klebek: klebek, ptaszek: ptaszek, wiewiorka: wiewiorka };
+
+  function tlo(){
+    svg.innerHTML = "";
+    el("rect", { x: 0, y: 0, width: 400, height: PODLOGA, fill: "#FDF0DC" });
+    el("rect", { x: 0, y: PODLOGA, width: 400, height: 250 - PODLOGA, fill: "#E3C9A4" });
+    el("path", { d: "M0 " + PODLOGA + " H400", stroke: "#CFAF84", "stroke-width": 3 });
+  }
+  // Drewniany stół z obrusem — pod blatem zmieści się cały Klik
+  function stol(){
+    el("rect", { x: 124, y: 112, width: 13, height: PODLOGA - 112, rx: 3, fill: "#8A5634" });
+    el("rect", { x: 263, y: 112, width: 13, height: PODLOGA - 112, rx: 3, fill: "#8A5634" });
+    el("rect", { x: 108, y: 100, width: 184, height: 14, rx: 4, fill: "#B5733F" });
+    el("path", { d: "M114 100 H286 V118 Q272 124 258 118 Q244 124 230 118 Q216 124 202 118 Q188 124 174 118 Q160 124 146 118 Q132 124 114 118 Z", fill: "#FF8A80" });
+    el("path", { d: "M140 100 V120 M170 100 V121 M200 100 V120 M230 100 V121 M260 100 V120", stroke: "#fff", "stroke-width": 3, opacity: ".55" });
+  }
+  // Krzesło z boku: oparcie po prawej, poduszka na siedzisku, pod spodem miejsce na małe rzeczy
+  function krzeslo(){
+    el("rect", { x: 162, y: 156, width: 10, height: PODLOGA - 156, rx: 3, fill: "#8A5634" });
+    el("rect", { x: 226, y: 156, width: 10, height: PODLOGA - 156, rx: 3, fill: "#8A5634" });
+    el("rect", { x: 226, y: 72, width: 12, height: 88, rx: 4, fill: "#8A5634" });
+    el("rect", { x: 222, y: 72, width: 20, height: 12, rx: 5, fill: "#B5733F" });
+    el("rect", { x: 156, y: 150, width: 86, height: 10, rx: 3, fill: "#B5733F" });
+    el("rect", { x: 160, y: 143, width: 64, height: 8, rx: 4, fill: "#7FB7E8" });
+  }
+  // Koci domek: dach, ściana z okrągłymi drzwiczkami (wycięte, żeby było widać, co jest w środku)
+  function domekWnetrze(){
+    el("circle", { cx: 200, cy: 178, r: 30, fill: "#5A3A26" });
+  }
+  function domekPrzod(){
+    el("path", { d: "M136 126 H264 V" + PODLOGA + " H136 Z M170 178 a30 30 0 1 0 60 0 a30 30 0 1 0 -60 0 Z", fill: "#F2B36B", "fill-rule": "evenodd" });
+    el("circle", { cx: 200, cy: 178, r: 30, fill: "none", stroke: "#D38E44", "stroke-width": 5 });
+    el("path", { d: "M124 130 L200 74 L276 130 Z", fill: "#E5484D" });
+    el("path", { d: "M124 130 L200 74 L276 130", fill: "none", stroke: "#B9343A", "stroke-width": 5, "stroke-linejoin": "round" });
+  }
+  // Drzewo: wysoka, szeroka korona, żeby pod nią było wyraźnie widać, co tam jest (a nie „przed drzewem”)
+  function drzewo(){
+    el("ellipse", { cx: 205, cy: 224, rx: 118, ry: 5, fill: "#CDB08A" }); // cień korony na ziemi
+    el("rect", { x: 193, y: 120, width: 24, height: PODLOGA - 120, rx: 5, fill: "#8A5634" });
+    el("circle", { cx: 140, cy: 96, r: 40, fill: "#4CAF6A" });
+    el("circle", { cx: 270, cy: 96, r: 40, fill: "#4CAF6A" });
+    el("circle", { cx: 205, cy: 82, r: 58, fill: "#5BBE78" });
+    el("circle", { cx: 205, cy: 50, r: 40, fill: "#6CCB88" });
+    // gałąź wystająca z korony — na niej siada ptaszek albo wiewiórka
+    el("path", { d: "M214 152 Q270 138 352 124", fill: "none", stroke: "#8A5634", "stroke-width": 8, "stroke-linecap": "round" });
+    el("ellipse", { cx: 356, cy: 118, rx: 9, ry: 5, fill: "#5BBE78", transform: "rotate(-20 356 118)" });
+  }  function miska(x){
+    el("path", { d: "M" + (x - 44) + " 198 H" + (x + 44) + " L" + (x + 34) + " " + PODLOGA + " H" + (x - 34) + " Z", fill: "#3ECFB2" });
+    el("ellipse", { cx: x, cy: 198, rx: 44, ry: 7, fill: "#2A9E87" });
+    el("ellipse", { cx: x, cy: 197, rx: 34, ry: 4, fill: "#B5733F" });
+  }
+
+  function rysuj(nazwaSceny, m, rzecz){
+    tlo();
+    const y = (rzecz !== "klik" && m.yMaly !== undefined) ? m.yMaly : m.y;
+    const narysujRzecz = () => RYSUJ_RZECZ[rzecz](m.x, y);
+    if (m.warstwa === "tyl") narysujRzecz();
+    if (nazwaSceny === "stol") stol();
+    if (nazwaSceny === "krzeslo") krzeslo();
+    if (nazwaSceny === "drzewo") drzewo();
+    if (nazwaSceny === "domek"){ domekWnetrze(); if (m.warstwa === "srodek") narysujRzecz(); domekPrzod(); }
+    if (nazwaSceny === "miski"){ miska(80); miska(320); }
+    if (!m.warstwa) narysujRzecz();
+    // piłka w powietrzu — kreski pod spodem pokazują, że właśnie leci
+    if (m.slowo === "nad" && rzecz === "pilka"){
+      el("path", { d: "M" + (m.x - 10) + " " + (y + 6) + " v8 M" + m.x + " " + (y + 8) + " v10 M" + (m.x + 10) + " " + (y + 6) + " v8", stroke: "#E5484D", "stroke-width": 2.5, "stroke-linecap": "round", opacity: ".5" });
+    }
+  }
+
+  // ---------- Mowa ----------
+  // Wybieramy najbardziej naturalny polski głos, jaki ma urządzenie.
+  // Domyślny w Chrome na Windows (Microsoft Adam/Paulina) brzmi bardzo sztucznie.
+  const PREFEROWANE_GLOSY = [
+    /Natural|Online/i,          // Edge: Microsoft Zofia / Marek (Natural)
+    /Google/i,                  // Chrome i Android: Google polski
+    /Zosia|Ewa|Krzysztof/i      // iPhone, iPad, Mac
+  ];
+  let glos = null;
+  function wybierzGlos(){
+    if (!("speechSynthesis" in window)) return;
+    const polskie = window.speechSynthesis.getVoices().filter(v => /^pl/i.test(v.lang));
+    glos = null;
+    for (const wzor of PREFEROWANE_GLOSY){
+      glos = polskie.find(v => wzor.test(v.name));
+      if (glos) break;
+    }
+    if (!glos) glos = polskie[0] || null;
+  }
+  if ("speechSynthesis" in window){
+    wybierzGlos();
+    window.speechSynthesis.addEventListener("voiceschanged", wybierzGlos);
+  }
+  // Zwraca obietnicę, która kończy się, gdy głos skończy mówić — dzięki temu następne zadanie
+  // nie ucina zdania w połowie. Zapas czasu na wypadek, gdyby przeglądarka nie zgłosiła końca.
+  let mowa = null; // trzymamy wypowiedź, bo Chrome potrafi ją przerwać, gdy zniknie z pamięci
+  // Lektor można wyłączyć (niektóre dzieci czytają same) — wybór zapamiętujemy na tym urządzeniu.
+  // Przycisk z głośnikiem przy pytaniu czyta zawsze, bo dziecko samo o to prosi.
+  let lektor = false; // domyślnie wyłączony — włącza się przełącznikiem „Lektor”
+  try { lektor = localStorage.getItem("kotklik-lektor") === "wl"; } catch(e){}
+  function powiedz(tekst, zawsze){
+    return new Promise(gotowe => {
+      if (!lektor && !zawsze) return gotowe();
+      try {
+        if (!("speechSynthesis" in window)) return gotowe();
+        window.speechSynthesis.cancel();
+        const w = new SpeechSynthesisUtterance(tekst);
+        w.lang = "pl-PL";
+        if (glos) w.voice = glos;
+        w.rate = 0.95;
+        w.pitch = 1.1;
+        w.onend = w.onerror = () => gotowe();
+        mowa = w;
+        window.speechSynthesis.speak(w);
+        setTimeout(gotowe, 900 + tekst.length * 120);
+      } catch(e){ gotowe(); /* bez mowy — pytanie jest też napisane */ }
+    });
+  }
+
+  // ---------- Przebieg gry ----------
+  function tasuj(t){
+    for (let i = t.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; }
+    return t;
+  }
+  function losowy(t){ return t[Math.floor(Math.random() * t.length)]; }
+  function slowoNaPoziomie(slowo){
+    if (POZIOM_SLOWA[slowo] > poziom) return false;
+    if (slowo === "obok" && poziom === 2) return false;
+    return true;
+  }
+  // Talia na rundę: każde (przedmiot + słowo) pojawia się, zanim któreś się powtórzy.
+  // Nowe słowa poziomu trafiają do talii dwa razy. Rzecz, o którą pytamy, losujemy spośród pasujących.
+  function przygotujRunde(){
+    const pula = [];
+    for (const nazwa in SCENY){
+      SCENY[nazwa].miejsca.forEach(m => {
+        if (!slowoNaPoziomie(m.slowo)) return;
+        pula.push({ scena: nazwa, m: m });
+        if (POZIOM_SLOWA[m.slowo] === poziom && poziom > 0) pula.push({ scena: nazwa, m: m });
+      });
+    }
+    const talia = [];
+    while (talia.length < ZADAN){
+      for (const z of tasuj(pula.slice())){
+        if (talia.length && talia[talia.length - 1].m === z.m) continue;
+        talia.push(z);
+        if (talia.length === ZADAN) break;
+      }
+    }
+    // rzecz: różna od poprzedniej, jeśli się da — żeby pytania były urozmaicone
+    let poprzednia = null;
+    runda = talia.map(z => {
+      const mozliwe = z.m.rzeczy.filter(r => r !== poprzednia);
+      const rzecz = losowy(mozliwe.length ? mozliwe : z.m.rzeczy);
+      poprzednia = rzecz;
+      return { scena: z.scena, m: z.m, rzecz: rzecz };
+    });
+  }
+  // Słowa, których nie dajemy razem w odpowiedziach — na płaskim obrazku trudno je odróżnić
+  const NIE_RAZEM = [["pod", "przed"]];
+  function propozycje(dobre){
+    const reszta = [];
+    tasuj(SLOWA_POZIOMU[poziom].filter(s => s !== dobre)).forEach(s => {
+      if (reszta.length >= ILE_ODPOWIEDZI[poziom] - 1) return;
+      const wybrane = reszta.concat(dobre);
+      if (NIE_RAZEM.some(para => para.includes(s) && para.some(p => p !== s && wybrane.includes(p)))) return;
+      reszta.push(s);
+    });
+    // kolejność odpowiedzi zawsze taka sama jak na liście poziomu — łatwiej znaleźć słowo
+    return SLOWA_POZIOMU[poziom].filter(s => s === dobre || reszta.includes(s));
+  }
+
+  function pokazStart(){
+    clearTimeout(czeka);
+    tura++;
+    blokada = true;
+    $("startTytul").textContent = OPISY_POZIOMOW[poziom];
+    $("ekranStart").hidden = false;
+    $("graWlasciwa").hidden = true;
+    $("ekranKoniec").hidden = true;
+  }
+  function start(){
+    clearTimeout(czeka);
+    tura++;
+    nr = 0; trafione = 0;
+    przygotujRunde();
+    $("trafione").textContent = "0";
+    $("ekranStart").hidden = true;
+    $("ekranKoniec").hidden = true;
+    $("graWlasciwa").hidden = false;
+    nastepne();
+  }
+  function nastepne(){
+    if (nr >= ZADAN){ koniec(); return; }
+    const poprzednie = biezace && nr > 0 ? biezace.rzecz : null;
+    biezace = runda[nr];
+    $("numer").textContent = nr + 1;
+    $("komunikat").textContent = "";
+    $("komunikat").className = "komunikat";
+    $("pytanie").textContent = RZECZY[biezace.rzecz].pytanie;
+    rysuj(biezace.scena, biezace.m, biezace.rzecz);
+    const box = $("odpowiedzi");
+    box.innerHTML = "";
+    propozycje(biezace.m.slowo).forEach(s => {
+      const b = document.createElement("button");
+      b.className = "odp";
+      b.textContent = s;
+      b.dataset.slowo = s;
+      b.addEventListener("click", () => wybierz(b));
+      box.appendChild(b);
+    });
+    // Pytanie czytamy tylko wtedy, gdy pytamy o coś innego niż poprzednio — pełne pytanie zawsze pod głośnikiem
+    if (biezace.rzecz !== poprzednie) powiedz(RZECZY[biezace.rzecz].pytanie);
+    blokada = false;
+  }
+  function wybierz(btn){
+    if (blokada) return;
+    blokada = true;
+    const dobrze = btn.dataset.slowo === biezace.m.slowo;
+    $("odpowiedzi").querySelectorAll(".odp").forEach(b => {
+      b.disabled = true;
+      if (b.dataset.slowo === biezace.m.slowo) b.classList.add("dobra");
+      else if (b !== btn) b.classList.add("przygaszona");
+    });
+    const zdanie = RZECZY[biezace.rzecz].nazwa + " jest " + gdzie(biezace.scena, biezace.m.slowo) + ".";
+    let mowione;
+    if (dobrze){
+      trafione++;
+      $("trafione").textContent = trafione;
+      mowione = losowy(POCHWALY) + " " + zdanie;
+      $("komunikat").className = "komunikat dobrze";
+      dzwiek(true);
+    } else {
+      btn.classList.add("zla");
+      mowione = "Nie tym razem. " + zdanie;
+      $("komunikat").className = "komunikat zle";
+      dzwiek(false);
+    }
+    $("komunikat").textContent = mowione;
+    nr++;
+    // Następne zadanie dopiero, gdy głos skończy mówić (i minie chwila na popatrzenie na obrazek)
+    const mojaTura = tura;
+    const koniecMowy = new Promise(r => setTimeout(r, 250)).then(() => powiedz(mowione));
+    const minimum = new Promise(r => { czeka = setTimeout(r, dobrze ? 1600 : 2400); });
+    Promise.all([koniecMowy, minimum]).then(() => {
+      if (mojaTura === tura) czeka = setTimeout(nastepne, 400);
+    });
+  }
+  function koniec(){
+    $("graWlasciwa").hidden = true;
+    $("ekranKoniec").hidden = false;
+    $("wynikGwiazdki").textContent = "★".repeat(trafione) + "☆".repeat(ZADAN - trafione);
+    $("wynikTytul").textContent = "Zdobyłeś " + trafione + " z " + ZADAN + " gwiazd!";
+    $("wynikOpis").textContent =
+      trafione === ZADAN ? "Wszystko bezbłędnie! Wiesz, gdzie co leży w pokoju Klika." :
+      trafione >= 7 ? "Pięknie! Spróbuj następnego poziomu." :
+      "Dobra robota! Zagraj jeszcze raz — z każdą rundą idzie lepiej.";
+    powiedz($("wynikTytul").textContent);
+    if (trafione >= 7) odwiedzinyKota();
+  }
+
+  // ---------- Dźwięki ----------
+  let audioCtx = null;
+  function dzwiek(dobrze){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const start = audioCtx.currentTime;
+      (dobrze ? [523.25, 659.25, 783.99] : [220, 196]).forEach((f, i) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = dobrze ? "sine" : "triangle";
+        o.frequency.value = f;
+        const t = start + i * (dobrze ? 0.08 : 0.14);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(dobrze ? 0.1 : 0.07, t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t); o.stop(t + 0.25);
+      });
+    } catch(e) { /* bez dźwięku */ }
+  }
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const KOMPLEMENTY = ["Znalazłeś mnie!", "Super oko!", "Brawo, detektywie!", "Mistrz kryjówek!"];
+  const kotWedrowiec = $("kotWedrowiec"), dymekKota = $("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+  function odwiedzinyKota(){
+    kotTimeouty.forEach(clearTimeout); kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = KOMPLEMENTY[Math.floor(Math.random() * KOMPLEMENTY.length)];
+      dymekKota.classList.add("widoczna");
+      kotTimeouty.push(setTimeout(() => {
+        dymekKota.classList.remove("widoczna");
+        kotTimeouty.push(setTimeout(() => kotWedrowiec.classList.remove("widoczny"), 700));
+      }, 4500));
+    };
+    if (bezRuchu) naMiejscu();
+    else kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+  }
+
+  // ---------- Sterowanie ----------
+  const poziomyBtn = document.querySelectorAll(".poziom");
+  poziomyBtn.forEach(p => p.addEventListener("click", () => {
+    poziomyBtn.forEach(x => x.setAttribute("aria-pressed", String(x === p)));
+    poziom = Number(p.dataset.poziom);
+    pokazStart();
+  }));
+  $("start").addEventListener("click", start);
+  $("znowu").addEventListener("click", start);
+  $("glosnik").addEventListener("click", () => { if (biezace) powiedz(RZECZY[biezace.rzecz].pytanie, true); });
+  const przyciskiLektora = document.querySelectorAll(".lektor");
+  function pokazLektora(){
+    przyciskiLektora.forEach(b => {
+      b.setAttribute("aria-checked", String(lektor));
+      b.querySelector(".stan").textContent = lektor ? "🔊 Lektor włączony" : "🔇 Lektor wyłączony";
+    });
+  }
+  przyciskiLektora.forEach(b => b.addEventListener("click", () => {
+    lektor = !lektor;
+    if (!lektor && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    try { localStorage.setItem("kotklik-lektor", lektor ? "wl" : "wyl"); } catch(e){}
+    pokazLektora();
+  }));
+  pokazLektora();
+
+  pokazStart();
+})();
+</script>
+</body>
+</html>
