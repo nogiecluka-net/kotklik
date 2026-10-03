@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gdzie jest Klik? — na, pod, nad, w, za, przed, obok | KotKlik</title>
-<meta name="description" content="Na, pod, nad, w, za, przed, obok, między, po lewej i po prawej. Popatrz na pokój kota Klika i wybierz słowo, które mówi, gdzie co jest. Gra dla dzieci od 5 lat. Bez reklam.">
-<link rel="canonical" href="https://kotklik.pl/gry/gdzie-jest-klik">
+<title>Zegar Klika — nauka zegara: pełne godziny, wpół do, kwadranse | KotKlik</title>
+<meta name="description" content="Nauka zegara ze wskazówkami: pełne godziny, wpół do, kwadranse i co 5 minut. Odczytaj godzinę albo sam ustaw wskazówki. Gra dla dzieci od 6 lat. Bez reklam.">
+<link rel="canonical" href="https://kotklik.pl/gry/zegar-klika">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KotKlik">
 <meta property="og:locale" content="pl_PL">
-<meta property="og:title" content="Gdzie jest Klik? — na, pod, nad, w, za, przed, obok | KotKlik">
-<meta property="og:description" content="Popatrz na pokój kota Klika i wybierz słowo, które mówi, gdzie co jest. Nauka określania położenia dla dzieci od 5 lat.">
-<meta property="og:url" content="https://kotklik.pl/gry/gdzie-jest-klik">
+<meta property="og:title" content="Zegar Klika — nauka zegara: pełne godziny, wpół do, kwadranse | KotKlik">
+<meta property="og:description" content="Odczytaj godzinę z zegara ze wskazówkami albo ustaw ją sam. Nauka zegara dla dzieci od 6 lat.">
+<meta property="og:url" content="https://kotklik.pl/gry/zegar-klika">
 <meta property="og:image" content="https://kotklik.pl/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -105,6 +105,7 @@ button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);ou
 /* ---------- Obrazek ---------- */
 .scena{border-radius:18px;overflow:hidden;line-height:0;background:#FDF0DC;box-shadow:inset 0 0 0 2px #F0E6D6}
 .scena svg{display:block;width:100%;height:auto}
+.scena svg.przeciaganie{touch-action:none;cursor:grab}
 .kot-na-scenie{animation:hop .35s ease}
 @keyframes hop{0%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.kot-na-scenie{animation:none}}
@@ -136,6 +137,23 @@ button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);ou
 .pasek-info span{white-space:nowrap}
 /* na pasku przełącznik lektora ma własny wiersz pod wynikiem — inaczej napisy łamały się na średnich ekranach */
 .pasek-info .lektor{order:3;flex-basis:100%;justify-content:center}
+/* zadanie „ustaw zegar” */
+.ustawianie[hidden],.odpowiedzi[hidden]{display:none}
+.ustawianie{display:flex;flex-direction:column;align-items:center;gap:10px}
+.ustawianie .wskazowka{font-size:.9rem;color:var(--szara);text-align:center}
+.kroki{display:grid;grid-template-columns:auto auto auto;gap:8px 10px;align-items:center}
+.kroki span{font-weight:700;color:var(--noc);text-align:right}
+.krok{
+  font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.3rem;min-width:64px;min-height:48px;
+  border:none;border-radius:12px;cursor:pointer;background:var(--noc);color:#fff;box-shadow:0 4px 0 #0E1830;
+}
+.krok:active{transform:translateY(3px);box-shadow:0 1px 0 #0E1830}
+.krok:disabled,.sprawdz:disabled{opacity:.45;cursor:default}
+.sprawdz{
+  font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.3rem;padding:8px 30px;border:none;border-radius:999px;cursor:pointer;
+  background:var(--mieta);color:var(--noc);box-shadow:0 4px 0 #2A9E87;
+}
+.sprawdz:active{transform:translateY(3px);box-shadow:0 1px 0 #2A9E87}
 .komunikat{min-height:30px;text-align:center;font-weight:700;color:var(--noc)}
 .komunikat.dobrze{color:#1E8A73}
 .komunikat.zle{color:#B94B26}
@@ -206,13 +224,13 @@ footer a{color:var(--papier)}
 <section class="hero">
   <div class="srodek">
     <div class="dymek">
-      <p>W moim pokoju wszystko się poprzestawiało! Pomożesz mi znaleźć, gdzie co jest?</p>
-      <p>Popatrz na obrazek i wybierz właściwe słowo. Kliknij głośnik, a przeczytam Ci pytanie.</p>
+      <p>Tik-tak! Nauczysz się ze mną odczytywać godzinę z zegara?</p>
+      <p>Krótka wskazówka pokazuje godziny, a długa — minuty. Kliknij głośnik, a przeczytam Ci pytanie.</p>
     </div>
 
     <div class="gra">
       <div class="gra-gora">
-        <h2>Pokój Klika</h2>
+        <h2>Zegar Klika</h2>
         <div class="poziomy" role="group" aria-label="Wybierz poziom">
           <button class="poziom" data-poziom="0" aria-pressed="true">Łatwy</button>
           <button class="poziom" data-poziom="1" aria-pressed="false">Średni</button>
@@ -221,22 +239,34 @@ footer a{color:var(--papier)}
       </div>
 
       <div class="ekran" id="ekranStart">
-        <h3 id="startTytul">Łatwy: na, pod, w, obok</h3>
-        <p>10 zadań. Popatrz na obrazek i wybierz słowo, które mówi, gdzie co jest.</p>
+        <h3 id="startTytul">Łatwy: pełne godziny i wpół do</h3>
+        <p id="startOpis">10 zadań. Odczytaj, która godzina, albo sam ustaw wskazówki na zegarze.</p>
         <p><button class="lektor" role="switch" aria-checked="false"><span class="suwak"></span><span class="stan">🔇 Lektor wyłączony</span></button></p>
         <button class="znowu" id="start">Zaczynamy!</button>
       </div>
 
       <div class="gra-wlasciwa" id="graWlasciwa" hidden>
         <div class="scena">
-          <svg id="scena" viewBox="0 0 400 250" role="img" aria-label="Pokój Klika: stół, krzesło, domek, drzewo albo miski"></svg>
+          <svg id="scena" viewBox="0 0 400 250" role="img" aria-label="Zegar ze wskazówkami"></svg>
         </div>
         <div class="prawa">
           <div class="pytanie">
-            <p id="pytanie">Gdzie jest Klik?</p>
+            <p id="pytanie">Która godzina?</p>
             <button class="glosnik" id="glosnik" aria-label="Posłuchaj pytania jeszcze raz">🔊</button>
           </div>
           <div class="odpowiedzi" id="odpowiedzi" role="group" aria-label="Odpowiedzi"></div>
+          <div class="ustawianie" id="ustawianie" hidden>
+            <p class="wskazowka">Przeciągnij długą wskazówkę albo użyj przycisków.</p>
+            <div class="kroki">
+              <span>Godzina</span>
+              <button class="krok" data-zmien="-60" aria-label="Godzina wcześniej">−</button>
+              <button class="krok" data-zmien="60" aria-label="Godzina później">+</button>
+              <span>Minuty</span>
+              <button class="krok" data-zmien="-5" aria-label="5 minut wcześniej">−5</button>
+              <button class="krok" data-zmien="5" aria-label="5 minut później">+5</button>
+            </div>
+            <button class="sprawdz" id="sprawdz">Sprawdź</button>
+          </div>
           <p class="komunikat" id="komunikat" role="status"></p>
           <div class="pasek-info">
             <span>Zadanie <strong id="numer">1</strong> z 10</span>
@@ -263,9 +293,9 @@ footer a{color:var(--papier)}
   <div class="srodek">
     <h2>Dla rodziców i nauczycieli</h2>
     <ul>
-      <li>Gra uczy określania położenia: na, pod, nad, w, za, przed, obok, między, po lewej i po prawej</li>
-      <li>Pytania dotyczą różnych rzeczy — kota, miski, piłki, kłębka, ptaszka i wiewiórki — przy stole, krześle, domku i drzewie</li>
-      <li>Po każdym wyborze dziecko widzi całe zdanie, np. „Piłka jest pod krzesłem”; pytanie można odsłuchać przyciskiem z głośnikiem</li>
+      <li>Gra uczy odczytywania godziny z zegara ze wskazówkami: Łatwy — pełne godziny i wpół do, Średni — kwadranse, Trudny — co 5 minut</li>
+      <li>Są dwa rodzaje zadań: odczytaj godzinę albo (od poziomu Średni) ustaw ją sam — przeciągając długą wskazówkę lub przyciskami</li>
+      <li>Po każdym zadaniu dziecko widzi godzinę na dwa sposoby, np. „Jest 3:30”; błędne odpowiedzi to typowe pomyłki, np. godzina obok albo zamienione wskazówki</li>
       <li>Lektor jest domyślnie wyłączony — dla dziecka, które jeszcze nie czyta, włącz go przełącznikiem „Lektor”; gra zapamięta ten wybór</li>
       <li>Po błędzie gra od razu pokazuje i mówi poprawną odpowiedź</li>
       <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
@@ -299,103 +329,47 @@ footer a{color:var(--papier)}
 <script>
 (function(){
   const ZADAN = 10;
-  const PODLOGA = 222;
-  const S = 0.85;   // skala Klika na obrazku (cały kot ma ok. 72 px wysokości)
+  const S = 1.05; // skala Klika obok zegara
 
-  // ---------- Rzeczy, o które pytamy ----------
-  const RZECZY = {
-    klik:    { nazwa: "Klik",    pytanie: "Gdzie jest Klik?" },
-    miska:   { nazwa: "Miska",   pytanie: "Gdzie jest miska?" },
-    pilka:   { nazwa: "Piłka",   pytanie: "Gdzie jest piłka?" },
-    klebek:  { nazwa: "Kłębek",  pytanie: "Gdzie jest kłębek?" },
-    ptaszek: { nazwa: "Ptaszek", pytanie: "Gdzie jest ptaszek?" },
-    wiewiorka: { nazwa: "Wiewiórka", pytanie: "Gdzie jest wiewiórka?" }
-  };
-  const ZWYKLE = ["klik", "miska", "pilka", "klebek"];
-
-  // ---------- Przedmioty i miejsca ----------
-  // formy: miejscownik (na, w), narzędnik (pod, nad, za, przed), dopełniacz (obok, po lewej stronie)
-  // x — środek rzeczy, y — wysokość, na której rzecz stoi; yMaly — inna wysokość dla małych rzeczy
-  // warstwa: "tyl" (za przedmiotem), "srodek" (w domku), domyślnie przed przedmiotem
-  // rzeczy — tylko to, co naprawdę może się tam znaleźć (pod krzesło nie zmieści się kot, miska nie lata)
-  const SCENY = {
-    stol: { formy: { msc: "stole", narz: "stołem", dop: "stołu" }, miejsca: [
-      { slowo: "na",        x: 200, y: 101,             rzeczy: ZWYKLE.concat("ptaszek") },
-      { slowo: "pod",       x: 200, y: 220,             rzeczy: ZWYKLE },
-      { slowo: "nad",       x: 200, y: 64,              rzeczy: ["pilka", "ptaszek"] },
-      { slowo: "obok",      x: 62,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po lewej",  x: 62,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po prawej", x: 338, y: 220,             rzeczy: ZWYKLE }
-    ]},
-    krzeslo: { formy: { msc: "krześle", narz: "krzesłem", dop: "krzesła" }, miejsca: [
-      { slowo: "na",        x: 192, y: 146,             rzeczy: ZWYKLE },
-      { slowo: "pod",       x: 196, y: 220,             rzeczy: ["miska", "pilka", "klebek"] },
-      { slowo: "nad",       x: 192, y: 92,              rzeczy: ["pilka", "ptaszek"] },
-      { slowo: "obok",      x: 72,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po lewej",  x: 72,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po prawej", x: 330, y: 220,             rzeczy: ZWYKLE }
-    ]},
-    domek: { formy: { msc: "domku", narz: "domkiem", dop: "domku" }, miejsca: [
-      { slowo: "w",         x: 200, y: 218, yMaly: 204, warstwa: "srodek", rzeczy: ["klik", "pilka", "klebek"] },
-      { slowo: "na",        x: 200, y: 82,              rzeczy: ["klik", "ptaszek"] },
-      { slowo: "za",        x: 266, y: 220,             warstwa: "tyl", rzeczy: ["klik"] },
-      { slowo: "przed",     x: 168, y: 232,             rzeczy: ZWYKLE },
-      { slowo: "obok",      x: 62,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po lewej",  x: 62,  y: 220,             rzeczy: ZWYKLE },
-      { slowo: "po prawej", x: 338, y: 220,             rzeczy: ZWYKLE }
-    ]},
-    drzewo: { formy: { msc: "drzewie", narz: "drzewem", dop: "drzewa" }, miejsca: [
-      { slowo: "na",        x: 334, y: 127,             rzeczy: ["ptaszek", "wiewiorka"] },   // na gałęzi — kot na drzewie wyglądał na wklejonego
-      { slowo: "pod",       x: 145, y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
-      { slowo: "obok",      x: 40,  y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
-      { slowo: "po lewej",  x: 40,  y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") },
-      { slowo: "po prawej", x: 370, y: 220,             rzeczy: ZWYKLE.concat("wiewiorka") }
-    ]},
-    miski: { formy: {}, miejsca: [
-      { slowo: "między",    x: 200, y: 220,             rzeczy: ["klik", "pilka", "klebek"] }
-    ]}
-  };
-
-  // Od którego poziomu pojawia się dane słowo; „obok” tylko do Średniego (na Trudnym są „po lewej / po prawej”)
-  const POZIOM_SLOWA = { "na": 0, "pod": 0, "w": 0, "obok": 0, "nad": 1, "za": 1, "przed": 1, "między": 2, "po lewej": 2, "po prawej": 2 };
-  const SLOWA_POZIOMU = [
-    ["na", "pod", "w", "obok"],
-    ["na", "pod", "w", "obok", "nad", "za", "przed"],
-    ["na", "pod", "w", "nad", "za", "przed", "między", "po lewej", "po prawej"]
+  // ---------- Poziomy ----------
+  // minuty — które minuty mogą wypaść; ustaw — ile zadań „ustaw zegar” w rundzie
+  const POZIOMY = [
+    { minuty: [0, 30],                                 ustaw: 0, odpowiedzi: 3, opis: "Łatwy: pełne godziny i wpół do" },
+    { minuty: [0, 15, 30, 45],                         ustaw: 3, odpowiedzi: 4, opis: "Średni: kwadranse" },
+    { minuty: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], ustaw: 4, odpowiedzi: 5, opis: "Trudny: co 5 minut" }
   ];
-  const ILE_ODPOWIEDZI = [3, 4, 5];
-  const OPISY_POZIOMOW = ["Łatwy: na, pod, w, obok", "Średni: nad, za, przed", "Trudny: między, po lewej, po prawej"];
   const POCHWALY = ["Brawo!", "Świetnie!", "Tak jest!", "Dokładnie!", "Super!"];
+
+  // ---------- Godziny słowami ----------
+  const GODZ_M = ["dwunasta", "pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta"];
+  // tak, jak czytamy zegar cyfrowy: „dwunasta trzydzieści” — tak mówi lektor
+  const LICZBY = { 5: "pięć", 10: "dziesięć", 15: "piętnaście", 20: "dwadzieścia", 25: "dwadzieścia pięć", 30: "trzydzieści",
+    35: "trzydzieści pięć", 40: "czterdzieści", 45: "czterdzieści pięć", 50: "pięćdziesiąt", 55: "pięćdziesiąt pięć" };
+  // biernik do „Ustaw zegar na dwunastą trzydzieści”
+  const GODZ_B = ["dwunastą", "pierwszą", "drugą", "trzecią", "czwartą", "piątą", "szóstą", "siódmą", "ósmą", "dziewiątą", "dziesiątą", "jedenastą"];
+  function doCzytania(h, m, forma){ return (forma || GODZ_M)[h % 12] + (m ? " " + LICZBY[m] : ""); }
+  function cyfrowo(h, m){ return h + ":" + String(m).padStart(2, "0"); }
+  // czas jako minuty od 12:00 (0–719) i z powrotem; godziny zawsze 1–12
+  function naMinuty(h, m){ return (h % 12) * 60 + m; }
+  function zMinut(t){ t = ((t % 720) + 720) % 720; const h = Math.floor(t / 60); return { h: h === 0 ? 12 : h, m: t % 60 }; }
 
   const $ = id => document.getElementById(id);
   const svg = $("scena"), NS = "http://www.w3.org/2000/svg";
   let poziom = 0, nr = 0, trafione = 0, biezace = null, blokada = true, czeka = null, runda = [];
   let tura = 0; // zmienia się przy starcie i zmianie poziomu — stare oczekiwania wtedy nic nie robią
-
-  function gdzie(scena, slowo){
-    if (scena === "miski") return "między miskami";
-    const f = SCENY[scena].formy;
-    if (slowo === "na" || slowo === "w") return slowo + " " + f.msc;
-    if (slowo === "obok") return "obok " + f.dop;
-    if (slowo === "po lewej" || slowo === "po prawej") return slowo + " stronie " + f.dop;
-    return slowo + " " + f.narz;
-  }
+  let ustawione = 0; // czas na zegarze w zadaniu „ustaw zegar” (minuty od 12:00)
 
   // ---------- Rysowanie ----------
+  const CX = 165, CY = 124, R = 106;
   function el(nazwa, atr, rodzic){
     const e = document.createElementNS(NS, nazwa);
     for (const k in atr) e.setAttribute(k, atr[k]);
     (rodzic || svg).appendChild(e);
     return e;
   }
-  // grupa z animacją podskoku wewnątrz grupy z pozycją — inaczej CSS nadpisałby pozycję
-  function grupa(transform){
-    const pozycja = el("g", { transform: transform });
-    return el("g", { class: "kot-na-scenie" }, pozycja);
-  }
-  // Klik z ciałem: siedzący kot w układzie 64 × 96 (łapki na dole, y = 95)
   function kot(x, stop){
-    const g = grupa("translate(" + (x - 32 * S) + " " + (stop - 95 * S) + ") scale(" + S + ")");
+    const pozycja = el("g", { transform: "translate(" + (x - 32 * S) + " " + (stop - 95 * S) + ") scale(" + S + ")" });
+    const g = el("g", { class: "kot-na-scenie" }, pozycja);
     el("path", { d: "M48 86 C66 84 68 60 57 52", fill: "none", stroke: "#FF8A3D", "stroke-width": 7, "stroke-linecap": "round" }, g);
     el("ellipse", { cx: 32, cy: 72, rx: 20, ry: 22, fill: "#FF8A3D" }, g);
     el("ellipse", { cx: 32, cy: 76, rx: 10, ry: 14, fill: "#FFC08F" }, g);
@@ -412,120 +386,42 @@ footer a{color:var(--papier)}
     el("path", { d: "M32 41 l-3 2.6 h6 Z", fill: "#1B2A4A" }, g);
     el("path", { d: "M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10", stroke: "#1B2A4A", "stroke-width": 1.6, "stroke-linecap": "round" }, g);
   }
-  function miskaRzecz(x, stop){
-    const g = grupa("translate(" + x + " " + stop + ")");
-    el("path", { d: "M-28 -20 H28 L21 0 H-21 Z", fill: "#4D96FF" }, g);
-    el("ellipse", { cx: 0, cy: -20, rx: 28, ry: 5, fill: "#3A78CC" }, g);
-    el("ellipse", { cx: 0, cy: -21, rx: 21, ry: 3, fill: "#B5733F" }, g);
-  }
-  function pilka(x, stop){
-    const g = grupa("translate(" + x + " " + (stop - 15) + ")");
-    el("circle", { cx: 0, cy: 0, r: 15, fill: "#E5484D" }, g);
-    el("path", { d: "M-15 0 Q0 -9 15 0", fill: "none", stroke: "#fff", "stroke-width": 3.5 }, g);
-    el("path", { d: "M-15 0 Q0 9 15 0", fill: "none", stroke: "#FFD447", "stroke-width": 3.5 }, g);
-    el("circle", { cx: -5, cy: -7, r: 3, fill: "#fff", opacity: ".7" }, g);
-  }
-  function klebek(x, stop){
-    const g = grupa("translate(" + x + " " + (stop - 14) + ")");
-    el("path", { d: "M10 10 C24 14 26 4 34 10", fill: "none", stroke: "#C2378F", "stroke-width": 2.5, "stroke-linecap": "round" }, g);
-    el("circle", { cx: 0, cy: 0, r: 14, fill: "#F15BB5" }, g);
-    el("path", { d: "M-11 -6 Q0 2 11 -8 M-13 2 Q0 10 12 2 M-6 -12 Q-2 0 -8 12 M5 -13 Q8 0 3 13", fill: "none", stroke: "#C2378F", "stroke-width": 2, "stroke-linecap": "round" }, g);
-  }
-  // Wiewiórka siedząca bokiem (głowa w prawo), z dużym puszystym ogonem
-  function wiewiorka(x, stop){
-    const g = grupa("translate(" + x + " " + stop + ")");
-    el("ellipse", { cx: -11, cy: -22, rx: 9, ry: 17, fill: "#C8763F", transform: "rotate(-15 -11 -22)" }, g);
-    el("ellipse", { cx: -10, cy: -23, rx: 4.5, ry: 11, fill: "#E39A5F", transform: "rotate(-15 -10 -23)" }, g);
-    el("ellipse", { cx: 2, cy: -11, rx: 9, ry: 11, fill: "#A0522D" }, g);
-    el("ellipse", { cx: 5, cy: -9, rx: 4.5, ry: 7, fill: "#F2C79A" }, g);
-    el("path", { d: "M3 -29 L4 -38 L9 -30 Z", fill: "#A0522D" }, g);
-    el("circle", { cx: 7, cy: -24, r: 7, fill: "#A0522D" }, g);
-    el("circle", { cx: 9.5, cy: -25, r: 1.5, fill: "#1B2A4A" }, g);
-    el("circle", { cx: 13.6, cy: -22.5, r: 1.2, fill: "#1B2A4A" }, g);
-    el("ellipse", { cx: 4, cy: -1, rx: 6, ry: 2.2, fill: "#8A4422" }, g);
-  }
-  function ptaszek(x, stop){
-    const g = grupa("translate(" + x + " " + stop + ")");
-    el("path", { d: "M-3 0 V-6 M3 0 V-6", stroke: "#F77F00", "stroke-width": 2, "stroke-linecap": "round" }, g);
-    el("path", { d: "M-12 -14 L-22 -18 L-20 -10 Z", fill: "#2F6FC9" }, g);
-    el("ellipse", { cx: 0, cy: -14, rx: 13, ry: 9, fill: "#4D96FF" }, g);
-    el("ellipse", { cx: -2, cy: -14, rx: 7, ry: 5, fill: "#8DBBFF" }, g);
-    el("circle", { cx: 10, cy: -21, r: 7, fill: "#4D96FF" }, g);
-    el("path", { d: "M16 -22 L22 -20 L16 -18 Z", fill: "#F77F00" }, g);
-    el("circle", { cx: 12, cy: -23, r: 1.6, fill: "#1B2A4A" }, g);
-  }
-  const RYSUJ_RZECZ = { klik: kot, miska: miskaRzecz, pilka: pilka, klebek: klebek, ptaszek: ptaszek, wiewiorka: wiewiorka };
-
-  function tlo(){
+  let wskGodz = null, wskMin = null;
+  function rysujZegar(t){
     svg.innerHTML = "";
-    el("rect", { x: 0, y: 0, width: 400, height: PODLOGA, fill: "#FDF0DC" });
-    el("rect", { x: 0, y: PODLOGA, width: 400, height: 250 - PODLOGA, fill: "#E3C9A4" });
-    el("path", { d: "M0 " + PODLOGA + " H400", stroke: "#CFAF84", "stroke-width": 3 });
-  }
-  // Drewniany stół z obrusem — pod blatem zmieści się cały Klik
-  function stol(){
-    el("rect", { x: 124, y: 112, width: 13, height: PODLOGA - 112, rx: 3, fill: "#8A5634" });
-    el("rect", { x: 263, y: 112, width: 13, height: PODLOGA - 112, rx: 3, fill: "#8A5634" });
-    el("rect", { x: 108, y: 100, width: 184, height: 14, rx: 4, fill: "#B5733F" });
-    el("path", { d: "M114 100 H286 V118 Q272 124 258 118 Q244 124 230 118 Q216 124 202 118 Q188 124 174 118 Q160 124 146 118 Q132 124 114 118 Z", fill: "#FF8A80" });
-    el("path", { d: "M140 100 V120 M170 100 V121 M200 100 V120 M230 100 V121 M260 100 V120", stroke: "#fff", "stroke-width": 3, opacity: ".55" });
-  }
-  // Krzesło z boku: oparcie po prawej, poduszka na siedzisku, pod spodem miejsce na małe rzeczy
-  function krzeslo(){
-    el("rect", { x: 162, y: 156, width: 10, height: PODLOGA - 156, rx: 3, fill: "#8A5634" });
-    el("rect", { x: 226, y: 156, width: 10, height: PODLOGA - 156, rx: 3, fill: "#8A5634" });
-    el("rect", { x: 226, y: 72, width: 12, height: 88, rx: 4, fill: "#8A5634" });
-    el("rect", { x: 222, y: 72, width: 20, height: 12, rx: 5, fill: "#B5733F" });
-    el("rect", { x: 156, y: 150, width: 86, height: 10, rx: 3, fill: "#B5733F" });
-    el("rect", { x: 160, y: 143, width: 64, height: 8, rx: 4, fill: "#7FB7E8" });
-  }
-  // Koci domek: dach, ściana z okrągłymi drzwiczkami (wycięte, żeby było widać, co jest w środku)
-  function domekWnetrze(){
-    el("circle", { cx: 200, cy: 178, r: 30, fill: "#5A3A26" });
-  }
-  function domekPrzod(){
-    el("path", { d: "M136 126 H264 V" + PODLOGA + " H136 Z M170 178 a30 30 0 1 0 60 0 a30 30 0 1 0 -60 0 Z", fill: "#F2B36B", "fill-rule": "evenodd" });
-    el("circle", { cx: 200, cy: 178, r: 30, fill: "none", stroke: "#D38E44", "stroke-width": 5 });
-    el("path", { d: "M124 130 L200 74 L276 130 Z", fill: "#E5484D" });
-    el("path", { d: "M124 130 L200 74 L276 130", fill: "none", stroke: "#B9343A", "stroke-width": 5, "stroke-linejoin": "round" });
-  }
-  // Drzewo: wysoka, szeroka korona, żeby pod nią było wyraźnie widać, co tam jest (a nie „przed drzewem”)
-  function drzewo(){
-    el("ellipse", { cx: 205, cy: 224, rx: 118, ry: 5, fill: "#CDB08A" }); // cień korony na ziemi
-    el("rect", { x: 193, y: 120, width: 24, height: PODLOGA - 120, rx: 5, fill: "#8A5634" });
-    el("circle", { cx: 140, cy: 96, r: 40, fill: "#4CAF6A" });
-    el("circle", { cx: 270, cy: 96, r: 40, fill: "#4CAF6A" });
-    el("circle", { cx: 205, cy: 82, r: 58, fill: "#5BBE78" });
-    el("circle", { cx: 205, cy: 50, r: 40, fill: "#6CCB88" });
-    // gałąź wystająca z korony — na niej siada ptaszek albo wiewiórka
-    el("path", { d: "M214 152 Q270 138 352 124", fill: "none", stroke: "#8A5634", "stroke-width": 8, "stroke-linecap": "round" });
-    el("ellipse", { cx: 356, cy: 118, rx: 9, ry: 5, fill: "#5BBE78", transform: "rotate(-20 356 118)" });
-  }  function miska(x){
-    el("path", { d: "M" + (x - 44) + " 198 H" + (x + 44) + " L" + (x + 34) + " " + PODLOGA + " H" + (x - 34) + " Z", fill: "#3ECFB2" });
-    el("ellipse", { cx: x, cy: 198, rx: 44, ry: 7, fill: "#2A9E87" });
-    el("ellipse", { cx: x, cy: 197, rx: 34, ry: 4, fill: "#B5733F" });
-  }
-
-  function rysuj(nazwaSceny, m, rzecz){
-    tlo();
-    const y = (rzecz !== "klik" && m.yMaly !== undefined) ? m.yMaly : m.y;
-    const narysujRzecz = () => RYSUJ_RZECZ[rzecz](m.x, y);
-    if (m.warstwa === "tyl") narysujRzecz();
-    if (nazwaSceny === "stol") stol();
-    if (nazwaSceny === "krzeslo") krzeslo();
-    if (nazwaSceny === "drzewo") drzewo();
-    if (nazwaSceny === "domek"){ domekWnetrze(); if (m.warstwa === "srodek") narysujRzecz(); domekPrzod(); }
-    if (nazwaSceny === "miski"){ miska(80); miska(320); }
-    if (!m.warstwa) narysujRzecz();
-    // piłka w powietrzu — kreski pod spodem pokazują, że właśnie leci
-    if (m.slowo === "nad" && rzecz === "pilka"){
-      el("path", { d: "M" + (m.x - 10) + " " + (y + 6) + " v8 M" + m.x + " " + (y + 8) + " v10 M" + (m.x + 10) + " " + (y + 6) + " v8", stroke: "#E5484D", "stroke-width": 2.5, "stroke-linecap": "round", opacity: ".5" });
+    el("rect", { x: 0, y: 0, width: 400, height: 250, fill: "#FDF0DC" });
+    el("rect", { x: 0, y: 236, width: 400, height: 14, fill: "#E3C9A4" });
+    // tarcza
+    el("circle", { cx: CX, cy: CY + 4, r: R + 8, fill: "rgba(0,0,0,.08)" });
+    el("circle", { cx: CX, cy: CY, r: R + 8, fill: "#FF8A3D" });
+    el("circle", { cx: CX, cy: CY, r: R, fill: "#fff" });
+    for (let i = 0; i < 60; i++){
+      const a = i * 6 * Math.PI / 180, duza = i % 5 === 0;
+      const r1 = duza ? R - 12 : R - 7;
+      el("line", { x1: CX + Math.sin(a) * r1, y1: CY - Math.cos(a) * r1, x2: CX + Math.sin(a) * (R - 3), y2: CY - Math.cos(a) * (R - 3),
+        stroke: duza ? "#1B2A4A" : "#B9C2D0", "stroke-width": duza ? 3 : 1.5, "stroke-linecap": "round" });
     }
+    for (let n = 1; n <= 12; n++){
+      const a = n * 30 * Math.PI / 180;
+      const tx = el("text", { x: CX + Math.sin(a) * (R - 30), y: CY - Math.cos(a) * (R - 30) + 8, "text-anchor": "middle",
+        "font-family": "'Baloo 2', sans-serif", "font-weight": 700, "font-size": 24, fill: "#1B2A4A" });
+      tx.textContent = n;
+    }
+    // wskazówki: krótka granatowa — godziny, długa pomarańczowa — minuty
+    wskGodz = el("line", { x1: CX, y1: CY, x2: CX, y2: CY - 52, stroke: "#1B2A4A", "stroke-width": 9, "stroke-linecap": "round" });
+    wskMin = el("line", { x1: CX, y1: CY, x2: CX, y2: CY - 84, stroke: "#FF8A3D", "stroke-width": 6, "stroke-linecap": "round" });
+    el("circle", { cx: CX, cy: CY, r: 7, fill: "#1B2A4A" });
+    ustawWskazowki(t);
+    kot(330, 236);
+  }
+  function ustawWskazowki(t){
+    const { h, m } = zMinut(t);
+    wskGodz.setAttribute("transform", "rotate(" + ((h % 12) * 30 + m / 2) + " " + CX + " " + CY + ")");
+    wskMin.setAttribute("transform", "rotate(" + (m * 6) + " " + CX + " " + CY + ")");
   }
 
   // ---------- Mowa ----------
   // Wybieramy najbardziej naturalny polski głos, jaki ma urządzenie.
-  // Domyślny w Chrome na Windows (Microsoft Adam/Paulina) brzmi bardzo sztucznie.
   const PREFEROWANE_GLOSY = [
     /Natural|Online/i,          // Edge: Microsoft Zofia / Marek (Natural)
     /Google/i,                  // Chrome i Android: Google polski
@@ -546,13 +442,11 @@ footer a{color:var(--papier)}
     wybierzGlos();
     window.speechSynthesis.addEventListener("voiceschanged", wybierzGlos);
   }
-  // Zwraca obietnicę, która kończy się, gdy głos skończy mówić — dzięki temu następne zadanie
-  // nie ucina zdania w połowie. Zapas czasu na wypadek, gdyby przeglądarka nie zgłosiła końca.
-  let mowa = null; // trzymamy wypowiedź, bo Chrome potrafi ją przerwać, gdy zniknie z pamięci
-  // Lektor można wyłączyć (niektóre dzieci czytają same) — wybór zapamiętujemy na tym urządzeniu.
+  // Lektor domyślnie wyłączony — wybór zapamiętujemy na tym urządzeniu.
   // Przycisk z głośnikiem przy pytaniu czyta zawsze, bo dziecko samo o to prosi.
-  let lektor = false; // domyślnie wyłączony — włącza się przełącznikiem „Lektor”
+  let lektor = false;
   try { lektor = localStorage.getItem("kotklik-lektor") === "wl"; } catch(e){}
+  let mowa = null; // trzymamy wypowiedź, bo Chrome potrafi ją przerwać, gdy zniknie z pamięci
   function powiedz(tekst, zawsze){
     return new Promise(gotowe => {
       if (!lektor && !zawsze) return gotowe();
@@ -578,58 +472,59 @@ footer a{color:var(--papier)}
     return t;
   }
   function losowy(t){ return t[Math.floor(Math.random() * t.length)]; }
-  function slowoNaPoziomie(slowo){
-    if (POZIOM_SLOWA[slowo] > poziom) return false;
-    if (slowo === "obok" && poziom === 2) return false;
-    return true;
-  }
-  // Talia na rundę: każde (przedmiot + słowo) pojawia się, zanim któreś się powtórzy.
-  // Nowe słowa poziomu trafiają do talii dwa razy. Rzecz, o którą pytamy, losujemy spośród pasujących.
+
+  // Runda: losowe godziny bez powtórek; zadania „ustaw zegar” rozrzucone po rundzie (nigdy na samym początku)
   function przygotujRunde(){
-    const pula = [];
-    for (const nazwa in SCENY){
-      SCENY[nazwa].miejsca.forEach(m => {
-        if (!slowoNaPoziomie(m.slowo)) return;
-        pula.push({ scena: nazwa, m: m });
-        if (POZIOM_SLOWA[m.slowo] === poziom && poziom > 0) pula.push({ scena: nazwa, m: m });
-      });
-    }
-    const talia = [];
-    while (talia.length < ZADAN){
-      for (const z of tasuj(pula.slice())){
-        if (talia.length && talia[talia.length - 1].m === z.m) continue;
-        talia.push(z);
-        if (talia.length === ZADAN) break;
-      }
-    }
-    // rzecz: różna od poprzedniej, jeśli się da — żeby pytania były urozmaicone
-    let poprzednia = null;
-    runda = talia.map(z => {
-      const mozliwe = z.m.rzeczy.filter(r => r !== poprzednia);
-      const rzecz = losowy(mozliwe.length ? mozliwe : z.m.rzeczy);
-      poprzednia = rzecz;
-      return { scena: z.scena, m: z.m, rzecz: rzecz };
+    const P = POZIOMY[poziom];
+    const wszystkie = [];
+    for (let h = 1; h <= 12; h++) P.minuty.forEach(m => wszystkie.push(naMinuty(h, m)));
+    // na Średnim i Trudnym pełne godziny rzadziej — ćwiczymy nowe rzeczy
+    const pula = tasuj(wszystkie.filter(t => poziom === 0 || t % 60 !== 0 || Math.random() < 0.25));
+    const rodzaje = Array(ZADAN).fill("czytaj");
+    tasuj([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, P.ustaw).forEach(i => { rodzaje[i] = "ustaw"; });
+    runda = rodzaje.map((rodzaj, i) => ({ rodzaj: rodzaj, t: pula[i % pula.length] }));
+    // zegar do ustawiania startuje z 12:00 — takiej godziny nie dajemy do ustawienia
+    runda.forEach(z => {
+      if (z.rodzaj !== "ustaw" || z.t !== 0) return;
+      const inne = runda.find(x => x.rodzaj === "czytaj"); // zamieniamy się godziną z zadaniem „która godzina?”
+      [z.t, inne.t] = [inne.t, z.t];
     });
   }
-  // Słowa, których nie dajemy razem w odpowiedziach — na płaskim obrazku trudno je odróżnić
-  const NIE_RAZEM = [["pod", "przed"]];
-  function propozycje(dobre){
-    const reszta = [];
-    tasuj(SLOWA_POZIOMU[poziom].filter(s => s !== dobre)).forEach(s => {
-      if (reszta.length >= ILE_ODPOWIEDZI[poziom] - 1) return;
-      const wybrane = reszta.concat(dobre);
-      if (NIE_RAZEM.some(para => para.includes(s) && para.some(p => p !== s && wybrane.includes(p)))) return;
-      reszta.push(s);
-    });
-    // kolejność odpowiedzi zawsze taka sama jak na liście poziomu — łatwiej znaleźć słowo
-    return SLOWA_POZIOMU[poziom].filter(s => s === dobre || reszta.includes(s));
+  // Błędne odpowiedzi, które naprawdę się mylą: godzina obok, zamienione wskazówki, minuty obok
+  function propozycje(t){
+    const P = POZIOMY[poziom];
+    const { h, m } = zMinut(t);
+    const dozwolone = x => P.minuty.includes(zMinut(x).m);
+    const kandydaci = [
+      naMinuty(h + 1, m), naMinuty(h - 1, m),                        // np. „wpół do czwartej” to 3:30, nie 4:30
+      naMinuty(m === 0 ? 12 : m / 5, (h % 12) * 5),                  // zamienione wskazówki
+      t + 5, t - 5, naMinuty(h, (60 - m) % 60), t + 15, t - 15, t + 30
+    ].map(x => ((x % 720) + 720) % 720).filter(x => x !== t && dozwolone(x));
+    const zle = [];
+    tasuj(kandydaci.slice(0, 3)).concat(tasuj(kandydaci.slice(3))).forEach(x => { if (!zle.includes(x)) zle.push(x); });
+    while (zle.length < P.odpowiedzi - 1){
+      const x = naMinuty(1 + Math.floor(Math.random() * 12), losowy(P.minuty));
+      if (x !== t && !zle.includes(x)) zle.push(x);
+    }
+    // kolejność odpowiedzi od najwcześniejszej — łatwiej porównać
+    return zle.slice(0, P.odpowiedzi - 1).concat(t).sort((a, b) => a - b);
+  }
+  function tekstPytania(z){
+    return z.rodzaj === "czytaj" ? "Która godzina?" : "Ustaw zegar na " + cyfrowo(zMinut(z.t).h, zMinut(z.t).m);
+  }
+  function mowionePytanie(z){
+    const { h, m } = zMinut(z.t);
+    return z.rodzaj === "czytaj" ? "Która godzina?" : "Ustaw zegar na " + doCzytania(h, m, GODZ_B) + ".";
   }
 
   function pokazStart(){
     clearTimeout(czeka);
     tura++;
     blokada = true;
-    $("startTytul").textContent = OPISY_POZIOMOW[poziom];
+    $("startTytul").textContent = POZIOMY[poziom].opis;
+    $("startOpis").textContent = POZIOMY[poziom].ustaw
+      ? "10 zadań. Odczytaj, która godzina, albo sam ustaw wskazówki na zegarze."
+      : "10 zadań. Popatrz na wskazówki i wybierz, która godzina.";
     $("ekranStart").hidden = false;
     $("graWlasciwa").hidden = true;
     $("ekranKoniec").hidden = true;
@@ -638,6 +533,7 @@ footer a{color:var(--papier)}
     clearTimeout(czeka);
     tura++;
     nr = 0; trafione = 0;
+    biezace = null;
     przygotujRunde();
     $("trafione").textContent = "0";
     $("ekranStart").hidden = true;
@@ -647,37 +543,41 @@ footer a{color:var(--papier)}
   }
   function nastepne(){
     if (nr >= ZADAN){ koniec(); return; }
-    const poprzednie = biezace && nr > 0 ? biezace.rzecz : null;
+    const poprzednie = biezace;
     biezace = runda[nr];
+    const { h, m } = zMinut(biezace.t);
     $("numer").textContent = nr + 1;
     $("komunikat").textContent = "";
     $("komunikat").className = "komunikat";
-    $("pytanie").textContent = RZECZY[biezace.rzecz].pytanie;
-    rysuj(biezace.scena, biezace.m, biezace.rzecz);
+    $("pytanie").textContent = tekstPytania(biezace);
+    const ustaw = biezace.rodzaj === "ustaw";
+    $("odpowiedzi").hidden = ustaw;
+    $("ustawianie").hidden = !ustaw;
+    svg.classList.toggle("przeciaganie", ustaw);
+    ustawione = 0; // zegar do ustawiania startuje z 12:00
+    rysujZegar(ustaw ? ustawione : biezace.t);
     const box = $("odpowiedzi");
     box.innerHTML = "";
-    propozycje(biezace.m.slowo).forEach(s => {
-      const b = document.createElement("button");
-      b.className = "odp";
-      b.textContent = s;
-      b.dataset.slowo = s;
-      b.addEventListener("click", () => wybierz(b));
-      box.appendChild(b);
-    });
-    // Pytanie czytamy tylko wtedy, gdy pytamy o coś innego niż poprzednio — pełne pytanie zawsze pod głośnikiem
-    if (biezace.rzecz !== poprzednie) powiedz(RZECZY[biezace.rzecz].pytanie);
+    if (ustaw){
+      $("ustawianie").querySelectorAll("button").forEach(b => { b.disabled = false; });
+    } else {
+      propozycje(biezace.t).forEach(t => {
+        const b = document.createElement("button");
+        const c = zMinut(t);
+        b.className = "odp";
+        b.textContent = cyfrowo(c.h, c.m);
+        b.dataset.t = t;
+        b.addEventListener("click", () => wybierz(b));
+        box.appendChild(b);
+      });
+    }
+    // „Która godzina?” czytamy tylko na zmianę rodzaju zadania; „Ustaw zegar na…” zawsze, bo za każdym razem jest inna godzina
+    if (ustaw || !poprzednie || poprzednie.rodzaj !== biezace.rodzaj) powiedz(mowionePytanie(biezace));
     blokada = false;
   }
-  function wybierz(btn){
-    if (blokada) return;
-    blokada = true;
-    const dobrze = btn.dataset.slowo === biezace.m.slowo;
-    $("odpowiedzi").querySelectorAll(".odp").forEach(b => {
-      b.disabled = true;
-      if (b.dataset.slowo === biezace.m.slowo) b.classList.add("dobra");
-      else if (b !== btn) b.classList.add("przygaszona");
-    });
-    const zdanie = RZECZY[biezace.rzecz].nazwa + " jest " + gdzie(biezace.scena, biezace.m.slowo) + ".";
+  function ocen(dobrze){
+    const { h, m } = zMinut(biezace.t);
+    const zdanie = "Jest " + doCzytania(h, m) + ".";
     let mowione;
     if (dobrze){
       trafione++;
@@ -686,28 +586,100 @@ footer a{color:var(--papier)}
       $("komunikat").className = "komunikat dobrze";
       dzwiek(true);
     } else {
-      btn.classList.add("zla");
       mowione = "Nie tym razem. " + zdanie;
       $("komunikat").className = "komunikat zle";
       dzwiek(false);
     }
-    $("komunikat").textContent = mowione;
+    // napis taki sam jak to, co mówi lektor — tylko godzina cyframi
+    $("komunikat").textContent = mowione.replace(zdanie, "Jest " + cyfrowo(h, m) + ".");
     nr++;
-    // Następne zadanie dopiero, gdy głos skończy mówić (i minie chwila na popatrzenie na obrazek)
+    // Następne zadanie dopiero, gdy głos skończy mówić (i minie chwila na popatrzenie na zegar)
     const mojaTura = tura;
     const koniecMowy = new Promise(r => setTimeout(r, 250)).then(() => powiedz(mowione));
-    const minimum = new Promise(r => { czeka = setTimeout(r, dobrze ? 1600 : 2400); });
+    const minimum = new Promise(r => { czeka = setTimeout(r, dobrze ? 1800 : 3000); });
     Promise.all([koniecMowy, minimum]).then(() => {
       if (mojaTura === tura) czeka = setTimeout(nastepne, 400);
     });
   }
+  function wybierz(btn){
+    if (blokada) return;
+    blokada = true;
+    const dobre = String(biezace.t);
+    const dobrze = btn.dataset.t === dobre;
+    $("odpowiedzi").querySelectorAll(".odp").forEach(b => {
+      b.disabled = true;
+      if (b.dataset.t === dobre) b.classList.add("dobra");
+      else if (b !== btn) b.classList.add("przygaszona");
+    });
+    if (!dobrze) btn.classList.add("zla");
+    ocen(dobrze);
+  }
+  function sprawdz(){
+    if (blokada) return;
+    blokada = true;
+    $("ustawianie").querySelectorAll("button").forEach(b => { b.disabled = true; });
+    svg.classList.remove("przeciaganie");
+    const dobrze = ustawione === biezace.t;
+    // po błędzie wskazówki same przechodzą na właściwą godzinę
+    if (!dobrze) przesunDo(biezace.t);
+    ocen(dobrze);
+  }
+  function przesunDo(cel){
+    const od = ustawione, krok = 16, czas = 700;
+    let roznica = cel - od;
+    if (roznica > 360) roznica -= 720;
+    if (roznica < -360) roznica += 720;
+    const t0 = performance.now();
+    const ruch = teraz => {
+      const p = Math.min(1, (teraz - t0) / czas);
+      ustawWskazowki(od + roznica * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(ruch);
+    };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) ustawWskazowki(cel);
+    else requestAnimationFrame(ruch);
+    ustawione = cel;
+  }
+  function zmien(o){
+    if (blokada || biezace.rodzaj !== "ustaw") return;
+    ustawione = ((ustawione + o) % 720 + 720) % 720;
+    ustawWskazowki(ustawione);
+  }
+
+  // Przeciąganie długiej wskazówki: pozycja palca wyznacza minuty (co 5),
+  // a przejście przez dwunastkę przesuwa godzinę — jak w prawdziwym zegarze.
+  let ciagnie = false;
+  function minutaZPunktu(e){
+    const p = svg.createSVGPoint();
+    p.x = e.clientX; p.y = e.clientY;
+    const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    let kat = Math.atan2(q.x - CX, -(q.y - CY)) * 180 / Math.PI;
+    if (kat < 0) kat += 360;
+    return (Math.round(kat / 30) * 5) % 60;
+  }
+  function przeciagnij(e){
+    const nowa = minutaZPunktu(e), stara = ustawione % 60;
+    let roznica = nowa - stara;
+    if (roznica > 30) roznica -= 60;
+    if (roznica < -30) roznica += 60;
+    if (roznica) zmien(roznica);
+  }
+  svg.addEventListener("pointerdown", e => {
+    if (blokada || !biezace || biezace.rodzaj !== "ustaw") return;
+    ciagnie = true;
+    svg.setPointerCapture(e.pointerId);
+    przeciagnij(e);
+  });
+  svg.addEventListener("pointermove", e => { if (ciagnie) przeciagnij(e); });
+  svg.addEventListener("pointerup", () => { ciagnie = false; });
+  svg.addEventListener("pointercancel", () => { ciagnie = false; });
+
   function koniec(){
     $("graWlasciwa").hidden = true;
     $("ekranKoniec").hidden = false;
     $("wynikGwiazdki").textContent = "★".repeat(trafione) + "☆".repeat(ZADAN - trafione);
     $("wynikTytul").textContent = "Zdobyłeś " + trafione + " z " + ZADAN + " gwiazd!";
     $("wynikOpis").textContent =
-      trafione === ZADAN ? "Wszystko bezbłędnie! Wiesz, gdzie co leży w pokoju Klika." :
+      trafione === ZADAN ? "Wszystko bezbłędnie! Zegar nie ma przed Tobą tajemnic." :
       trafione >= 7 ? "Pięknie! Spróbuj następnego poziomu." :
       "Dobra robota! Zagraj jeszcze raz — z każdą rundą idzie lepiej.";
     powiedz($("wynikTytul").textContent);
@@ -735,7 +707,7 @@ footer a{color:var(--papier)}
   }
 
   // ---------- Spacer kota z gratulacjami ----------
-  const KOMPLEMENTY = ["Znalazłeś mnie!", "Super oko!", "Brawo, detektywie!", "Mistrz kryjówek!"];
+  const KOMPLEMENTY = ["Tik-tak, brawo!", "Zawsze na czas!", "Mistrz zegara!", "Punktualnie jak kot!"];
   const kotWedrowiec = $("kotWedrowiec"), dymekKota = $("dymekKota");
   const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let kotTimeouty = [];
@@ -767,7 +739,9 @@ footer a{color:var(--papier)}
   }));
   $("start").addEventListener("click", start);
   $("znowu").addEventListener("click", start);
-  $("glosnik").addEventListener("click", () => { if (biezace) powiedz(RZECZY[biezace.rzecz].pytanie, true); });
+  $("glosnik").addEventListener("click", () => { if (biezace) powiedz(mowionePytanie(biezace), true); });
+  document.querySelectorAll("[data-zmien]").forEach(b => b.addEventListener("click", () => zmien(Number(b.dataset.zmien))));
+  $("sprawdz").addEventListener("click", sprawdz);
   const przyciskiLektora = document.querySelectorAll(".lektor");
   function pokazLektora(){
     przyciskiLektora.forEach(b => {
