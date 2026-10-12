@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plątanina Klika — rozplątywanie sznurków, łamigłówka logiczna dla dzieci | KotKlik</title>
+<meta name="description" content="Łamigłówka dla dzieci: przekładaj końce sznurków na drewnianym kółku tak, żeby żadne się nie krzyżowały. Ćwiczy myślenie przestrzenne i planowanie. Od 7 lat. Bez reklam.">
+<link rel="canonical" href="https://kotklik.pl/gry/platanina-klika">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Plątanina Klika — rozplątywanie sznurków, łamigłówka logiczna dla dzieci | KotKlik">
+<meta property="og:description" content="Przekładaj końce sznurków tak, żeby żadne się nie krzyżowały. Łamigłówka logiczna dla dzieci od 7 lat.">
+<meta property="og:url" content="https://kotklik.pl/gry/platanina-klika">
+<meta property="og:image" content="https://kotklik.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KotKlik - gry edukacyjne dla dzieci. Kot Klik na tle nocnego nieba.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+  --blad:#E5484D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+button{font:inherit}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+.ekran-startowy{min-height:100svh;display:flex;flex-direction:column}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden;flex:0 0 auto}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka h1{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
+  color:var(--papier);letter-spacing:-.01em;
+}
+.marka h1 span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media(prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 20px;position:relative;z-index:1;flex:1}
+.dymek{
+  background:var(--papier);border-radius:20px;padding:14px 20px;max-width:620px;
+  margin-bottom:14px;position:relative;box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;
+  border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.gra{background:var(--papier);border-radius:24px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.gra-gora{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.gra-gora h2{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;min-width:min(100%,330px)}
+.poziom{
+  font-weight:700;font-size:.95rem;padding:6px 10px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--klik);border-color:var(--klik);color:#fff}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+/* ---------- Plansza ---------- */
+.plansza{position:relative;border-radius:18px;overflow:hidden;line-height:0;background:#FDF0DC;box-shadow:inset 0 0 0 2px #F0E6D6}
+.plansza{background:#E9E2D5}
+.plansza svg{display:block;width:min(100%,560px,70vh);aspect-ratio:1/1;height:auto;margin:0 auto;touch-action:none}
+.plansza canvas{display:block;width:100%;touch-action:none}
+.plansza svg[hidden],.plansza canvas[hidden]{display:none}
+.kolek{cursor:pointer}
+.maly:disabled{opacity:.4;cursor:default}
+.kolek.trzesie{animation:trzes .4s ease}
+@keyframes trzes{20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.kolek.trzesie{animation:none}}
+.komunikat{min-height:26px;margin-top:8px;text-align:center;font-weight:700;color:#B94B26}
+.dziurka.wolna{cursor:pointer}
+.zacheta{animation:zacheta 1s ease-in-out infinite}
+@keyframes zacheta{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.zacheta{animation:none}}.brawo{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:rgba(255,247,236,.86);text-align:center;line-height:1.5;padding:16px;
+}
+.brawo[hidden]{display:none}
+.brawo-tytul{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:clamp(1.6rem,6vw,2.2rem);color:var(--noc)}
+.brawo p{font-weight:700;color:#3A475C}
+
+/* kłębki za rozplątanie i robótki Klika */
+.klebki-wynik{display:flex;gap:10px;line-height:0}
+.brawo .klebek{width:54px;height:54px;margin:0;aspect-ratio:auto;opacity:.25;filter:grayscale(1);transform:scale(.75);transition:opacity .3s,filter .3s,transform .3s}
+.brawo .klebek.zdobyty{opacity:1;filter:none;transform:scale(1);animation:wskok .6s ease-out}
+@keyframes wskok{0%{transform:translateY(-40px) scale(.4) rotate(-120deg)}65%{transform:translateY(4px) scale(1.15) rotate(12deg)}100%{transform:translateY(0) scale(1) rotate(0)}}
+.brawo-rada{font-weight:600 !important;font-size:.95rem;max-width:300px}
+.nowa-robotka{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:8px 14px;box-shadow:0 3px 0 rgba(0,0,0,.1);line-height:1.3}
+.nowa-robotka[hidden]{display:none}
+.brawo .nowa-robotka svg{width:58px;height:58px;margin:0;aspect-ratio:auto;flex:none;animation:bujanie 1.4s ease-in-out infinite}
+@keyframes bujanie{50%{transform:rotate(-8deg) scale(1.08)}}
+.koszyk{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:12px;padding:12px;border-radius:16px;background:#FFF7EC;box-shadow:inset 0 0 0 2px #F0E6D6;line-height:1.3}
+.koszyk-gora{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--noc)}
+.koszyk-gora svg{width:28px;height:28px}
+.pasek-postepu{width:min(100%,320px);height:12px;border-radius:999px;background:#EADFCB;overflow:hidden}
+.pasek-postepu span{display:block;height:100%;width:0;border-radius:999px;background:var(--klik);transition:width .8s ease}
+.koszyk-opis{font-weight:700;font-size:.9rem;color:var(--szara);text-align:center}
+.robotki{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.robotka{width:46px;height:46px;transition:opacity .4s,filter .4s}
+.robotka.brak{opacity:.22;filter:grayscale(1)}
+@media(prefers-reduced-motion:reduce){.klebek.zdobyty,.nowa-robotka svg{animation:none}}
+.pasek-info{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 10px;margin-top:12px;font-weight:700;color:var(--szara);font-size:.95rem}
+.pasek-info strong{color:var(--noc)}
+.pasek-info span{white-space:nowrap}
+.przyciski{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:12px}
+.maly{
+  font-weight:700;font-size:.95rem;padding:8px 16px;border:2px solid var(--noc);border-radius:999px;
+  background:transparent;color:var(--noc);cursor:pointer;
+}
+.znowu{
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.15rem;
+  background:var(--klik);color:#fff;border:none;padding:10px 28px;border-radius:999px;cursor:pointer;
+  box-shadow:0 4px 0 #C4621F;
+}
+.znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+
+.link-wstecz{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;text-decoration:none;color:var(--papier);opacity:.92}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:700px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.kot-wedrowiec{transition:none}.kot-wedrowiec.chodzi .kot-idacy{animation:none}}
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1rem;color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transform:translateY(6px) scale(.85);transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+
+<div class="ekran-startowy">
+<header>
+  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Kot<span>Klik</span></h1>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Ojej! Bawiłem się sznurkami i wszystko mi się poplątało! Pomożesz mi je rozplątać?</p>
+      <p>Kliknij koniec sznurka, a potem wolną dziurkę — albo od razu przeciągnij go do dziurki. Przekładany sznurek kładzie się na innych — uważaj, żeby nie zrobić supła! Wygrywasz, gdy nic się nie krzyżuje.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h2>Plątanina Klika</h2>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom">
+          <button class="poziom" data-poziom="0" aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-poziom="1" aria-pressed="false">Średni</button>
+          <button class="poziom" data-poziom="2" aria-pressed="false">Trudny</button>
+        </div>
+      </div>
+
+      <div class="plansza">
+        <canvas id="plansza3d" hidden aria-label="Drewniane kółko z dziurkami i rozpiętymi sznurkami (3D)"></canvas>
+        <svg id="plansza" viewBox="0 0 400 400" role="img" aria-label="Drewniane kółko z dziurkami i rozpiętymi sznurkami"></svg>
+        <div class="brawo" id="brawo" hidden>
+          <p class="brawo-tytul">Rozplątane!</p>
+          <div class="klebki-wynik" id="klebkiWynik" aria-hidden="true"></div>
+          <p id="brawoOpis"></p>
+          <p class="brawo-rada" id="brawoRada"></p>
+          <div class="nowa-robotka" id="nowaRobotka" hidden></div>
+          <button class="znowu" id="nastepna">Następna plątanina</button>
+        </div>
+      </div>
+      <p class="komunikat" id="komunikat" role="status"></p>
+
+      <div class="pasek-info">
+        <span>Ruchy: <strong id="ruchy">0</strong></span>
+      </div>
+      <div class="przyciski">
+        <button class="maly" id="cofnij">↶ Cofnij</button>
+        <button class="maly" id="odNowa">↺ Od nowa</button>
+        <button class="maly" id="nowa">🧶 Nowa plątanina</button>
+      </div>
+      <div class="koszyk" aria-label="Koszyk Klika z kłębkami włóczki">
+        <div class="koszyk-gora"><span id="koszykKlebek"></span><span>Kłębki Klika: <strong id="klebki">0</strong></span></div>
+        <div class="pasek-postepu" aria-hidden="true"><span id="postep"></span></div>
+        <p class="koszyk-opis" id="koszykOpis"></p>
+        <div class="robotki" id="robotki"></div>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+  </div>
+</section>
+</div>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra ćwiczy myślenie przestrzenne i planowanie: trzeba tak poprzekładać końce sznurków, żeby żadne dwa się nie krzyżowały</li>
+      <li>Jak w prawdziwym kółku: przekładany sznurek kładzie się na tych, które mija, a gra pamięta, który leży na którym — gdy dwa sznurki się owiną, powstaje supeł, który trzeba rozwiązać</li>
+      <li>Każdą plątaninę da się rozplątać — gra tworzy ją z rozplątanego kółka losowymi ruchami, a każdy ruch można cofnąć (także przyciskiem „Cofnij”)</li>
+      <li>Trzy poziomy: 4, 5 i 6 sznurków na kółku z 10, 12 i 14 dziurkami; żeby plątanina zostawała czytelna, supły są najwyżej dwa, a każdy sznurek ma najwyżej jeden</li>
+      <li>Sznurki są elastyczne: koniec można przełożyć do każdej dziurki, a sznurek sam się rozciąga i dopasowuje</li>
+      <li>Bez limitu czasu. Za każdą rozplątaną plątaninę Klik dostaje 1–3 kłębki włóczki (3 — gdy uda się w tylu ruchach, ile zrobiła gra przy plątaniu), a z kłębków robi na drutach szalik, czapkę, rękawiczki, sweterek i kocyk</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Gra zapamiętuje tylko liczbę zebranych kłębków — na Twoim urządzeniu, nigdzie jej nie wysyła</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script src="biblioteki/three-r128.min.js"></script>
+<script>
+(function(){
+  // Poziomy: ile dziurek w drewnianym kółku, ile sznurków (zawsze dwie dziurki zostają wolne)
+  // i ile losowych ruchów robi gra, plącząc rozplątane kółko
+  const POZIOMY = [
+    { dziurki: 10, sznurki: 4, platanie: 4 },
+    { dziurki: 12, sznurki: 5, platanie: 6 },
+    { dziurki: 14, sznurki: 6, platanie: 8 }
+  ];
+  const CX = 200, CY = 200, R_ZEW = 186, R_WEW = 124, R_DZIURKI = 155;
+  // kolory sznurków: [sznurek, prążki skrętu]
+  // Każdy sznurek w innym kolorze, jak barwiona bawełna: [kolor, ciemniejszy (zwoje i brzegi), jaśniejszy (środek)]
+  const SZNURKI = [
+    { kolor: "#F3ECDD", ciemny: "#C9B998", jasny: "#FFFCF5" }, // kremowy
+    { kolor: "#E9B73A", ciemny: "#B3851A", jasny: "#F8D978" }, // musztardowy
+    { kolor: "#D9785A", ciemny: "#A24F36", jasny: "#F0A285" }, // ceglasty
+    { kolor: "#8DB48E", ciemny: "#5E8662", jasny: "#B8D6B6" }, // szałwiowy
+    { kolor: "#6F9CC9", ciemny: "#456F9C", jasny: "#A3C4E3" }, // niebieski
+    { kolor: "#A98BC9", ciemny: "#7A5E9C", jasny: "#CDB8E3" }  // lawendowy
+  ];  const GRUBOSC = 16;
+
+  const $ = id => document.getElementById(id);
+  const svg = $("plansza"), NS = "http://www.w3.org/2000/svg";
+  let poziom = 0, n = 10, sznurki = [], pary = {}, start = null, historia = [], ruchy = 0, gotowe = false;
+  let cel = 4, klebki = 0, nagrodzona = false; // cel: tyle ruchów zrobiła gra, plącząc — w tylu da się rozplątać
+  // liczbę kłębków przeglądarka pamięta na tym urządzeniu (nic nie jest wysyłane); bez dostępu do pamięci — od zera
+  const KLUCZ_KLEBKOW = "kotklik-platanina-klebki";
+  try { klebki = Math.max(0, parseInt(localStorage.getItem(KLUCZ_KLEBKOW), 10) || 0); } catch(e) { /* bez zapamiętywania */ }
+  let wybrany = null; // { s: numer sznurka, k: 0 lub 1 — który koniec }
+
+  function el(nazwa, atr, rodzic){
+    const e = document.createElementNS(NS, nazwa);
+    for (const k in atr) e.setAttribute(k, atr[k]);
+    (rodzic || svg).appendChild(e);
+    return e;
+  }
+  function tasuj(t){
+    for (let i = t.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; }
+    return t;
+  }
+  function dziurka(i){
+    const a = i / n * Math.PI * 2 - Math.PI / 2;
+    return { x: CX + Math.cos(a) * R_DZIURKI, y: CY + Math.sin(a) * R_DZIURKI };
+  }
+
+  // ---------- Jak sznurki leżą na sobie ----------
+  // Dla każdej pary sznurków (i < j) pamiętamy ich skrzyżowania po kolei wzdłuż sznurka i
+  // (od końca 0 do końca 1): w każdym skrzyżowaniu zapisujemy, który sznurek jest na górze.
+  // Jedno skrzyżowanie to zwykłe przełożenie; dwa i więcej — sznurki są owinięte, czyli SUPEŁ.
+  // „f” mówi, który koniec sznurka j leży po stronie początku tej listy.
+  function para(i, j){ return pary[Math.min(i, j) + "," + Math.max(i, j)]; }
+  // Przekładany koniec sznurka x mija kołek końca e sznurka y — sznurek x kładzie się NAD nim.
+  // Gdy tuż obok jest już skrzyżowanie, w którym x też był na górze, oba się znoszą
+  // (to ruch z powrotem tą samą drogą) — inaczej przybywa nowe skrzyżowanie.
+  function minij(x, kx, y, ey){
+    const i = Math.min(x, y), j = Math.max(x, y), p = para(i, j);
+    // po której stronie listy (wzdłuż sznurka i) powstaje skrzyżowanie i który to koniec sznurka j
+    const strona = x === i ? kx : ey, konJ = x === i ? ey : kx;
+    if (!p.w.length || (p.w.length === 1 && konJ !== (strona === 0 ? p.f : 1 - p.f))) p.f = strona === 0 ? konJ : 1 - konJ;
+    if (strona === 0){ if (p.w[0] === x) p.w.shift(); else p.w.unshift(x); }
+    else { if (p.w[p.w.length - 1] === x) p.w.pop(); else p.w.push(x); }
+    // kto zrobił supeł — ten sznurek się owija, drugi zostaje naciągnięty
+    if (p.w.length >= 2) p.ruch = x; else delete p.ruch;
+  }
+  // Przekładany koniec przesuwa się po kółku łukiem, który nie mija drugiego końca tego samego sznurka.
+  function luk(a, d, c){
+    const krok = (x, dx) => (x + dx + n) % n;
+    for (const dx of [1, -1]){
+      const po = [];
+      let x = krok(a, dx), ok = true;
+      while (x !== d){ if (x === c){ ok = false; break; } po.push(x); x = krok(x, dx); }
+      if (ok) return po;
+    }
+    return [];
+  }
+  function przelozKoniec(s, k, d){
+    const po = luk(sznurki[s][k], d, sznurki[s][1 - k]);
+    po.forEach(h => sznurki.forEach((q, y) => { if (y !== s && (q[0] === h || q[1] === h)) minij(s, k, y, q[0] === h ? 0 : 1); }));
+    sznurki[s][k] = d;
+  }
+  function stanGry(){
+    let skrzyzowania = 0, suply = 0;
+    const splatane = new Set();
+    for (const klucz in pary){
+      const dl = pary[klucz].w.length;
+      if (!dl) continue;
+      skrzyzowania += dl;
+      if (dl >= 2) suply++;
+      klucz.split(",").forEach(x => splatane.add(Number(x)));
+    }
+    return { skrzyzowania: skrzyzowania, suply: suply, splatane: splatane };
+  }
+  function kopia(){ return { sznurki: sznurki.map(s => s.slice()), pary: JSON.parse(JSON.stringify(pary)) }; }
+  function przywroc(st){ sznurki = st.sznurki.map(s => s.slice()); pary = JSON.parse(JSON.stringify(st.pary)); }
+
+  // ---------- Limit splątania ----------
+  // Żeby plątanina zostawała czytelna: dwa sznurki owijają się najwyżej raz (do 3 skrzyżowań ze sobą),
+  // a supłów naraz jest najwyżej 2. Ruch, który by to przekroczył, jest niedozwolony.
+  // Do tego jeden sznurek ma najwyżej jeden supeł — z kilkoma wił się zygzakiem i robił się bałagan.
+  const MAX_SKRZYZOWAN_PARY = 3, MAX_SUPLOW = [2, 2, 2];
+  function wLimicie(){
+    const suplySznurka = sznurki.map(() => 0);
+    for (const klucz in pary){
+      const dl = pary[klucz].w.length;
+      if (dl > MAX_SKRZYZOWAN_PARY) return false;
+      if (dl >= 2) klucz.split(",").forEach(x => suplySznurka[Number(x)]++);
+    }
+    if (suplySznurka.some(x => x > 1)) return false;
+    return stanGry().suply <= MAX_SUPLOW[poziom];
+  }
+  // Sznurek jest elastyczny: rozciąga się i skraca do każdej dziurki, więc długość niczego nie ogranicza.
+  function dozwolony(s, k, d){
+    const st = kopia();
+    przelozKoniec(s, k, d);
+    const ok = wLimicie();
+    przywroc(st);
+    return ok;
+  }
+  const ZA_MOCNO = "Ojej, tak sznurki splątałyby się za mocno! Spróbuj przełożyć inaczej.";
+
+  // ---------- Nowa plątanina ----------
+  // Zaczynamy od rozplątanego kółka i robimy kilka losowych ruchów. Każdy ruch da się cofnąć
+  // (ten sam koniec z powrotem tą samą drogą), więc każdą plątaninę — z supłami włącznie — da się rozplątać.
+  function utworz(){
+    const P = POZIOMY[poziom];
+    n = P.dziurki;
+    for (let proba = 0; proba < 100; proba++){
+      const wybrane = tasuj([...Array(n).keys()]).slice(0, P.sznurki * 2).sort((a, b) => a - b);
+      sznurki = [];
+      while (wybrane.length){
+        const i = Math.floor(Math.random() * wybrane.length), j = (i + 1) % wybrane.length;
+        sznurki.push([wybrane[i], wybrane[j]]);
+        wybrane.splice(Math.max(i, j), 1); wybrane.splice(Math.min(i, j), 1);
+      }
+      pary = {};
+      for (let i = 0; i < P.sznurki; i++) for (let j = i + 1; j < P.sznurki; j++) pary[i + "," + j] = { w: [], f: 0 };
+      cel = 0;
+      for (let r = 0; r < P.platanie; r++){
+        const zajete = new Set(sznurki.flat()), wolne = [...Array(n).keys()].filter(d => !zajete.has(d));
+        const s = Math.floor(Math.random() * P.sznurki), k = Math.random() < 0.5 ? 0 : 1, d = wolne[Math.floor(Math.random() * wolne.length)];
+        if (dozwolony(s, k, d)){ przelozKoniec(s, k, d); cel++; } // plątanina też trzyma się limitu
+      }
+      // prawdziwa plątanina: każdy sznurek jest z czymś splątany, a supły nie leżą jeden na drugim
+      // (kłąb kilku supłów w jednym miejscu byłby nieczytelny)
+      const { skrzyzowania, splatane } = stanGry();
+      if (splatane.size === P.sznurki && skrzyzowania >= P.sznurki && (proba > 60 || suplyOsobno())) break;
+    }
+    start = kopia();
+    pamiecSplotow = {};
+    if (trojwymiar) trojwymiar.natychmiast = true; // nowa plątanina pojawia się od razu, bez przelewania
+    historia = [];
+    ruchy = 0; gotowe = false; wybrany = null; nagrodzona = false;
+    $("ruchy").textContent = "0";
+    $("komunikat").textContent = "";
+    $("brawo").hidden = true;
+    rysuj();
+  }
+
+  // Czy supły leżą osobno — żaden splot nie nachodzi na inny ani nie leży tuż przy nim
+  function suplyOsobno(){
+    const strefy = strefySplotow(sznurki.map(s => s.map(dziurka)));
+    const odl = (A, B, C, D) => { // najmniejsza odległość między odcinkami AB i CD (z próbek co 1/8)
+      let m = Infinity;
+      for (let a = 0; a <= 8; a++) for (let b = 0; b <= 8; b++){
+        const p = { x: A.x + (B.x - A.x) * a / 8, y: A.y + (B.y - A.y) * a / 8 }, q = { x: C.x + (D.x - C.x) * b / 8, y: C.y + (D.y - C.y) * b / 8 };
+        m = Math.min(m, Math.hypot(p.x - q.x, p.y - q.y));
+      }
+      return m;
+    };
+    for (let a = 0; a < strefy.length; a++) for (let b = a + 1; b < strefy.length; b++)
+      if (odl(strefy[a].poczatek, strefy[a].koniec, strefy[b].poczatek, strefy[b].koniec) < (strefy[a].szer + strefy[b].szer) / 2 + GRUBOSC) return false;
+    return true;
+  }
+
+  // ---------- Rysowanie ----------
+  function przeciecieOdcinkow(a, b, c, d){
+    const r = { x: b.x - a.x, y: b.y - a.y }, s = { x: d.x - c.x, y: d.y - c.y };
+    const det = r.x * s.y - r.y * s.x;
+    if (Math.abs(det) < 1e-9) return null;
+    const t = ((c.x - a.x) * s.y - (c.y - a.y) * s.x) / det, u = ((c.x - a.x) * r.y - (c.y - a.y) * r.x) / det;
+    return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? { x: a.x + t * r.x, y: a.y + t * r.y } : null;
+  }
+  function przeciecieTras(p, q){
+    for (let a = 0; a + 1 < p.length; a++) for (let b = 0; b + 1 < q.length; b++){
+      const x = przeciecieOdcinkow(p[a], p[a + 1], q[b], q[b + 1]);
+      if (x) return x;
+    }
+    return null;
+  }
+  // linia przesunięta w bok o „o” (do prążków skręconego sznurka)
+  function przesun(pts, o){
+    return pts.map((p, k) => {
+      const a = pts[Math.max(0, k - 1)], b = pts[Math.min(pts.length - 1, k + 1)];
+      const dx = b.x - a.x, dy = b.y - a.y, dl = Math.hypot(dx, dy) || 1;
+      return { x: p.x - dy / dl * o, y: p.y + dx / dl * o };
+    });
+  }
+  const sciezka = pts => "M" + pts.map(p => p.x.toFixed(1) + " " + p.y.toFixed(1)).join(" L");
+  // Skręcony bawełniany sznurek: ciemny brzeg, kolor, jaśniejszy środek (wygląda na okrągły),
+  // a na tym ukośne zwoje co kilka pikseli — jak w prawdziwym skręcanym sznurku.
+  function zwoje(trasa){
+    const W = GRUBOSC, KROK = 5.2, d = [];
+    let doNastepnego = KROK / 2; // ile jeszcze do następnego zwoju (liczone wzdłuż całej trasy)
+    for (let a = 0; a + 1 < trasa.length; a++){
+      const p = trasa[a], q = trasa[a + 1], dx = q.x - p.x, dy = q.y - p.y, dl = Math.hypot(dx, dy);
+      if (!dl) continue;
+      const tx = dx / dl, ty = dy / dl, nx = -ty, ny = tx;
+      let s = doNastepnego;
+      for (; s < dl; s += KROK){
+        const x = p.x + tx * s, y = p.y + ty * s;
+        // zwój biegnie skośnie od jednego brzegu do drugiego, lekko wygięty
+        const x1 = x - nx * W * 0.42 - tx * 3.2, y1 = y - ny * W * 0.42 - ty * 3.2;
+        const x2 = x + nx * W * 0.42 + tx * 3.2, y2 = y + ny * W * 0.42 + ty * 3.2;
+        d.push("M" + x1.toFixed(1) + " " + y1.toFixed(1) + " Q" + (x + tx * 1.4).toFixed(1) + " " + (y + ty * 1.4).toFixed(1) + " " + x2.toFixed(1) + " " + y2.toFixed(1));
+      }
+      doNastepnego = s - dl;
+    }
+    return d.join(" ");
+  }  function rysujSznurek(i, trasa, rodzic, atr){
+    const k = SZNURKI[i % SZNURKI.length];
+    const g = el("g", atr || {}, rodzic);
+    const wspolne = { fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round" };
+    el("path", Object.assign({ d: sciezka(trasa), stroke: k.ciemny, "stroke-width": GRUBOSC + 2.5 }, wspolne), g);
+    el("path", Object.assign({ d: sciezka(trasa), stroke: k.kolor, "stroke-width": GRUBOSC }, wspolne), g);
+    el("path", Object.assign({ d: sciezka(przesun(trasa, -GRUBOSC * 0.12)), stroke: k.jasny, "stroke-width": GRUBOSC * 0.42, opacity: .7 }, wspolne), g);
+    el("path", { d: zwoje(trasa), fill: "none", stroke: k.ciemny, "stroke-width": 1.7, "stroke-linecap": "round", opacity: .75 }, g);
+    el("path", Object.assign({ d: sciezka(przesun(trasa, -GRUBOSC * 0.28)), stroke: "rgba(255,255,255,.45)", "stroke-width": 1.6 }, wspolne), g);
+    return g;
+  }  // Supeł: dwa naciągnięte sznurki owinięte wokół siebie tworzą ciasny skręt (jak dwie spirale),
+  // a od kołków do skrętu biegną prosto. Skręt ustawia się tam, gdzie sznurki są najkrótsze —
+  // tak jak naprężone sznurki same go ściągają. Szukamy więc położenia i kierunku skrętu,
+  // dla którego suma odcinków od kołków do jego końców jest najmniejsza.
+  // pamięć położenia splotów między klatkami (czyścimy przy nowej plątaninie, przy Od nowa i przy Cofnij)
+  let pamiecSplotow = {};
+  // wagi przy ustawianiu supła, od najważniejszej: zgodność skrzyżowań z grą, omijanie innych sznurków, łagodne zgięcia
+  // który sznurek pary leży na górze (przy supełku — ten, który się owija), albo −1, gdy się nie krzyżują
+  function goraPary(a, b){
+    const p = pary[Math.min(a, b) + "," + Math.max(a, b)];
+    return p.w.length === 1 ? p.w[0] : p.w.length >= 2 ? (p.ruch !== undefined ? p.ruch : p.w[0]) : -1;
+  }
+  const ZGODNOSC = 8000, STRONY = 3000, OMIJANIE = 400, SZTYWNOSC = 300;
+  // promień spirali splotu (w promieniach sznurka): owinięty sznurek przylega do drugiego, bez szpar
+  const SPIRALA = 1.2;
+  function strefySplotow(konce){
+    // gdzie są sploty (początek i koniec) — z tego liczenia albo, dla jeszcze nie policzonych, z poprzedniej klatki
+    const znane = {};
+    for (const klucz in pary) if (pary[klucz].w.length >= 2 && pamiecSplotow[klucz] && pamiecSplotow[klucz].fb) znane[klucz] = pamiecSplotow[klucz].fb;
+    // prawdziwa droga sznurka: od końca, przez jego sploty, do drugiego końca (a nie prosto od końca do końca)
+    const droga = (r, bez) => {
+      const a = konce[r][0], b = konce[r][1], dl = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      const rzut = q => ((q.x - a.x) * (b.x - a.x) + (q.y - a.y) * (b.y - a.y)) / dl;
+      const sploty = [];
+      for (const k in znane){
+        if (k === bez) continue;
+        const [x, y] = k.split(",").map(Number);
+        if (x !== r && y !== r) continue;
+        const [f, t] = znane[k];
+        sploty.push(Math.hypot(f.x - a.x, f.y - a.y) <= Math.hypot(t.x - a.x, t.y - a.y) ? [f, t] : [t, f]);
+      }
+      sploty.sort((u, v) => rzut(u[0]) + rzut(u[1]) - rzut(v[0]) - rzut(v[1]));
+      return [a].concat(...sploty, [b]);
+    };
+    const policz = (klucz, odNowa) => {
+      const [i, j] = klucz.split(",").map(Number), p = pary[klucz], L = p.w.length;
+      const i0 = konce[i][0], i1 = konce[i][1], j0 = konce[j][p.f], j1 = konce[j][1 - p.f];
+      // Krótszy sznurek jest mocniej naciągnięty, więc sztywniejszy: zostaje prawie prosty,
+      // splot układa się wzdłuż niego, a owija się głównie dłuższy sznurek.
+      const Li = Math.hypot(i1.x - i0.x, i1.y - i0.y) || 1, Lj = Math.hypot(j1.x - j0.x, j1.y - j0.y) || 1;
+      // jak mocno owija się każdy z nich: owija się ten, który był przekładany (zrobił supeł), drugi zostaje naciągnięty;
+      // gdy nie wiadomo, kto — owija się dłuższy
+      const owijaI = p.ruch === i ? 0.85 : p.ruch === j ? 0.15 : Math.min(0.85, Math.max(0.15, Li / (Li + Lj))), owijaJ = 1 - owijaI;
+      const ciagnieI = 2 * owijaJ, ciagnieJ = 2 * owijaI;                                  // jak mocno każdy ciągnie splot do siebie
+      // w 3D spirala musi być na tyle szeroka, żeby grube sznurki się nie przenikały
+      const A = trojwymiar ? PROMIEN * SPIRALA : GRUBOSC * 0.55, skok = trojwymiar ? 2.6 * PROMIEN : GRUBOSC * 1.5, minSkok = trojwymiar ? 2.1 * PROMIEN : GRUBOSC * 1.1;
+      // splot nie może być dłuższy niż zmieści się na krótszym sznurku
+      const D = Math.max(minSkok * L, Math.min(skok * L + GRUBOSC * 0.5, 0.55 * Math.min(Li, Lj)));
+      const kolki = konce.flat();
+      // cięciwy pozostałych sznurków; sznurek, który z jednym splecionym ma iść górą, a z drugim dołem,
+      // musi się przez supeł przewlec — od takiego supeł odsuwa się mocniej (ale nie ucieka poza kółko, gdy brak miejsca)
+      const A2 = A * 1.3;
+      const inne = konce.map((k, r) => r).filter(r => r !== i && r !== j).map(r3 => {
+        const gi = goraPary(i, r3), gj = goraPary(j, r3);
+        return [konce[r3][0], konce[r3][1], gi >= 0 && gj >= 0 && (gi === r3) !== (gj === r3) ? 2 : 1];
+      });
+      // Gra pamięta, ile razy każdy z splecionych sznurków krzyżuje się z pozostałymi. Splot musi stać po tej stronie,
+      // która się z tym zgadza — inaczej sznurek musiałby iść do splotu przez inny sznurek, którego wcale nie krzyżuje
+      // (i nie byłoby wiadomo, górą czy dołem).
+      const pozostale = konce.map((k, r) => r).filter(r => r !== i && r !== j);
+      const drogi = pozostale.map(r3 => droga(r3, klucz));
+      const niezgodnosc = (fx, fy, bx, by) => {
+        const f = { x: fx, y: fy }, b = { x: bx, y: by };
+        let ile = 0;
+        [[i, i0, i1], [j, j0, j1]].forEach(([r, a0, a1]) => pozostale.forEach((r3, z) => {
+          const d = drogi[z], oczek = pary[Math.min(r, r3) + "," + Math.max(r, r3)].w.length;
+          let jest = 0;
+          [[a0, f], [f, b], [b, a1]].forEach(([u, v]) => { for (let q = 0; q + 1 < d.length; q++) if (przeciecieOdcinkow(u, v, d[q], d[q + 1])) jest++; });
+          ile += Math.abs(jest - oczek); // dwa zbędne przejścia „tam i z powrotem” też są złe — nie wiadomo, górą czy dołem
+        }));
+        return ile;
+      };
+      const zgodnosc = (cx, cy, kat) => { const ax = Math.cos(kat) * D / 2, ay = Math.sin(kat) * D / 2; return niezgodnosc(cx - ax, cy - ay, cx + ax, cy + ay); };
+      const koszt = (cx, cy, kat) => {
+        const ax = Math.cos(kat) * D / 2, ay = Math.sin(kat) * D / 2;
+        const fx = cx - ax, fy = cy - ay, bx = cx + ax, by = cy + ay;
+        // sznurek jest sztywny: wchodzi w supeł i wychodzi z niego łagodnie, nie zgina się na ostro
+        const zgiecie = (px, py, qx, qy, ux, uy) => { const d1 = Math.hypot(qx - px, qy - py) || 1, d2 = Math.hypot(ux - qx, uy - qy) || 1; const z = 1 - ((qx - px) * (ux - qx) + (qy - py) * (uy - qy)) / (d1 * d2); return z * z; };
+        // (liczy się tak samo dla obu — ostre zagięcie owijającego się sznurka widać najbardziej)
+        const sztywnosc = SZTYWNOSC * (zgiecie(i0.x, i0.y, fx, fy, bx, by) + zgiecie(fx, fy, bx, by, i1.x, i1.y) +
+          zgiecie(j0.x, j0.y, fx, fy, bx, by) + zgiecie(fx, fy, bx, by, j1.x, j1.y));
+        let c = ZGODNOSC * niezgodnosc(fx, fy, bx, by) + sztywnosc + ciagnieI * (Math.hypot(i0.x - fx, i0.y - fy) + Math.hypot(i1.x - bx, i1.y - by)) + ciagnieJ * (Math.hypot(j0.x - fx, j0.y - fy) + Math.hypot(j1.x - bx, j1.y - by));
+        // splot nie leży tam, gdzie przechodzi inny sznurek (inaczej ten sznurek byłby przewleczony przez supeł)
+        inne.forEach(([A, B, waga]) => {
+          const ex = bx - fx, ey = by - fy, ux = B.x - A.x, uy = B.y - A.y, det = ex * uy - ey * ux;
+          let o;
+          if (Math.abs(det) > 1e-9){
+            const s1 = ((A.x - fx) * uy - (A.y - fy) * ux) / det, s2 = ((A.x - fx) * ey - (A.y - fy) * ex) / det;
+            o = s1 >= 0 && s1 <= 1 && s2 >= 0 && s2 <= 1 ? 0 : Infinity;
+          } else o = Infinity;
+          if (o > 0) for (let q = 0; q <= 6; q++){ // najmniejsza odległość odcinka splotu od cięciwy innego sznurka
+            const px = fx + ex * q / 6, py = fy + ey * q / 6, t2 = Math.max(0, Math.min(1, ((px - A.x) * ux + (py - A.y) * uy) / (ux * ux + uy * uy || 1)));
+            o = Math.min(o, Math.hypot(px - (A.x + ux * t2), py - (A.y + uy * t2)));
+          }
+          const granica = A2 + PROMIEN * 2;
+          if (o < granica) c += OMIJANIE * waga * (granica - o);
+        });
+        // splot nie wchodzi na kapsle
+        kolki.forEach(k => {
+          const dx = bx - fx, dy = by - fy, t = Math.max(0, Math.min(1, ((k.x - fx) * dx + (k.y - fy) * dy) / (dx * dx + dy * dy)));
+          const o = Math.hypot(k.x - (fx + dx * t), k.y - (fy + dy * t)), granica = 22 + A + 4;
+          if (o < granica) c += OMIJANIE * (granica - o);
+        });
+        // sznurek nie dochodzi do supła ponad samym supłem (wtedy jego pętla kładzie się na nim samym):
+        // droga od kołka do wejścia w supeł musi omijać dalszą część supła
+        [[i0, fx, fy, bx, by], [j0, fx, fy, bx, by], [i1, bx, by, fx, fy], [j1, bx, by, fx, fy]].forEach(([a, wx, wy, ox, oy]) => {
+          const ux = wx - a.x, uy = wy - a.y, uu = ux * ux + uy * uy || 1;
+          for (let q = 2; q <= 4; q++){
+            const px = wx + (ox - wx) * q / 4, py = wy + (oy - wy) * q / 4, t = Math.max(0, Math.min(1, ((px - a.x) * ux + (py - a.y) * uy) / uu));
+            const o = Math.hypot(px - a.x - ux * t, py - a.y - uy * t), granica = 2 * PROMIEN + A;
+            if (o < granica) c += OMIJANIE * (granica - o);
+          }
+        });
+        // W skręcie sznurki co pół obrotu zamieniają się stronami. Owijający się sznurek wchodzi od strony
+        // swojego kołka, więc po skręcie wychodzi po stronie wyznaczonej przez liczbę półobrotów — tam powinien
+        // leżeć jego drugi kołek, inaczej ostatnia pętla wraca nad samym sznurkiem.
+        const ex = bx - fx, ey = by - fy, strona = (q, x, y) => Math.sign(ex * (q.y - y) - ey * (q.x - x)) || 1;
+        const [w0, w1] = owijaI >= 0.5 ? [i0, i1] : [j0, j1];
+        if (strona(w1, bx, by) !== strona(w0, fx, fy) * (L % 2 ? -1 : 1)) c += STRONY;
+        // supeł leży w otworze kółka, a nie na brzegu przy dziurkach
+        for (let q = 0; q <= 4; q++){
+          const o = Math.hypot(fx + (bx - fx) * q / 4 - CX, fy + (by - fy) * q / 4 - CY) - (R_WEW - A);
+          if (o > 0) c += OMIJANIE * 0.5 * o;
+        }
+        return c;
+      };
+      // Położenie splotu pamiętamy między klatkami. Gdy jego sznurki się nie ruszyły — zostaje dokładnie tam,
+      // gdzie był; gdy się ruszyły — przesuwamy go lekko od poprzedniego miejsca (bez przeskoków).
+      // Od zera szukamy tylko dla nowego splotu.
+      // układ całej planszy (dziurki i kto na kim) — gdy zmienił się gdziekolwiek, supeł szuka miejsca od nowa,
+      // bo inny sznurek mógł teraz przejść przez jego dotychczasowe miejsce
+      const uklad = sznurki.join(";") + JSON.stringify(pary);
+      const podpis = [i0, i1, j0, j1].map(q => q.x.toFixed(1) + "," + q.y.toFixed(1)).join("|") + "|" + uklad;
+      const pam = pamiecSplotow[klucz];
+      let naj;
+      if (!odNowa && pam && pam.podpis === podpis && (pam.bezWyjscia || !zgodnosc(pam.naj.x, pam.naj.y, pam.naj.kat))) naj = pam.naj;
+      else {
+        // od poprzedniego miejsca tylko przy małym ruchu (przeciąganie); gdy koniec przeskoczył daleko (np. przełożenie kliknięciem) — szukamy od nowa
+        const daleko = !pam || pam.uklad !== uklad || [i0, i1, j0, j1].some((q, z) => Math.hypot(q.x - pam.konce[z].x, q.y - pam.konce[z].y) > 25);
+        // po przełożeniu przez kołek splot może musieć przejść na drugą stronę sznurka — wtedy też szukamy od nowa
+        // (chyba że zgodnego miejsca w ogóle nie było — wtedy nie szukamy w każdej klatce)
+        if (!odNowa && pam && !daleko && pam.L === L && pam.f === p.f && (pam.bezWyjscia || !zgodnosc(pam.naj.x, pam.naj.y, pam.naj.kat))) naj = { x: pam.naj.x, y: pam.naj.y, kat: pam.naj.kat, k: koszt(pam.naj.x, pam.naj.y, pam.naj.kat) };
+        else {
+          // zgrubnie po całym kółku
+          naj = { x: CX, y: CY, kat: 0, k: Infinity };
+          for (let x = CX - R_DZIURKI; x <= CX + R_DZIURKI; x += 12) for (let y = CY - R_DZIURKI; y <= CY + R_DZIURKI; y += 12){
+            if (Math.hypot(x - CX, y - CY) > R_DZIURKI) continue;
+            for (let k = 0; k < 24; k++){ const kat = k * Math.PI / 12, c = koszt(x, y, kat); if (c < naj.k) naj = { x: x, y: y, kat: kat, k: c }; }
+          }
+        }
+        // potem dokładniej wokół najlepszego miejsca
+        for (let krok = 6; krok >= 1; krok /= 2){
+          let poprawa = true;
+          while (poprawa){
+            poprawa = false;
+            for (const [dx, dy, dk] of [[krok, 0, 0], [-krok, 0, 0], [0, krok, 0], [0, -krok, 0], [0, 0, krok / 40], [0, 0, -krok / 40]]){
+              const c = koszt(naj.x + dx, naj.y + dy, naj.kat + dk);
+              if (c < naj.k - 1e-6){ naj = { x: naj.x + dx, y: naj.y + dy, kat: naj.kat + dk, k: c }; poprawa = true; }
+            }
+          }
+        }
+        pamiecSplotow[klucz] = { podpis: podpis, uklad: uklad, naj: naj, L: L, f: p.f, bezWyjscia: zgodnosc(naj.x, naj.y, naj.kat) > 0, fb: null, konce: [i0, i1, j0, j1].map(q => ({ x: q.x, y: q.y })) };
+      }
+      const ox = Math.cos(naj.kat), oy = Math.sin(naj.kat), nx = -oy, ny = ox;
+      const poczatek = { x: naj.x - ox * D / 2, y: naj.y - oy * D / 2 };
+      // sznurek, który się owija, wchodzi w skręt od tej strony, z której przychodzi — inaczej jego pętla
+      // wracałaby nad nim samym; naciągnięty wchodzi z drugiej strony (prawie się nie wygina, więc tego nie widać)
+      const bok = q => ((q.x - poczatek.x) * nx + (q.y - poczatek.y) * ny) >= 0 ? 1 : -1;
+      const strona = owijaI >= 0.5 ? bok(i0) : -bok(j0);
+      // pion: w 3D sznurek na górze w pierwszym skrzyżowaniu idzie spiralą w górę, drugi w dół
+      // (słowo skrzyżowań zawsze się przeplata, więc spirala zgadza się z każdym kolejnym skrzyżowaniem)
+      const nitka = (znak, pion, owija) => {
+        const pts = [], ile = 12 * L + 8, sila = 2 * owija; // sila: jak mocno ten sznurek się owija (razem zawsze 2)
+        for (let s = 0; s <= ile; s++){
+          const t = s / ile, fala = znak * A * sila * Math.cos(Math.PI * L * t);
+          pts.push({ x: poczatek.x + ox * D * t + nx * fala, y: poczatek.y + oy * D * t + ny * fala, h: pion * sila * Math.sin(Math.PI * L * t) });
+        }
+        return pts;
+      };
+      const pionI = p.w[0] === i ? 1 : -1;
+      const skrzyzowania = p.w.map((gora, k) => ({ gora: gora, splot: true,
+        x: poczatek.x + ox * D * (k + 0.5) / L, y: poczatek.y + oy * D * (k + 0.5) / L }));
+      const koniec = { x: poczatek.x + ox * D, y: poczatek.y + oy * D };
+      znane[klucz] = pamiecSplotow[klucz].fb = [poczatek, koniec];
+      return { zla: zgodnosc(naj.x, naj.y, naj.kat) > 0, uparty: !!(pam && pam.bezWyjscia),
+        strefa: { i: i, j: j, f: p.f, srodek: naj, poczatek: poczatek, koniec: koniec, szer: A * 2 + GRUBOSC, nitkaI: nitka(strona, pionI, owijaI), nitkaJ: nitka(-strona, -pionI, owijaJ), skrzyzowania: skrzyzowania } };
+    };
+    const wyniki = {};
+    for (const klucz in pary) if (pary[klucz].w.length >= 2) wyniki[klucz] = policz(klucz, false);
+    // splot liczony, zanim było wiadomo, gdzie są pozostałe — jeśli wyszedł po złej stronie, jeszcze raz, już ze wszystkimi
+    for (const klucz in wyniki) if (wyniki[klucz].zla && !wyniki[klucz].uparty) wyniki[klucz] = policz(klucz, true);
+    return Object.keys(wyniki).map(k => wyniki[k].strefa);
+  }  // kierunek trasy w punkcie najbliższym (x, y)
+  function kierunek(trasa, x, y){
+    let naj = 0, odl = Infinity;
+    for (let k = 0; k + 1 < trasa.length; k++){
+      const p = trasa[k], q = trasa[k + 1], mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2, d = (mx - x) * (mx - x) + (my - y) * (my - y);
+      if (d < odl){ odl = d; naj = k; }
+    }
+    const p = trasa[naj], q = trasa[naj + 1], dl = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+    return { x: (q.x - p.x) / dl, y: (q.y - p.y) / dl };
+  }
+  // Wygładzanie trasy (metoda Chaikina) — zakręty przy splotach robią się łagodne jak w prawdziwym sznurku
+  function wygladz(pts){
+    for (let r = 0; r < 3 && pts.length > 2; r++){
+      const nowe = [pts[0]];
+      for (let k = 0; k + 1 < pts.length; k++){
+        const p = pts[k], q = pts[k + 1];
+        const ph = p.h || 0, qh = q.h || 0;
+        nowe.push({ x: p.x * .75 + q.x * .25, y: p.y * .75 + q.y * .25, h: ph * .75 + qh * .25 }, { x: p.x * .25 + q.x * .75, y: p.y * .25 + q.y * .75, h: ph * .25 + qh * .75 });
+      }
+      nowe.push(pts[pts.length - 1]);
+      pts = nowe;
+    }
+    return pts;
+  }
+  // punkty co najwyżej co 4 jednostki — prosty sznurek też musi móc unieść się w środku nad innym
+  function zageszcz(pts){
+    const wynik = [pts[0]];
+    for (let k = 1; k < pts.length; k++){
+      const p = pts[k - 1], q = pts[k], ile = Math.ceil(Math.hypot(q.x - p.x, q.y - p.y) / 4);
+      for (let s = 1; s <= ile; s++){
+        const t = s / ile;
+        wynik.push({ x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t, h: (p.h || 0) + ((q.h || 0) - (p.h || 0)) * t });
+      }
+    }
+    return wynik;
+  }
+  // Trasa sznurka: od końca 0, przez wszystkie jego sploty (po kolei wzdłuż sznurka), do końca 1
+  function trasySznurkow(konce, strefy){
+    const trasy = sznurki.map((_, r) => {
+      const a = konce[r][0], b = konce[r][1], dl = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      const rzut = p => ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / dl;
+      const moje = [];
+      strefy.forEach(s => {
+        if (s.i === r) moje.push(s.nitkaI);
+        else if (s.j === r) moje.push(s.f === 0 ? s.nitkaJ : s.nitkaJ.slice().reverse());
+      });
+      moje.sort((p, q) => rzut(p[Math.floor(p.length / 2)]) - rzut(q[Math.floor(q.length / 2)]));
+      return zageszcz(wygladz([a].concat(...moje, [b])));
+    });
+    if (trojwymiar) rozepchnij(trasy, strefy, konce);
+    return trasy;
+  }
+  // Sznurki rozpychają się na boki jak prawdziwe: tam, gdzie biegną obok siebie albo krzyżują się pod ostrym kątem,
+  // odsuwają się od siebie, aż każdy jest widoczny (prostopadłe skrzyżowanie zostaje jak było).
+  // Supeł przesuwa się w całości — obie nitki razem, spirala się nie rozjeżdża. Końce pod kapslami stoją w miejscu.
+  function rozepchnij(trasy, strefy, konce){
+    const ODSTEP = 2 * PROMIEN + 2, MAKS = 2.2 * PROMIEN, KOM = ODSTEP, ODK = 19.8 + PROMIEN + 2; // 19,8 — promień kapsla
+    // do którego splotu należy punkt (−1: do żadnego)
+    const splot = trasy.map((t, r) => t.map(p => strefy.findIndex(s => {
+      if (s.i !== r && s.j !== r) return false;
+      const ex = s.koniec.x - s.poczatek.x, ey = s.koniec.y - s.poczatek.y, D2 = ex * ex + ey * ey || 1;
+      const u = ((p.x - s.poczatek.x) * ex + (p.y - s.poczatek.y) * ey) / D2;
+      return u >= -0.05 && u <= 1.05 && Math.abs((p.x - s.poczatek.x) * ey - (p.y - s.poczatek.y) * ex) / Math.sqrt(D2) < s.szer;
+    })));
+    // przy własnym kołku sznurek się nie rusza, dalej coraz swobodniej
+    const dl = trasy.map(t => { const w = [0]; for (let k = 1; k < t.length; k++) w.push(w[k - 1] + Math.hypot(t[k].x - t[k - 1].x, t[k].y - t[k - 1].y)); return w; });
+    const swoboda = trasy.map((t, r) => t.map((_, k) => Math.min(1, Math.max(0, (Math.min(dl[r][k], dl[r][t.length - 1] - dl[r][k]) - 14) / 30))));
+    const przesX = trasy.map(t => new Float64Array(t.length)), przesY = trasy.map(t => new Float64Array(t.length));
+    const stX = trasy.map((t, r) => Float64Array.from(t, (_, k) => { const a = t[Math.max(0, k - 1)], b = t[Math.min(t.length - 1, k + 1)]; return (b.x - a.x) / (Math.hypot(b.x - a.x, b.y - a.y) || 1); }));
+    const stY = trasy.map((t, r) => Float64Array.from(t, (_, k) => { const a = t[Math.max(0, k - 1)], b = t[Math.min(t.length - 1, k + 1)]; return (b.y - a.y) / (Math.hypot(b.x - a.x, b.y - a.y) || 1); }));
+    // punkty każdego splotu (obu nitek) — supeł jedzie w całości
+    const wSplocie = strefy.map(() => []);
+    splot.forEach((w, r) => w.forEach((z, k) => { if (z >= 0) wSplocie[z].push(r, k); }));
+    // supeł jest cięższy od pojedynczego sznurka: przesuwa się w całości, ale tylko trochę
+    splot.forEach((w, r) => w.forEach((z, k) => { if (z >= 0) swoboda[r][k] = Math.min(swoboda[r][k], 0.7); }));
+    const WAGI = []; for (let o = -14; o <= 14; o += 2) WAGI.push([o, Math.exp(-o * o / 60)]);
+    const silaX = trasy.map(t => new Float64Array(t.length)), silaY = trasy.map(t => new Float64Array(t.length));
+    const kopX = new Float64Array(Math.max(...trasy.map(t => t.length))), kopY = new Float64Array(kopX.length);
+    for (let runda = 0; runda < 16; runda++){
+      silaX.forEach(s => s.fill(0)); silaY.forEach(s => s.fill(0));
+      const siatka = new Map();
+      trasy.forEach((t, r) => { for (let k = 0; k < t.length; k += 2){
+        const x = t[k].x + przesX[r][k], y = t[k].y + przesY[r][k], kl = (Math.floor(x / KOM) + 100) * 1000 + Math.floor(y / KOM) + 100;
+        let l = siatka.get(kl); if (!l) siatka.set(kl, l = []); l.push(r, k, x, y);
+      } });
+      siatka.forEach((l, kl) => {
+        for (let a = 0; a < l.length; a += 4){
+          const r = l[a], k = l[a + 1], x = l[a + 2], y = l[a + 3], z = splot[r][k];
+          for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++){
+            const l2 = siatka.get(kl + dx * 1000 + dy);
+            if (!l2) continue;
+            for (let b = 0; b < l2.length; b += 4){
+              const r2 = l2[b], k2 = l2[b + 1];
+              if (r2 <= r) continue;                                          // każda para raz, tylko różne sznurki
+              if (z >= 0 && z === splot[r2][k2]) continue;                     // nitki tego samego splotu ustawia spirala
+              const ex = x - l2[b + 2], ey = y - l2[b + 3], d = Math.hypot(ex, ey);
+              if (d >= ODSTEP || d < 1) continue;
+              const t1x = stX[r][k], t1y = stY[r][k], t2x = stX[r2][k2], t2y = stY[r2][k2];
+              // skrzyżowanie w poprzek jest czytelne i zostaje proste; odsuwają się sznurki biegnące obok siebie
+              const rownolegle = Math.abs(t1x * t2x + t1y * t2y);
+              if (rownolegle < 0.5) continue;
+              const ile = (ODSTEP - d) * 0.32 * (rownolegle - 0.5), nx = ex / d, ny = ey / d;
+              // każdy odsuwa się tylko w bok (w poprzek siebie), nie ślizga się wzdłuż
+              const s1 = nx * t1x + ny * t1y, s2 = nx * t2x + ny * t2y;
+              silaX[r][k] += (nx - s1 * t1x) * ile; silaY[r][k] += (ny - s1 * t1y) * ile;
+              silaX[r2][k2] -= (nx - s2 * t2x) * ile; silaY[r2][k2] -= (ny - s2 * t2y) * ile;
+            }
+          }
+        }
+      });
+      // od cudzych kapsli sznurek delikatnie się odsuwa: tam koniec innego sznurka schodzi pod kapsel
+      // i oba by się przecięły
+      trasy.forEach((t, r) => { for (let k = 0; k < t.length; k += 2){
+        const x = t[k].x + przesX[r][k], y = t[k].y + przesY[r][k], tx = stX[r][k], ty = stY[r][k];
+        konce.forEach((para, r2) => { if (r2 !== r) para.forEach(c => {
+          let ex = x - c.x, ey = y - c.y, d = Math.hypot(ex, ey);
+          if (d >= ODK) return;
+          if (d < 1){ ex = CX - x; ey = CY - y; d = Math.hypot(ex, ey) || 1; } // dokładnie nad kapslem: w stronę środka kółka
+          const nx = ex / d, ny = ey / d, s = nx * tx + ny * ty, ile = (ODK - Math.max(d, 1)) * 0.3;
+          silaX[r][k] += (nx - s * tx) * ile; silaY[r][k] += (ny - s * ty) * ile;
+        }); });
+      } });
+      // siła rozlewa się łagodnie po sąsiednich kawałkach sznurka
+      trasy.forEach((t, r) => {
+        const sx = silaX[r], sy = silaY[r], n = t.length;
+        for (let k = 0; k < n; k++){
+          let x = 0, y = 0, w = 0;
+          for (const [o, m] of WAGI){ const q = k + o - (k % 2); if (q < 0 || q >= n) continue; x += sx[q] * m; y += sy[q] * m; w += m; }
+          kopX[k] = x / w * 2.2; kopY[k] = y / w * 2.2;
+        }
+        for (let k = 0; k < n; k++){ przesX[r][k] += kopX[k] * swoboda[r][k]; przesY[r][k] += kopY[k] * swoboda[r][k]; }
+      });
+      // sznurek zostaje gładki — także przy wejściu w supeł — i nie odjeżdża za daleko od swojej drogi
+      trasy.forEach((t, r) => {
+        const wx = przesX[r], wy = przesY[r], n = t.length;
+        for (let gl = 0; gl < 5; gl++){ // kilka wygładzeń: sznurek jest naciągnięty, wygina się długim łukiem, bez fal i załamań
+          kopX.set(wx); kopY.set(wy);
+          for (let k = 1; k + 1 < n; k++){
+            wx[k] = kopX[k] * 0.5 + (kopX[k - 1] + kopX[k + 1]) * 0.25;
+            wy[k] = kopY[k] * 0.5 + (kopY[k - 1] + kopY[k + 1]) * 0.25;
+          }
+        }
+        for (let k = 0; k < n; k++){ const m = Math.hypot(wx[k], wy[k]), lim = MAKS * swoboda[r][k]; if (m > lim){ wx[k] *= lim / m; wy[k] *= lim / m; } }
+      });
+      // supeł jedzie w całości: obie nitki dostają to samo, średnie przesunięcie
+      wSplocie.forEach(l => {
+        if (!l.length) return;
+        let x = 0, y = 0;
+        for (let a = 0; a < l.length; a += 2){ x += przesX[l[a]][l[a + 1]]; y += przesY[l[a]][l[a + 1]]; }
+        x /= l.length / 2; y /= l.length / 2;
+        for (let a = 0; a < l.length; a += 2){ przesX[l[a]][l[a + 1]] = x; przesY[l[a]][l[a + 1]] = y; }
+      });
+    }
+    trasy.forEach((t, r) => t.forEach((p, k) => { p.x += przesX[r][k]; p.y += przesY[r][k]; }));
+    // supły też przesuwamy, żeby wysokości i reszta widziały je w nowym miejscu
+    strefy.forEach((s, z) => {
+      const l = wSplocie[z];
+      if (!l.length) return;
+      let x = 0, y = 0;
+      for (let a = 0; a < l.length; a += 2){ x += przesX[l[a]][l[a + 1]]; y += przesY[l[a]][l[a + 1]]; }
+      x /= l.length / 2; y /= l.length / 2;
+      [s.poczatek, s.koniec].forEach(q => { q.x += x; q.y += y; });
+      s.skrzyzowania.forEach(q => { q.x += x; q.y += y; });
+    });
+  }
+  // Kołki, które przeciągany koniec już minął. „t” to droga kapsla po kółku od jego dziurki,
+  // liczona w dziurkach (np. 2,4 = minął dwie dziurki w stronę rosnących numerów, −1,2 = jedną w drugą stronę).
+  function minieteKolki(s, k, t){
+    const a = sznurki[s][k], krok = t > 0 ? 1 : -1, po = [];
+    for (let i = 1; i < Math.abs(t); i++) po.push(((a + krok * i) % n + n) % n);
+    return po;
+  }
+  function rysuj(przesuniecie){
+    // Przy przeciąganiu pokazujemy sznurki tak, jakby koniec już minął kołki po drodze —
+    // supeł zwija się albo rozwija na bieżąco, a po puszczeniu nic już nie przeskakuje.
+    let zapisane = null;
+    if (przesuniecie){
+      zapisane = pary;
+      pary = JSON.parse(JSON.stringify(pary));
+      minieteKolki(przesuniecie.s, przesuniecie.k, przesuniecie.t || 0).forEach(h => sznurki.forEach((q, y) => {
+        if (y !== przesuniecie.s && (q[0] === h || q[1] === h)) minij(przesuniecie.s, przesuniecie.k, y, q[0] === h ? 0 : 1);
+      }));
+      // już w trakcie przeciągania widać, że tędy splątałoby się za mocno
+      const kom = $("komunikat");
+      if (!wLimicie()) kom.textContent = ZA_MOCNO; else if (kom.textContent === ZA_MOCNO) kom.textContent = "";
+    }
+    if (trojwymiar) rysuj3D(przesuniecie); else rysuj2D(przesuniecie);
+    if (zapisane) pary = zapisane;
+    $("cofnij").disabled = !historia.length || gotowe;
+  }
+  function rysuj2D(przesuniecie){
+    svg.innerHTML = "";
+    const defs = el("defs", {});
+    // cień liczony na całej planszy — przy pionowym sznurku obszar „wg kształtu” miałby zerową szerokość
+    const cien = el("filter", { id: "cien", filterUnits: "userSpaceOnUse", x: 0, y: 0, width: 400, height: 400 }, defs);
+    el("feDropShadow", { dx: 1, dy: 3, stdDeviation: 2.2, "flood-color": "#3B2A18", "flood-opacity": .35 }, cien);
+    const kapsel = el("radialGradient", { id: "kapsel", cx: "40%", cy: "35%", r: "70%" }, defs);
+    el("stop", { offset: "0%", "stop-color": "#B08356" }, kapsel);
+    el("stop", { offset: "100%", "stop-color": "#7A5332" }, kapsel);
+    const otwor = el("radialGradient", { id: "otwor", cx: "45%", cy: "40%", r: "60%" }, defs);
+    el("stop", { offset: "0%", "stop-color": "#0E0804" }, otwor);
+    el("stop", { offset: "100%", "stop-color": "#3A2414" }, otwor);
+    tlo();
+    // drewniane kółko (jasny klon) z otworem w środku
+    el("path", { d: kolo(R_ZEW) + kolo(R_WEW), fill: "#E6C79C", "fill-rule": "evenodd", filter: "url(#cien)" });
+    el("circle", { cx: CX, cy: CY, r: R_ZEW - 2, fill: "none", stroke: "#F1DBB8", "stroke-width": 3 });
+    el("circle", { cx: CX, cy: CY, r: R_WEW + 1.5, fill: "none", stroke: "#C9A06E", "stroke-width": 3 });
+    const zajete = new Set(sznurki.flat());
+    for (let i = 0; i < n; i++){
+      const p = dziurka(i);
+      el("circle", { cx: p.x, cy: p.y, r: 21, fill: "#C99B67" });
+      if (zajete.has(i)) continue;
+      const g = el("g", { class: "dziurka wolna", "data-d": i });
+      el("circle", { cx: p.x, cy: p.y, r: 26, fill: "transparent" }, g);
+      el("circle", { cx: p.x, cy: p.y, r: 17, fill: "url(#otwor)" }, g);
+      if (wybrany && dozwolony(wybrany.s, wybrany.k, i)) el("circle", { cx: p.x, cy: p.y, r: 24, fill: "none", stroke: "#FF8A3D", "stroke-width": 3, "stroke-dasharray": "5 4", class: "zacheta" }, g);
+    }
+    // końce sznurków (z przeciąganym końcem w miejscu palca)
+    const konce = sznurki.map((s, i) => s.map((d, k) =>
+      przesuniecie && przesuniecie.s === i && przesuniecie.k === k ? { x: przesuniecie.x, y: przesuniecie.y } : dziurka(d)));
+    const strefy = strefySplotow(konce), trasy = trasySznurkow(konce, strefy);
+    const warstwa = el("g", {});
+    sznurki.forEach((_, i) => rysujSznurek(i, trasy[i], warstwa, { filter: "url(#cien)" }));
+    // w każdym skrzyżowaniu dorysowujemy kawałek sznurka, który leży na górze (razem z jego cieniem) —
+    // dzięki temu każde skrzyżowanie wygląda dobrze, nawet gdy A leży na B, B na C, a C na A
+    let nr = 0;
+    // Górny sznurek dorysowujemy w wąskim prostokącie ułożonym wzdłuż niego — piksel w piksel
+    // w tym samym miejscu, więc nie widać żadnych szwów. Dolny sznurek dostaje przy jego brzegach
+    // lekkie przyciemnienie (cień), które nie wychodzi poza dolny sznurek.
+    const prostokat = (id, x, y, kat, dl, szer) => {
+      const clip = el("clipPath", { id: id }, defs);
+      el("rect", { x: x - dl / 2, y: y - szer / 2, width: dl, height: szer, transform: "rotate(" + kat + " " + x + " " + y + ")" }, clip);
+    };
+    const naGorze = (gora, dol, x, y, splot) => {
+      const kg = kierunek(trasy[gora], x, y), kd = kierunek(trasy[dol], x, y);
+      const sin = Math.max(0.45, Math.abs(kg.x * kd.y - kg.y * kd.x));
+      const dl = splot ? GRUBOSC * 1.3 : (GRUBOSC + 12) / sin + 8, kat = Math.atan2(kg.y, kg.x) * 180 / Math.PI;
+      const idC = "cien" + nr, idS = "skr" + (nr++);
+      prostokat(idC, x, y, kat, dl, GRUBOSC + 9);
+      prostokat(idS, x, y, kat, dl, GRUBOSC + 6);
+      el("path", { d: sciezka(trasy[dol]), fill: "none", stroke: "rgba(60,38,18,.38)", "stroke-width": GRUBOSC + 2.5,
+        "stroke-linecap": "round", "stroke-linejoin": "round", "clip-path": "url(#" + idC + ")" }, warstwa);
+      rysujSznurek(gora, trasy[gora], warstwa, { "clip-path": "url(#" + idS + ")" });
+    };
+    for (const klucz in pary){
+      const [i, j] = klucz.split(",").map(Number), p = pary[klucz];
+      if (p.w.length !== 1) continue;
+      const punkt = przeciecieTras(trasy[i], trasy[j]);
+      if (punkt) naGorze(p.w[0], p.w[0] === i ? j : i, punkt.x, punkt.y);
+    }
+    strefy.forEach(s => s.skrzyzowania.forEach(k => naGorze(k.gora, k.gora === s.i ? s.j : s.i, k.x, k.y, true)));
+    // kołki — płaskie kapsle, pod którymi chowają się końce sznurków
+    sznurki.forEach((s, i) => s.forEach((d, k) => {
+      if (przesuniecie && przesuniecie.s === i && przesuniecie.k === k) return;
+      const p = dziurka(d);
+      const g = el("g", { class: "kolek", "data-s": i, "data-k": k });
+      el("circle", { cx: p.x, cy: p.y, r: 27, fill: "transparent" }, g); // większe pole dla palca
+      el("circle", { cx: p.x + 1, cy: p.y + 3, r: 20, fill: "rgba(59,42,24,.35)" }, g);
+      el("circle", { cx: p.x, cy: p.y, r: 20, fill: "#6E4A2A" }, g);
+      el("circle", { cx: p.x, cy: p.y, r: 17.5, fill: "url(#kapsel)" }, g);
+      if (wybrany && wybrany.s === i && wybrany.k === k)
+        el("circle", { cx: p.x, cy: p.y, r: 24, fill: "none", stroke: "#FF8A3D", "stroke-width": 4 }, g);
+    }));
+    if (przesuniecie){
+      el("circle", { cx: przesuniecie.x, cy: przesuniecie.y, r: 20, fill: "#6E4A2A" });
+      el("circle", { cx: przesuniecie.x, cy: przesuniecie.y, r: 17.5, fill: "url(#kapsel)", stroke: "#FF8A3D", "stroke-width": 3 });
+    }
+    kot(372, 398);
+  }
+  // Tło: lniane płótno z haftowanymi kwiatkami w rogach
+  function tlo(){
+    el("rect", { x: 0, y: 0, width: 400, height: 400, fill: "#E9E2D5" });
+    const kwiat = (x, y, s, kolor) => {
+      const g = el("g", { transform: "translate(" + x + " " + y + ") scale(" + s + ")", opacity: .9 });
+      [[-22, 10, -30], [20, 16, 35], [8, -24, 80]].forEach(([lx, ly, kat]) =>
+        el("ellipse", { cx: lx, cy: ly, rx: 13, ry: 5, fill: "#A9BBA2", transform: "rotate(" + kat + " " + lx + " " + ly + ")" }, g));
+      for (let k = 0; k < 5; k++)
+        el("ellipse", { cx: 0, cy: -12, rx: 8, ry: 12, fill: kolor, stroke: "#D8CDB9", "stroke-width": 1.2, transform: "rotate(" + (k * 72) + ")" }, g);
+      el("circle", { r: 5.5, fill: "#E2B04A" }, g);
+    };
+    kwiat(26, 30, 1, "#F7F3EA"); kwiat(376, 26, 0.9, "#F3E7C6"); kwiat(24, 372, 0.9, "#F7F3EA");
+    [[350, 70], [52, 330], [70, 40]].forEach(([x, y]) => el("circle", { cx: x, cy: y, r: 3.5, fill: "#9DB2C8" }));
+  }
+  function kolo(r){ return "M" + (CX - r) + " " + CY + " a" + r + " " + r + " 0 1 0 " + (2 * r) + " 0 a" + r + " " + r + " 0 1 0 " + (-2 * r) + " 0 Z "; }
+  // Klik siedzi w rogu i patrzy na sznurki
+  function kot(x, stop){
+    const S = 0.62;
+    const g = el("g", { transform: "translate(" + (x - 32 * S) + " " + (stop - 95 * S) + ") scale(" + S + ")" });
+    el("path", { d: "M48 86 C66 84 68 60 57 52", fill: "none", stroke: "#FF8A3D", "stroke-width": 7, "stroke-linecap": "round" }, g);
+    el("ellipse", { cx: 32, cy: 72, rx: 20, ry: 22, fill: "#FF8A3D" }, g);
+    el("ellipse", { cx: 32, cy: 76, rx: 10, ry: 14, fill: "#FFC08F" }, g);
+    el("ellipse", { cx: 24, cy: 93, rx: 7.5, ry: 4.5, fill: "#F27A2E" }, g);
+    el("ellipse", { cx: 40, cy: 93, rx: 7.5, ry: 4.5, fill: "#F27A2E" }, g);
+    el("path", { d: "M12 26 L10 10 L24 20 Z", fill: "#FF8A3D" }, g);
+    el("path", { d: "M52 26 L54 10 L40 20 Z", fill: "#FF8A3D" }, g);
+    el("circle", { cx: 32, cy: 36, r: 21, fill: "#FF8A3D" }, g);
+    el("circle", { cx: 24, cy: 33, r: 4.2, fill: "#1B2A4A" }, g);
+    el("circle", { cx: 40, cy: 33, r: 4.2, fill: "#1B2A4A" }, g);
+    el("path", { d: "M32 41 l-3 2.6 h6 Z", fill: "#1B2A4A" }, g);
+    el("path", { d: "M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10", stroke: "#1B2A4A", "stroke-width": 1.6, "stroke-linecap": "round" }, g);
+  }
+
+  // ---------- Plansza w 3D (three.js) ----------
+  // Ten sam układ współrzędnych co w 2D: plansza 400 × 400, środek kółka w (200, 200).
+  // W 3D: x → x − 200, y planszy → z − 200, wysokość to oś Y.
+  const WYS_KOLKA = 14, PROMIEN = 9.5, NA_KOLKU = WYS_KOLKA + PROMIEN;
+  // kolory podane jak w CSS (sRGB) przeliczamy na liniowe, inaczej w 3D wychodzą wyblakłe
+  const barwa = hex => new THREE.Color(hex).convertSRGBToLinear();
+  let trojwymiar = null;
+  function przygotuj3D(){
+    if (!window.THREE) return null;
+    const plotno = $("plansza3d");
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas: plotno, antialias: true }); }
+    catch(e){ return null; }
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    const scena = new THREE.Scene();
+    const kamera = new THREE.PerspectiveCamera(31, 1, 10, 3000);
+    kamera.position.set(0, 760, 300);
+    kamera.lookAt(0, 0, 18);
+    // światło jak na zdjęciu: miękkie z góry i z lewej, cienie w prawo w dół
+    scena.add(new THREE.HemisphereLight(0xfff6ea, 0x8a7a66, 0.62));
+    const slonce = new THREE.DirectionalLight(0xffffff, 0.78);
+    slonce.position.set(-220, 460, -160);
+    slonce.castShadow = true;
+    slonce.shadow.mapSize.set(2048, 2048);
+    Object.assign(slonce.shadow.camera, { left: -260, right: 260, top: 260, bottom: -260, near: 100, far: 1200 });
+    slonce.shadow.bias = -0.0006;
+    slonce.shadow.radius = 3;
+    scena.add(slonce);
+    // lniane płótno z haftowanymi kwiatkami — rysujemy je na zwykłym płótnie i nakładamy jako teksturę
+    const tloTekst = new THREE.CanvasTexture(narysujTlo());
+    tloTekst.encoding = THREE.sRGBEncoding;
+    tloTekst.anisotropy = 4;
+    const tlo = new THREE.Mesh(new THREE.PlaneGeometry(1200, 1200), new THREE.MeshStandardMaterial({ map: tloTekst, roughness: 0.95 }));
+    tlo.rotation.x = -Math.PI / 2;
+    tlo.receiveShadow = true;
+    scena.add(tlo);
+    const t3 = { renderer: renderer, scena: scena, kamera: kamera, plotno: plotno, kolko: null, nKolka: 0, dynamiczne: new THREE.Group(),
+      tekstury: {}, raycaster: new THREE.Raycaster(), animacja: 0 };
+    scena.add(t3.dynamiczne);
+    t3.materialKolka = new THREE.MeshStandardMaterial({ map: drewno(), roughness: 0.72 });
+    t3.materialKapsla = new THREE.MeshStandardMaterial({ color: barwa(0x7d5230), roughness: 0.45, metalness: 0.1 });
+    t3.materialOtworu = new THREE.MeshStandardMaterial({ color: barwa(0x3a2414), roughness: 1, side: THREE.BackSide });
+    t3.materialDna = new THREE.MeshStandardMaterial({ color: barwa(0x0d0703), roughness: 1 });
+    t3.materialZaznaczenia = new THREE.MeshBasicMaterial({ color: 0xff8a3d, transparent: true, opacity: 0.95 });
+    t3.materialZachety = new THREE.MeshBasicMaterial({ color: 0xff8a3d, transparent: true, opacity: 0.7 });
+    // kapsel kołka: płaski, z zaokrąglonym brzegiem
+    // punkty od dołu do góry — wtedy powierzchnia jest zwrócona na zewnątrz
+    t3.ksztaltKapsla = new THREE.LatheGeometry([
+      new THREE.Vector2(0.01, 13.5), new THREE.Vector2(19.8, 13.5), new THREE.Vector2(19.8, 16), new THREE.Vector2(19.4, 19),
+      new THREE.Vector2(18, 20.8), new THREE.Vector2(15.5, 21.6), new THREE.Vector2(0.01, 21.6)], 40);
+    // płótno na całą szerokość ramki; wysokość jak kwadrat, ale nie więcej niż 560 px i 70% ekranu —
+    // kamera ma stały kąt w pionie, więc kółko zawsze się mieści, a płótno wypełnia boki
+    let ostatni = "";
+    const rozmiar = () => {
+      const w = plotno.clientWidth || 400, h = Math.round(Math.min(w, 560, window.innerHeight * 0.7));
+      if (ostatni === w + "x" + h) return;
+      ostatni = w + "x" + h;
+      plotno.style.height = h + "px";
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, h, false);
+      kamera.aspect = w / h;
+      kamera.updateProjectionMatrix();
+      odswiez3D();
+    };
+    // płótno zmienia rozmiar razem ze stroną (obrót telefonu, zmiana okna)
+    if (window.ResizeObserver) new ResizeObserver(rozmiar).observe(plotno); else window.addEventListener("resize", rozmiar);
+    t3.rozmiar = rozmiar;
+    return t3;
+  }
+  function narysujTlo(){
+    const c = document.createElement("canvas"); c.width = c.height = 1024;
+    const g = c.getContext("2d"), s = 1024 / 1200, o = 320; // tło 1200 × 1200, plansza 400 × 400 na środku
+    g.fillStyle = "#E9E2D5"; g.fillRect(0, 0, 1024, 1024);
+    // splot lnu: delikatne poziome i pionowe nitki
+    for (let k = 0; k < 1024; k += 2){
+      g.fillStyle = "rgba(120,100,70," + (0.03 + Math.random() * 0.04) + ")"; g.fillRect(0, k, 1024, 1);
+      g.fillStyle = "rgba(255,255,255," + (0.03 + Math.random() * 0.05) + ")"; g.fillRect(k, 0, 1, 1024);
+    }
+    const kwiat = (x, y, sk, kolor) => {
+      g.save(); g.translate((x + o) * s, (y + o) * s); g.scale(sk * s * 1.25, sk * s * 1.25);
+      [[-22, 10, -30], [20, 16, 35], [8, -24, 80]].forEach(([lx, ly, kat]) => {
+        g.save(); g.translate(lx, ly); g.rotate(kat * Math.PI / 180); g.fillStyle = "#A9BBA2";
+        g.beginPath(); g.ellipse(0, 0, 13, 5, 0, 0, Math.PI * 2); g.fill(); g.restore();
+      });
+      for (let k = 0; k < 5; k++){
+        g.save(); g.rotate(k * 72 * Math.PI / 180); g.fillStyle = kolor; g.strokeStyle = "#D2C6B0"; g.lineWidth = 1.2;
+        g.beginPath(); g.ellipse(0, -12, 8, 12, 0, 0, Math.PI * 2); g.fill(); g.stroke(); g.restore();
+      }
+      g.fillStyle = "#E2B04A"; g.beginPath(); g.arc(0, 0, 5.5, 0, Math.PI * 2); g.fill();
+      g.restore();
+    };
+    // współrzędne jak w tle 560 × 560 z planszą przesuniętą o 80
+    kwiat(110, 108, 1.15, "#F7F3EA"); kwiat(455, 100, 1, "#F3E7C6"); kwiat(100, 455, 1, "#F7F3EA"); kwiat(462, 465, 1.1, "#F3E7C6");
+    [[430, 160], [140, 410], [160, 95], [420, 440]].forEach(([x, y]) => { g.fillStyle = "#9DB2C8"; g.beginPath(); g.arc((x + o) * s, (y + o) * s, 7 * s, 0, Math.PI * 2); g.fill(); });
+    return c;
+  }
+  // jasny klon z delikatnymi słojami
+  function drewno(){
+    const c = document.createElement("canvas"); c.width = c.height = 512;
+    const g = c.getContext("2d");
+    g.fillStyle = "#E4C18F"; g.fillRect(0, 0, 512, 512);
+    for (let k = 0; k < 140; k++){
+      g.strokeStyle = "rgba(170,120,70," + (0.04 + Math.random() * 0.07) + ")";
+      g.lineWidth = 1 + Math.random() * 2;
+      const y = Math.random() * 512;
+      g.beginPath(); g.moveTo(0, y);
+      for (let x = 0; x <= 512; x += 32) g.lineTo(x, y + Math.sin(x / 60 + k) * 4);
+      g.stroke();
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1 / 140, 1 / 140);
+    return t;
+  }
+  // tekstura skręconej bawełny w kolorze sznurka: ukośne zwoje z cieniem i połyskiem
+  function teksturaSznurka(i){
+    const k = SZNURKI[i % SZNURKI.length];
+    const c = document.createElement("canvas"); c.width = 64; c.height = 64;
+    const g = c.getContext("2d");
+    g.fillStyle = k.kolor; g.fillRect(0, 0, 64, 64);
+    for (let x = -64; x < 128; x += 16){
+      g.strokeStyle = k.ciemny; g.globalAlpha = 0.75; g.lineWidth = 4;
+      g.beginPath(); g.moveTo(x, 0); g.lineTo(x + 64, 64); g.stroke();
+      g.strokeStyle = k.jasny; g.globalAlpha = 0.8; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(x + 7, 0); g.lineTo(x + 71, 64); g.stroke();
+    }
+    g.globalAlpha = 1;
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+  function budujKolko(t3){
+    if (t3.kolko){ t3.scena.remove(t3.kolko); t3.kolko.traverse(o => o.geometry && o.geometry.dispose()); }
+    const grupa = new THREE.Group();
+    const ksztalt = new THREE.Shape();
+    ksztalt.absarc(0, 0, R_ZEW, 0, Math.PI * 2, false);
+    const srodek = new THREE.Path(); srodek.absarc(0, 0, R_WEW, 0, Math.PI * 2, true); ksztalt.holes.push(srodek);
+    for (let d = 0; d < n; d++){
+      const p = dziurka(d), otw = new THREE.Path();
+      otw.absarc(p.x - CX, -(p.y - CY), 18, 0, Math.PI * 2, true);
+      ksztalt.holes.push(otw);
+      // ścianki i dno otworu
+      const sciana = new THREE.Mesh(new THREE.CylinderGeometry(18, 18, WYS_KOLKA, 28, 1, true), t3.materialOtworu);
+      sciana.position.set(p.x - CX, WYS_KOLKA / 2, p.y - CY);
+      const dno = new THREE.Mesh(new THREE.CircleGeometry(18, 28), t3.materialDna);
+      dno.rotation.x = -Math.PI / 2; dno.position.set(p.x - CX, 0.6, p.y - CY);
+      grupa.add(sciana, dno);
+    }
+    const geo = new THREE.ExtrudeGeometry(ksztalt, { depth: WYS_KOLKA, bevelEnabled: true, bevelThickness: 1.6, bevelSize: 1.6, bevelSegments: 3, curveSegments: 72 });
+    const kolko = new THREE.Mesh(geo, t3.materialKolka);
+    kolko.rotation.x = -Math.PI / 2;
+    kolko.castShadow = true; kolko.receiveShadow = true;
+    grupa.add(kolko);
+    t3.scena.add(grupa);
+    t3.kolko = grupa; t3.nKolka = n;
+  }
+  // Wysokość sznurka wzdłuż trasy. Podstawa: leży na kółku, końce chowają się pod kapslami,
+  // w splocie owija się spiralą wokół drugiego. Na to nakładamy uniesienia: w każdym punkcie liczy się
+  // NAJWIĘKSZE potrzebne uniesienie (a nie ich suma), więc nic nie rośnie bez potrzeby.
+  // Splot ma jedno wspólne uniesienie dla obu splecionych sznurków na całej długości — spirala zostaje cała.
+  function wysokosci(trasy, przesuniecie, strefy){
+    const dlug = trasy.map(t => { const d = [0]; for (let k = 1; k < t.length; k++) d.push(d[k - 1] + Math.hypot(t[k].x - t[k - 1].x, t[k].y - t[k - 1].y)); return d; });
+    // koniec sznurka siedzi w dziurce pod kapslem i wychodzi spod jego brzegu, potem kładzie się na kółku
+    // (schodzi dopiero pod samym brzegiem kapsla — wcześniej zapadałby się w drewno i wyglądał na ucięty)
+    const przyKoncu = (odl, w) => odl < 13 ? WYS_KOLKA - 2 : odl < 22 ? WYS_KOLKA - 2 + (w - WYS_KOLKA + 2) * (1 - Math.cos((odl - 13) / 9 * Math.PI)) / 2 : w;
+    const baza = trasy.map((t, r) => t.map((p, k) => {
+      const w = NA_KOLKU + 1 + (p.h || 0) * PROMIEN * SPIRALA, d = dlug[r], L = d[d.length - 1];
+      return przyKoncu(Math.min(d[k], L - d[k]), w);
+    }));
+    // przy własnym kołku sznurek zostaje schowany pod kapslem — unoszenie zaczyna się dopiero dalej
+    const waga = (r, k) => { const d = dlug[r], L = d[d.length - 1], o = Math.min(d[k], L - d[k]); const x = Math.max(0, Math.min(1, (o - 21) / 22)); return x * x * (3 - 2 * x); };
+    // sznurek przechodzący nad cudzym kołkiem leży na jego kapslu, a nie przez niego
+    trasy.forEach((t, r) => sznurki.forEach((s, q) => s.forEach(d => {
+      if (q === r) return;
+      const c = dziurka(d);
+      t.forEach((p, k) => {
+        const o = Math.hypot(p.x - c.x, p.y - c.y);
+        if (o >= 30) return;
+        const naKapslu = 21.6 + PROMIEN * Math.sqrt(Math.max(0, 1 - Math.pow(Math.max(0, o - 12) / 18, 2)));
+        if (naKapslu > baza[r][k]) baza[r][k] += (naKapslu - baza[r][k]) * waga(r, k);
+      });
+    })));
+    // podniesiony koniec przy przeciąganiu — sznurek unosi się nad innymi przy palcu
+    if (przesuniecie){
+      const r = przesuniecie.s, d = dlug[r], L = d[d.length - 1];
+      baza[r] = baza[r].map((w, k) => w + 36 * Math.exp(-Math.pow((przesuniecie.k === 0 ? d[k] : L - d[k]) / 70, 2)));
+    }
+
+    // ---- sploty: które punkty sznurka należą do którego splotu ----
+    const odlOdOdcinka = (P, A, B) => {
+      const dx = B.x - A.x, dy = B.y - A.y, t = Math.max(0, Math.min(1, ((P.x - A.x) * dx + (P.y - A.y) * dy) / (dx * dx + dy * dy || 1)));
+      return Math.hypot(P.x - (A.x + dx * t), P.y - (A.y + dy * t));
+    };
+    const wStrefie = trasy.map(t => t.map(() => -1));
+    strefy.forEach((s, z) => [s.i, s.j].forEach(r => trasy[r].forEach((p, k) => {
+      if (odlOdOdcinka(p, s.poczatek, s.koniec) < s.szer / 2 + 1) wStrefie[r][k] = z;
+    })));
+    const zakres = strefy.map((s, z) => {
+      const o = {};
+      [s.i, s.j].forEach(r => {
+        let a = Infinity, b = -Infinity;
+        trasy[r].forEach((p, k) => { if (wStrefie[r][k] === z){ a = Math.min(a, dlug[r][k]); b = Math.max(b, dlug[r][k]); } });
+        if (a <= b) o[r] = [a, b];
+      });
+      return o;
+    });
+
+    // ---- od spodu: sznurek nie wchodzi w drewno kółka ani pod płótno ----
+    // nad drewnem leży co najmniej na kółku, nad otworem co najmniej na płótnie; tylko końce chowają się pod kapsle
+    const podloga = p => { const o = Math.hypot(p.x - CX, p.y - CY); return o > R_WEW - 4 && o < R_ZEW + 4 ? WYS_KOLKA + PROMIEN : PROMIEN; };
+    const unSplotu = strefy.map(() => 0);    // wspólne uniesienie całego splotu
+    trasy.forEach((t, r) => t.forEach((p, k) => {
+      if (waga(r, k) < 1) return;
+      const brak = podloga(p) - baza[r][k];
+      if (brak <= 0) return;
+      const z = wStrefie[r][k];
+      if (z >= 0) unSplotu[z] = Math.max(unSplotu[z], brak); // dolna nitka splotu — unosimy cały splot
+      else baza[r][k] += brak;
+    }));
+    // ---- profil uniesień ----
+    const OPAD = 55, MAX = 2 * PROMIEN * 3.2, ODSTEP = 2 * PROMIEN + 0.5; // limit: ok. dwie i pół warstwy — przy zapętlonych warunkach nic nie wystrzeli w górę
+    const opad = x => x <= 0 ? 1 : x >= OPAD ? 0 : (1 + Math.cos(Math.PI * x / OPAD)) / 2; // łagodne wejście i zejście
+    const zrodla = trasy.map(() => []);      // uniesienia w punktach: { a, b, E } — płasko od a do b (po długości sznurka)
+    const wys = (r, k) => {
+      const s = dlug[r][k];
+      let e = 0;
+      zrodla[r].forEach(z => { e = Math.max(e, z.E * opad(Math.max(z.a - s, s - z.b, 0))); });
+      strefy.forEach((st, z) => {
+        if (unSplotu[z] > 0 && zakres[z][r]){ const [a, b] = zakres[z][r]; e = Math.max(e, unSplotu[z] * opad(Math.max(a - s, s - b, 0))); }
+      });
+      return baza[r][k] + e * waga(r, k);
+    };
+    // podnieś sznurek r w punkcie k tak, żeby był co najmniej na wysokości T
+    const podnies = (r, k, T, zrodlo) => {
+      const z = wStrefie[r][k];
+      // bez dzielenia przez wagę: tuż przy własnym kołku sznurek uniesie się tylko trochę, zamiast sterczeć w górę
+      if (z >= 0){ unSplotu[z] = Math.min(MAX, Math.max(unSplotu[z], T - baza[r][k])); return; }
+      zrodlo.E = Math.min(MAX, Math.max(zrodlo.E, T - baza[r][k]));
+      if (!zrodlo.dodane){ zrodlo.a = dlug[r][k] - PROMIEN; zrodlo.b = dlug[r][k] + PROMIEN; zrodla[r].push(zrodlo); zrodlo.dodane = true; }
+    };
+
+    // ---- wszystkie przecięcia i kto jest na górze ----
+    // także sznurek sam ze sobą (gdy przechodzi przez dwa sploty) i drugie przecięcie tej samej pary.
+    // Sprawdzamy każdy odcinek trasy.
+    const przeciecia = (p, q, sam) => {
+      const wynik = [];
+      for (let a = 0; a + 1 < p.length; a++) for (let b = sam ? a + 12 : 0; b + 1 < q.length; b++){
+        const X = przeciecieOdcinkow(p[a], p[a + 1], q[b], q[b + 1]);
+        if (X) wynik.push({ X: X, a: a, b: b });
+      }
+      return wynik;
+    };
+    const warunki = []; // { g: [r, k] na górze, d: [r, k] na dole }
+    const dodaj = (g, kg, d, kd) => warunki.push({ g: [g, kg], d: [d, kd], zrodlo: { E: 0 } });
+    // stała decyzja, żeby nic nie przeskakiwało między klatkami: wyraźnie wyżej leżący zostaje na górze,
+    // a przy podobnej wysokości sznurek o wyższym numerze
+    const dowolnie = (r1, a, r2, b) => {
+      const wyzej = Math.abs(baza[r1][a] - baza[r2][b]) > PROMIEN ? baza[r1][a] > baza[r2][b] : (r1 !== r2 ? r1 > r2 : a > b);
+      return wyzej ? dodaj(r1, a, r2, b) : dodaj(r2, b, r1, a);
+    };
+    const najblizszy = (r, P) => { let kk = 0, o = Infinity; trasy[r].forEach((q, k) => { const d = Math.hypot(q.x - P.x, q.y - P.y); if (d < o){ o = d; kk = k; } }); return kk; };
+    // splot to jedna wiązka: trzeci sznurek idzie nad całym splotem albo pod nim — nigdy między splecionymi
+    const przezSplot = {};
+    const splotPrzy = (czlonek, inny, k) => { const z = wStrefie[czlonek][k]; return z >= 0 && strefy[z].i !== inny && strefy[z].j !== inny ? z : -1; };
+    for (let i = 0; i < trasy.length; i++){
+      przeciecia(trasy[i], trasy[i], true).forEach(c => { if (wStrefie[i][c.a] < 0 || wStrefie[i][c.a] !== wStrefie[i][c.b]) dowolnie(i, c.b, i, c.a); });
+      for (let j = i + 1; j < trasy.length; j++){
+        const p = pary[i + "," + j];
+        const wspolny = strefy.findIndex(s => (s.i === i && s.j === j) || (s.i === j && s.j === i));
+        const lista = przeciecia(trasy[i], trasy[j], false).filter(c => {
+          if (wspolny >= 0 && (wStrefie[i][c.a] === wspolny || wStrefie[j][c.b] === wspolny)) return false; // w ich splocie decyduje spirala
+          for (const [czl, kc, r, kr] of [[i, c.a, j, c.b], [j, c.b, i, c.a]]){
+            const z = splotPrzy(czl, r, kc);
+            if (z >= 0){ (przezSplot[z + "," + r] = przezSplot[z + "," + r] || []).push({ czl: czl, kc: kc, kr: kr }); return false; }
+          }
+          return true;
+        });
+        if (p.w.length === 1 && lista.length){
+          // prawdziwe skrzyżowanie tej pary to to najbliżej przecięcia prostych łączących kołki
+          const P = przeciecieOdcinkow(trasy[i][0], trasy[i][trasy[i].length - 1], trasy[j][0], trasy[j][trasy[j].length - 1]) || lista[0].X;
+          lista.sort((c, e) => Math.hypot(c.X.x - P.x, c.X.y - P.y) - Math.hypot(e.X.x - P.x, e.X.y - P.y));
+          const c = lista.shift();
+          if (p.w[0] === i) dodaj(i, c.a, j, c.b); else dodaj(j, c.b, i, c.a);
+        }
+        // gdy para krzyżuje się kilka razy, wszędzie na górze jest ten sam sznurek (inaczej wyszedłby pozorny węzeł)
+        const gora = p.w.length === 1 ? p.w[0] : p.w.length >= 2 ? (p.ruch !== undefined ? p.ruch : p.w[0]) :
+          przesuniecie && (przesuniecie.s === i || przesuniecie.s === j) ? przesuniecie.s : -1;
+        lista.forEach(c => gora === i ? dodaj(i, c.a, j, c.b) : gora === j ? dodaj(j, c.b, i, c.a) : dowolnie(i, c.a, j, c.b));
+      }
+    }
+    for (const klucz in przezSplot){
+      const [z, r] = klucz.split(",").map(Number), s = strefy[z];
+      if (r === s.i || r === s.j) continue; // własny splot ustawia spirala, nie warunki
+      // trzeci sznurek idzie górą, jeśli według gry leży na którymkolwiek ze splecionych
+      const nad = [s.i, s.j].some(c => { const p = pary[Math.min(c, r) + "," + Math.max(c, r)]; return p.w.length === 1 && p.w[0] === r; });
+      przezSplot[klucz].forEach(x => {
+        const drugi = x.czl === s.i ? s.j : s.i, kd = najblizszy(drugi, trasy[r][x.kr]);
+        // tuż obok punktu przecięcia sprawdzamy oba splecione sznurki
+        // (gdy gra mówi, że z jednym górą, a z drugim dołem — tak jest: trzeci sznurek przechodzi między nimi)
+        [[x.czl, x.kc], [drugi, kd]].forEach(([c, kc]) => {
+          const g = goraPary(c, r), naGorze = g >= 0 ? g === r : nad;
+          if (naGorze) dodaj(r, x.kr, c, kc); else dodaj(c, kc, r, x.kr);
+        });
+      });
+    }
+
+    // Zderzenia z boku: sznurki, które leżą bliżej siebie niż ich grubość (choć się nie przecinają),
+    // też muszą się rozejść — jeden kładzie się na drugim. Sprawdzamy co trzeci punkt; przy końcach
+    // (pod kapslami) i w ich wspólnym splocie nie sprawdzamy.
+    const ZBLIZENIE = 2 * PROMIEN - 1.5;
+    // tylko różne sznurki — porównanie sznurka z samym sobą dawało sprzeczne warunki (sąsiednie kawałki tej samej nitki w splocie)
+    for (let i = 0; i < trasy.length; i++) for (let j = i + 1; j < trasy.length; j++){
+      const ti = trasy[i], tj = trasy[j], p = pary[i + "," + j];
+      const wspolny = i === j ? -1 : strefy.findIndex(s => (s.i === i && s.j === j) || (s.i === j && s.j === i));
+      const gora = !p ? -1 : p.w.length === 1 ? p.w[0] : p.w.length >= 2 ? (p.ruch !== undefined ? p.ruch : p.w[0]) :
+        przesuniecie && (przesuniecie.s === i || przesuniecie.s === j) ? przesuniecie.s : -1;
+      let ostatnie = -99;
+      for (let a = 0; a < ti.length; a += 3){
+        if (waga(i, a) < 0.5) continue;
+        if (wspolny >= 0 && wStrefie[i][a] === wspolny) continue;
+        let najB = -1, najO = ZBLIZENIE;
+        for (let b = 0; b < tj.length; b += 3){
+          const o = Math.hypot(ti[a].x - tj[b].x, ti[a].y - tj[b].y);
+          if (o < najO){ najO = o; najB = b; }
+        }
+        if (najB < 0 || waga(j, najB) < 0.5) continue;
+        if (wspolny >= 0 && wStrefie[j][najB] === wspolny) continue;
+        if (a - ostatnie < 6) continue; // jedno zbliżenie na kawałek sznurka wystarczy
+        ostatnie = a;
+        if (gora === i) dodaj(i, a, j, najB); else if (gora === j) dodaj(j, najB, i, a); else dowolnie(i, a, j, najB);
+      }
+    }
+    // ---- rozwiązywanie: podnosimy, aż każde przecięcie ma pełny odstęp ----
+    const rozwiaz = () => {
+      for (let runda = 0; runda < 12; runda++){
+        let zmiana = false;
+        warunki.forEach(w => {
+          const hg = wys(w.g[0], w.g[1]), hd = wys(w.d[0], w.d[1]);
+          if (hg >= hd + ODSTEP - 0.05) return;
+          const przed = w.zrodlo.E + unSplotu.reduce((a, b) => a + b, 0);
+          podnies(w.g[0], w.g[1], hd + ODSTEP, w.zrodlo);
+          if (w.zrodlo.E + unSplotu.reduce((a, b) => a + b, 0) > przed + 0.01) zmiana = true;
+        });
+        if (!zmiana) break;
+      }
+    };
+    const kto = (r1, r2) => { // który ma być na górze (jak przy przecięciach), albo -1 — wtedy ten, który już leży wyżej
+      if (r1 === r2) return -1;
+      const p = pary[Math.min(r1, r2) + "," + Math.max(r1, r2)];
+      if (p.w.length === 1) return p.w[0];
+      if (p.w.length >= 2) return p.ruch !== undefined ? p.ruch : p.w[0];
+      return przesuniecie && (przesuniecie.s === r1 || przesuniecie.s === r2) ? przesuniecie.s : -1;
+    };
+    // pary punktów dwóch sznurków (albo dwóch dalekich kawałków jednego) bliżej siebie w poziomie niż grubość sznurka;
+    // pomijamy końce pod kapslami i dwie nitki tego samego splotu (ustawia je spirala)
+    const KOM = 20;
+    const bliskiePunkty = pomin => {
+      const siatka = {}, wynik = [];
+      trasy.forEach((t, r) => t.forEach((p, k) => {
+        if (waga(r, k) < 0.5 || (pomin && pomin[r][k])) return;
+        const kl = Math.floor(p.x / KOM) + "," + Math.floor(p.y / KOM);
+        (siatka[kl] = siatka[kl] || []).push([r, k]);
+      }));
+      for (const kl in siatka){
+        const [gx, gy] = kl.split(",").map(Number);
+        siatka[kl].forEach(([r1, k1]) => {
+          for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) (siatka[(gx + dx) + "," + (gy + dy)] || []).forEach(([r2, k2]) => {
+            // każda para raz; ten sam sznurek tylko gdy kawałki są daleko wzdłuż sznurka i nie w tym samym splocie
+            if (r2 < r1 || (r2 === r1 && (k2 <= k1 || dlug[r1][k2] - dlug[r1][k1] < 6 * PROMIEN || (wStrefie[r1][k1] >= 0 && wStrefie[r1][k1] === wStrefie[r1][k2])))) return;
+            const z1 = wStrefie[r1][k1];
+            if (z1 >= 0 && z1 === wStrefie[r2][k2] && r1 !== r2) return;
+            const p = trasy[r1][k1], q = trasy[r2][k2], d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < 2 * PROMIEN) wynik.push({ r1, k1, r2, k2, d });
+          });
+        });
+      }
+      return wynik;
+    };
+    // sploty (i kawałek przed i za nimi) rozsuwanie omija — tam działa wspólne uniesienie splotu
+    const przySplocie = trasy.map((t, r) => t.map((_, k) => {
+      for (let o = -14; o <= 14; o++){ const q = k + o; if (q >= 0 && q < t.length && wStrefie[r][q] >= 0) return true; }
+      return false;
+    }));
+    // ---- rozsuwanie jak w prostej fizyce: górny trochę w górę, dolny trochę w dół (nie niżej niż drewno czy płótno) ----
+    const rozsun = () => {
+      const H = trasy.map((t, r) => t.map((_, k) => wys(r, k)));
+      const H0 = H.map(w => w.slice()), ZAKRES = 1.4 * PROMIEN; // każdy kawałek przesuwa się najwyżej o tyle (bez wież)
+      const przesun = (r, k, ile) => {
+        for (let o = -8; o <= 8; o++){
+          const q = k + o;
+          if (q < 0 || q >= H[r].length) continue;
+          H[r][q] = Math.max(H0[r][q] - ZAKRES, Math.min(H0[r][q] + ZAKRES, H[r][q] + ile * Math.exp(-o * o / 18) * waga(r, q)));
+        }
+      };
+      const bliskie = bliskiePunkty(przySplocie);
+      for (let runda = 0; runda < 8; runda++){
+        let ruch = false;
+        bliskie.forEach(b => {
+          const potrzeba = Math.sqrt(Math.max(0, 4 * PROMIEN * PROMIEN - b.d * b.d)) + 0.5;
+          const g0 = kto(b.r1, b.r2);
+          const pierwszyNaGorze = g0 === b.r1 ? true : g0 === b.r2 ? false : H[b.r1][b.k1] >= H[b.r2][b.k2];
+          const [g, gk, dl, dk] = pierwszyNaGorze ? [b.r1, b.k1, b.r2, b.k2] : [b.r2, b.k2, b.r1, b.k1];
+          const brak = potrzeba - (H[g][gk] - H[dl][dk]);
+          if (brak <= 0.1) return;
+          ruch = true;
+          const wDol = Math.min(brak * 0.4, Math.max(0, H[dl][dk] - podloga(trasy[dl][dk])));
+          przesun(g, gk, brak - wDol);
+          if (wDol > 0) przesun(dl, dk, -wDol);
+        });
+        if (!ruch) break;
+      }
+      return H;
+    };
+    // Rozwiązujemy, rozsuwamy i sprawdzamy, czy gdzieś (także przy splotach) sznurki nadal na siebie nachodzą.
+    // Każde takie miejsce dopisujemy jako nowy warunek „ten na górze, ten na dole” i liczymy jeszcze raz —
+    // warunek przy splocie unosi cały splot, więc spirala się nie rozjeżdża.
+    let H;
+    for (let proba = 0; proba < 1; proba++){ // więcej przebiegów prawie nic nie poprawiało, a mocno spowalniało
+      rozwiaz();
+      H = rozsun();
+      let nowe = 0;
+      bliskiePunkty(null).forEach(b => {
+        if (Math.hypot(b.d, H[b.r1][b.k1] - H[b.r2][b.k2]) >= 2 * PROMIEN - 1) return;
+        const g0 = kto(b.r1, b.r2);
+        const pierwszyNaGorze = g0 === b.r1 ? true : g0 === b.r2 ? false : H[b.r1][b.k1] >= H[b.r2][b.k2];
+        if (pierwszyNaGorze) dodaj(b.r1, b.k1, b.r2, b.k2); else dodaj(b.r2, b.k2, b.r1, b.k1);
+        nowe++;
+      });
+      if (!nowe) break;
+    }
+    return H;
+  }
+  // Sznurki nie przeskakują do nowego kształtu, tylko płynnie do niego dochodzą (w ułamku sekundy).
+  // Każdy sznurek opisujemy 180 punktami rozłożonymi równo wzdłuż długości — dzięki temu stary i nowy
+  // kształt da się łatwo „przelać” jeden w drugi, nawet gdy pojawia się albo znika supeł.
+  const PUNKTOW = 180;
+  function rysuj3D(przesuniecie){
+    const t3 = trojwymiar;
+    if (t3.nKolka !== n) budujKolko(t3);
+    if (!t3.liny){ t3.liny = new THREE.Group(); t3.scena.add(t3.liny); }
+    t3.dynamiczne.children.slice().forEach(o => {
+      t3.dynamiczne.remove(o);
+      if (o.geometry && o.geometry !== t3.ksztaltKapsla) o.geometry.dispose();
+    });
+    const konce = sznurki.map((s, i) => s.map((d, k) =>
+      przesuniecie && przesuniecie.s === i && przesuniecie.k === k ? { x: przesuniecie.x, y: przesuniecie.y } : dziurka(d)));
+    const strefy = strefySplotow(konce), trasy = trasySznurkow(konce, strefy), h = wysokosci(trasy, przesuniecie, strefy);
+    t3.cele = sznurki.map((_, i) => new THREE.CatmullRomCurve3(trasy[i].map((p, k) => new THREE.Vector3(p.x - CX, h[i][k], p.y - CY)), false, "centripetal").getSpacedPoints(PUNKTOW));
+    t3.ciagniety = przesuniecie ? przesuniecie.s : -1;
+    if (!t3.pokazane || t3.pokazane.length !== t3.cele.length || t3.natychmiast){
+      t3.pokazane = t3.cele.map(c => c.map(v => v.clone()));
+      t3.natychmiast = false;
+    }
+    // kołki z końcami sznurków
+    sznurki.forEach((s, i) => s.forEach((d, k) => {
+      const ciagniety = przesuniecie && przesuniecie.s === i && przesuniecie.k === k;
+      const p = ciagniety ? przesuniecie : dziurka(d);
+      const kapsel = new THREE.Mesh(t3.ksztaltKapsla, t3.materialKapsla);
+      kapsel.position.set(p.x - CX, ciagniety ? 34 : 0, p.y - CY);
+      kapsel.castShadow = true; kapsel.receiveShadow = true;
+      t3.dynamiczne.add(kapsel);
+      kapsel.userData.koniec = [i, k]; // kapsel jedzie razem z końcem sznurka (patrz klatka3D)
+      if (wybrany && wybrany.s === i && wybrany.k === k){
+        const obwodka = new THREE.Mesh(new THREE.TorusGeometry(23.5, 2.2, 10, 48), t3.materialZaznaczenia);
+        obwodka.rotation.x = -Math.PI / 2; obwodka.position.set(p.x - CX, (ciagniety ? 34 : 0) + 20, p.y - CY);
+        t3.dynamiczne.add(obwodka);
+        obwodka.userData.koniec = [i, k];
+      }
+    }));
+    // wolne dziurki, do których można przełożyć wybrany koniec — migająca obwódka
+    if (wybrany){
+      const zajete = new Set(sznurki.flat());
+      for (let d = 0; d < n; d++) if (!zajete.has(d) && dozwolony(wybrany.s, wybrany.k, d)){
+        const p = dziurka(d), ob = new THREE.Mesh(new THREE.TorusGeometry(22, 2, 10, 48), t3.materialZachety);
+        ob.rotation.x = -Math.PI / 2; ob.position.set(p.x - CX, WYS_KOLKA + 1.5, p.y - CY);
+        t3.dynamiczne.add(ob);
+      }
+    }
+    if (!t3.animacja) t3.animacja = requestAnimationFrame(klatka3D);
+  }
+  // jedna klatka: sznurki podążają do celu, obwódki migają; pętla trwa, dopóki jest ruch albo wybrany koniec
+  function klatka3D(czas){
+    const t3 = trojwymiar;
+    let ruch = false;
+    t3.pokazane.forEach((pok, i) => {
+      const cel = t3.cele[i], tempo = i === t3.ciagniety ? 0.55 : 0.3; // przeciągany nadąża za palcem szybciej
+      pok.forEach((v, k) => {
+        // końce też jadą płynnie, a kapsle razem z nimi (bez przeskoku kapsla i zagięcia sznurka); przeciągany koniec od razu za palcem
+        if ((k === 0 || k === pok.length - 1) && i === t3.ciagniety){ v.copy(cel[k]); return; }
+        const dx = cel[k].x - v.x, dy = cel[k].y - v.y, dz = cel[k].z - v.z;
+        if (dx * dx + dy * dy + dz * dz < 0.02){ v.copy(cel[k]); return; }
+        v.x += dx * tempo; v.y += dy * tempo; v.z += dz * tempo;
+        ruch = true;
+      });
+    });
+    budujLiny(t3);
+    t3.dynamiczne.children.forEach(o => {
+      if (!o.userData.koniec) return;
+      const [i, k] = o.userData.koniec, pok = t3.pokazane[i], v = pok[k === 0 ? 0 : pok.length - 1];
+      o.position.x = v.x; o.position.z = v.z;
+    });
+    if (wybrany) t3.materialZachety.opacity = 0.45 + 0.4 * Math.sin(czas / 180);
+    t3.renderer.render(t3.scena, t3.kamera);
+    t3.animacja = ruch || wybrany ? requestAnimationFrame(klatka3D) : 0;
+  }
+  function budujLiny(t3){
+    t3.liny.children.slice().forEach(o => { t3.liny.remove(o); o.geometry.dispose(); o.material.map.dispose(); o.material.dispose(); });
+    t3.pokazane.forEach((pts, i) => {
+      const krzywa = new THREE.CatmullRomCurve3(pts, false, "centripetal");
+      const dl = krzywa.getLength();
+      const geo = new THREE.TubeGeometry(krzywa, Math.max(96, Math.round(dl / 1.6)), PROMIEN, 18, false);
+      if (!t3.tekstury[i]) t3.tekstury[i] = teksturaSznurka(i);
+      const tekst = t3.tekstury[i].clone(); tekst.needsUpdate = true; tekst.repeat.set(dl / 14, 1);
+      const sznurek = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tekst, bumpMap: tekst, bumpScale: 0.9, roughness: 0.88 }));
+      sznurek.castShadow = true; sznurek.receiveShadow = true;
+      t3.liny.add(sznurek);
+    });
+  }
+  function odswiez3D(){ if (trojwymiar) trojwymiar.renderer.render(trojwymiar.scena, trojwymiar.kamera); }
+  // punkt planszy (w układzie 400 × 400) pod palcem — przecięcie promienia z poziomem sznurków
+  function punkt3D(e){
+    const t3 = trojwymiar, r = t3.plotno.getBoundingClientRect();
+    const v = new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    t3.raycaster.setFromCamera(v, t3.kamera);
+    const cel = new THREE.Vector3();
+    if (!t3.raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -NA_KOLKU), cel)) return { x: -999, y: -999 };
+    return { x: cel.x + CX, y: cel.z + CY };
+  }
+
+  // ---------- Przekładanie końców ----------
+  // Można kliknąć koniec sznurka, a potem wolną dziurkę — albo od razu przeciągnąć koniec do dziurki.
+  function punkt(e){
+    if (trojwymiar) return punkt3D(e);
+    const p = svg.createSVGPoint();
+    p.x = e.clientX; p.y = e.clientY;
+    return p.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  function wolnaDziurkaPrzy(p){
+    const zajete = new Set(sznurki.flat());
+    let najlepsza = -1, odl = 34;
+    for (let i = 0; i < n; i++) if (!zajete.has(i)){
+      const q = dziurka(i), d = Math.hypot(p.x - q.x, p.y - q.y);
+      if (d < odl){ odl = d; najlepsza = i; }
+    }
+    return najlepsza;
+  }
+  // koniec sznurka (kołek) najbliżej punktu planszy
+  function kolekPrzy(p){
+    let naj = null, odl = 27;
+    sznurki.forEach((s, i) => s.forEach((d, k) => {
+      const q = dziurka(d), o = Math.hypot(p.x - q.x, p.y - q.y);
+      if (o < odl){ odl = o; naj = { s: i, k: k }; }
+    }));
+    return naj;
+  }
+  let ciagnie = false, przeciagniety = false;
+  const powierzchnia = () => trojwymiar ? trojwymiar.plotno : svg;
+  function naDotyk(e){
+    if (gotowe) return;
+    const kolek = kolekPrzy(punkt(e));
+    if (kolek){
+      wybrany = kolek;
+      ciagnie = true; przeciagniety = false; jazda = null;
+      powierzchnia().setPointerCapture(e.pointerId);
+      rysuj();
+      return;
+    }
+    if (wybrany) upusc(wolnaDziurkaPrzy(punkt(e)));
+  }
+  // Kapsel idzie za palcem w dowolne miejsce. Osobno liczymy jego drogę dookoła kółka („t”, w dziurkach) —
+  // z niej wiadomo, wokół których kołków koniec już przeszedł. Kapsel nie może przejść wokół drugiego
+  // końca tego samego sznurka (w prawdziwym kółku się nie da).
+  let jazda = null; // { t: droga dookoła kółka w dziurkach, od dziurki startowej }
+  function naRuch(e){
+    if (!ciagnie || !wybrany) return;
+    let p = punkt(e);
+    const pocz = dziurka(sznurki[wybrany.s][wybrany.k]);
+    if (!przeciagniety && Math.hypot(p.x - pocz.x, p.y - pocz.y) < 8) return;
+    przeciagniety = true;
+    const a = sznurki[wybrany.s][wybrany.k], c = sznurki[wybrany.s][1 - wybrany.k];
+    if (!jazda) jazda = { t: 0 };
+    const u = (Math.atan2(p.y - CY, p.x - CX) + Math.PI / 2) / (Math.PI * 2) * n; // kąt palca w dziurkach
+    let roznica = ((u - (a + jazda.t)) % n + n) % n;
+    if (roznica > n / 2) roznica -= n;                          // najkrótsza droga od poprzedniego położenia
+    const doC = ((c - a) % n + n) % n;                          // ile dziurek do drugiego końca w stronę rosnącą
+    jazda.t = Math.max(-(n - doC) + 0.35, Math.min(doC - 0.35, jazda.t + roznica));
+    // najwyżej jedno przerysowanie na klatkę — na słabszych telefonach przeciąganie zostaje płynne
+    doNarysowania = { s: wybrany.s, k: wybrany.k, x: p.x, y: p.y, t: jazda.t };
+    if (!klatka) klatka = requestAnimationFrame(() => { klatka = 0; if (doNarysowania && ciagnie) rysuj(doNarysowania); });
+  }
+  let doNarysowania = null, klatka = 0;
+  function pusc(e){
+    if (!ciagnie) return;
+    ciagnie = false;
+    if (!przeciagniety) return; // zwykłe kliknięcie — koniec zostaje wybrany i czeka na dziurkę
+    jazda = null;
+    // kapsel ląduje tam, gdzie naprawdę był (na napiętym sznurku), a nie tam, gdzie palec
+    upusc(wolnaDziurkaPrzy(doNarysowania ? { x: doNarysowania.x, y: doNarysowania.y } : punkt(e)));
+  }
+  function upusc(d){
+    if (d >= 0 && !dozwolony(wybrany.s, wybrany.k, d)){ $("komunikat").textContent = ZA_MOCNO; wybrany = null; rysuj(); return; }
+    if (d >= 0) return przenies(d);
+    wybrany = null;
+    rysuj();
+  }
+  const anuluj = () => { ciagnie = false; jazda = null; wybrany = null; rysuj(); };
+  [svg, $("plansza3d")].forEach(el => {
+    el.addEventListener("pointerdown", naDotyk);
+    el.addEventListener("pointermove", naRuch);
+    el.addEventListener("pointerup", pusc);
+    el.addEventListener("pointercancel", anuluj);
+  });
+
+  function przenies(d){
+    const przed = stanGry().suply;
+    historia.push(kopia());
+    przelozKoniec(wybrany.s, wybrany.k, d);
+    wybrany = null;
+    ruchy++;
+    $("ruchy").textContent = ruchy;
+    stuk();
+    const po = stanGry();
+    $("komunikat").textContent = po.suply > przed
+      ? "Ups, zrobił się supeł! Przełóż ten koniec z powrotem albo kliknij „Cofnij”."
+      : "";
+    if (po.skrzyzowania === 0) wygrana();
+    else rysuj();
+  }
+  function cofnij(){
+    if (!historia.length || gotowe) return;
+    przywroc(historia.pop());
+    pamiecSplotow = {};
+    wybrany = null;
+    $("komunikat").textContent = "";
+    rysuj();
+  }
+
+  // ---------- Kłębki i robótki Klika ----------
+  // Za każdą rozplątaną plątaninę Klik dostaje kłębki włóczki: 3, gdy uda się w tylu ruchach, ile zrobiła gra
+  // przy plątaniu, 2 — gdy najwyżej o 3 więcej, 1 — zawsze. Z kłębków robi na drutach kolejne rzeczy.
+  const ROBOTKI = [
+    { prog: 5, nazwa: "szalik", biernik: "szalik", dopelniacz: "szalika", rysuj: (a, b) =>
+      `<path d="M12 10q20 16 40 0v9q-20 16-40 0z" fill="${a}"/>` +
+      `<g transform="rotate(-8 22 34)"><rect x="17" y="20" width="11" height="32" rx="2" fill="${a}"/><path d="M17 29h11v4H17zM17 39h11v4H17z" fill="${b}"/>` +
+      `<path d="M19 52v6M22.5 52v6M26 52v6" stroke="${a}" stroke-width="2" stroke-linecap="round"/></g>` +
+      `<g transform="rotate(10 38 34)"><rect x="32" y="22" width="11" height="28" rx="2" fill="${a}"/><path d="M32 30h11v4H32zM32 40h11v4H32z" fill="${b}"/>` +
+      `<path d="M34 50v6M37.5 50v6M41 50v6" stroke="${a}" stroke-width="2" stroke-linecap="round"/></g>` },
+    { prog: 12, nazwa: "czapka", biernik: "czapkę", dopelniacz: "czapki", rysuj: (a, b, c) =>
+      `<path d="M12 46a20 20 0 0 1 40 0z" fill="${a}"/><path d="M15 36h34v4H15z" fill="${b}"/>` +
+      `<rect x="9" y="44" width="46" height="10" rx="5" fill="${b}"/><circle cx="32" cy="20" r="7" fill="${c}"/>` },
+    { prog: 21, nazwa: "rękawiczki", biernik: "rękawiczki", dopelniacz: "rękawiczek", rysuj: (a, b) =>
+      `<path d="M8 50V28a8 8 0 0 1 16 0v22z" fill="${a}"/><ellipse cx="7" cy="36" rx="3.5" ry="7" transform="rotate(-20 7 36)" fill="${a}"/>` +
+      `<path d="M40 50V28a8 8 0 0 1 16 0v22z" fill="${a}"/><ellipse cx="57" cy="36" rx="3.5" ry="7" transform="rotate(20 57 36)" fill="${a}"/>` +
+      `<rect x="7" y="46" width="18" height="9" rx="3" fill="${b}"/><rect x="39" y="46" width="18" height="9" rx="3" fill="${b}"/>` },
+    { prog: 32, nazwa: "sweterek", biernik: "sweterek", dopelniacz: "sweterka", rysuj: (a, b, c) =>
+      `<path d="M22 12l-14 12 7 9 5-4v25h24V29l5 4 7-9-14-12q-10 7-20 0z" fill="${a}"/>` +
+      `<path d="M20 32h24v6H20z" fill="${b}"/><path d="M20 42h24v3H20z" fill="${c}"/><path d="M24 12q8 6 16 0" stroke="${b}" stroke-width="3" fill="none"/>` },
+    { prog: 45, nazwa: "kocyk", biernik: "kocyk", dopelniacz: "kocyka", rysuj: (a, b, c) =>
+      `<rect x="8" y="10" width="48" height="44" rx="4" fill="${a}"/>` +
+      `<path d="M8 22h48v5H8zM8 38h48v5H8z" fill="${b}" opacity=".85"/><path d="M20 10h5v44h-5zM39 10h5v44h-5z" fill="${c}" opacity=".7"/>` }
+  ];
+  const kolory = (od) => [0, 1, 2].map(k => SZNURKI[(od + k) % SZNURKI.length].kolor);
+  const ikonaRobotki = (r, nr, klasa) => `<svg class="${klasa}" viewBox="0 0 64 64" role="img" aria-label="${r.nazwa}">${r.rysuj(...kolory(nr * 2 + 1))}</svg>`;
+  const ikonaKlebka = (kolor, klasa) => {
+    const k = SZNURKI.find(s => s.kolor === kolor) || SZNURKI[1];
+    return `<svg class="${klasa}" viewBox="0 0 64 64" aria-hidden="true"><circle cx="31" cy="33" r="22" fill="${k.kolor}"/>` +
+      `<path d="M12 29q17-13 36-6M10 36q19-15 41-8M12 43q18-15 39-9M17 50q15-13 31-10" stroke="${k.ciemny}" stroke-width="2.2" fill="none" stroke-linecap="round"/>` +
+      `<path d="M27 12q12 14 8 42M35 12q11 16 6 40" stroke="${k.jasny}" stroke-width="2.4" fill="none" stroke-linecap="round"/>` +
+      `<path d="M50 44q8 6 4 14" stroke="${k.kolor}" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+  };
+  const slowoKlebek = x => x === 1 ? "kłębek" : (x % 10 >= 2 && x % 10 <= 4 && (x % 100 < 12 || x % 100 > 14)) ? "kłębki" : "kłębków";
+  function pokazKoszyk(){
+    $("klebki").textContent = klebki;
+    $("koszykKlebek").innerHTML = ikonaKlebka(SZNURKI[1].kolor, "");
+    const nastepna = ROBOTKI.find(r => r.prog > klebki), poprzedni = ROBOTKI.filter(r => r.prog <= klebki).pop();
+    const od = poprzedni ? poprzedni.prog : 0;
+    $("postep").style.width = nastepna ? Math.round((klebki - od) / (nastepna.prog - od) * 100) + "%" : "100%";
+    $("koszykOpis").textContent = nastepna
+      ? "Jeszcze " + (nastepna.prog - klebki) + " " + slowoKlebek(nastepna.prog - klebki) + ", a Klik zrobi na drutach " + nastepna.biernik + "!"
+      : "Klik ma już całą zimową garderobę! Zbieraj dalej kłębki.";
+    $("robotki").innerHTML = ROBOTKI.map((r, nr) => ikonaRobotki(r, nr, "robotka" + (klebki >= r.prog ? "" : " brak"))).join("");
+  }
+
+  function wygrana(){
+    gotowe = true;
+    rysuj();
+    dzwiek();
+    const zdobyte = nagrodzona ? 0 : ruchy <= cel ? 3 : ruchy <= cel + 3 ? 2 : 1, przed = klebki;
+    nagrodzona = true;
+    klebki += zdobyte;
+    try { localStorage.setItem(KLUCZ_KLEBKOW, String(klebki)); } catch(e) { /* bez zapamiętywania */ }
+    const nowa = ROBOTKI.findIndex(r => przed < r.prog && klebki >= r.prog);
+    // kłębki w kolorach sznurków z tej plątaniny; zdobyte wskakują po kolei
+    const wynik = $("klebkiWynik");
+    wynik.innerHTML = [0, 1, 2].map(k => ikonaKlebka(SZNURKI[k % sznurki.length].kolor, "klebek")).join("");
+    $("brawoOpis").textContent = zdobyte
+      ? "Udało Ci się w " + ruchy + " " + (ruchy === 1 ? "ruchu" : "ruchach") + ". Klik dostaje " + zdobyte + " " + slowoKlebek(zdobyte) + " włóczki!"
+      : "Kłębki za tę plątaninę są już w koszyku Klika.";
+    $("brawoRada").textContent = zdobyte && zdobyte < 3
+      ? "Spróbuj rozplątać w " + cel + " " + (cel === 1 ? "ruchu" : "ruchach") + " — wtedy zdobędziesz 3 kłębki!" : "";
+    const robotka = $("nowaRobotka");
+    robotka.hidden = true;
+    if (nowa >= 0) robotka.innerHTML = ikonaRobotki(ROBOTKI[nowa], nowa, "") + "<span>Hurra! Klik zrobił na drutach " + ROBOTKI[nowa].biernik + "!</span>";
+    setTimeout(() => {
+      if (!gotowe) return;
+      $("brawo").hidden = false;
+      [...wynik.children].forEach((el, k) => { if (k < zdobyte) setTimeout(() => { el.classList.add("zdobyty"); stuk(); }, 350 + k * 380); });
+      setTimeout(() => { pokazKoszyk(); if (nowa >= 0 && gotowe){ robotka.hidden = false; dzwiek(); } }, 450 + zdobyte * 380);
+    }, 800);
+    odwiedzinyKota();
+  }
+  function odNowa(){
+    przywroc(start);
+    pamiecSplotow = {};
+    historia = [];
+    ruchy = 0; gotowe = false; wybrany = null;
+    $("ruchy").textContent = "0";
+    $("komunikat").textContent = "";
+    $("brawo").hidden = true;
+    rysuj();
+  }
+
+  // ---------- Dźwięki ----------
+  let audioCtx = null;
+  function ton(f, t, dl, glosnosc, typ){
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = typ || "sine";
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(glosnosc, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dl);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(t); o.stop(t + dl + 0.02);
+  }
+  // cichy drewniany „stuk” przy wkładaniu kołka
+  function stuk(){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      ton(180, audioCtx.currentTime, 0.08, 0.12, "triangle");
+    } catch(e) { /* bez dźwięku */ }
+  }
+  function dzwiek(){
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const t0 = audioCtx.currentTime;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => ton(f, t0 + i * 0.09, 0.3, 0.1));
+    } catch(e) { /* bez dźwięku */ }
+  }
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const KOMPLEMENTY = ["Mrrr, rozplątane!", "Ale zręczne łapki!", "Teraz mogę się bawić!", "Mistrz sznurków!"];
+  const kotWedrowiec = $("kotWedrowiec"), dymekKota = $("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+  function odwiedzinyKota(){
+    kotTimeouty.forEach(clearTimeout); kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth; // wymuszamy przeliczenie stylów przed startem animacji
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = KOMPLEMENTY[Math.floor(Math.random() * KOMPLEMENTY.length)];
+      dymekKota.classList.add("widoczna");
+      kotTimeouty.push(setTimeout(() => {
+        dymekKota.classList.remove("widoczna");
+        kotTimeouty.push(setTimeout(() => kotWedrowiec.classList.remove("widoczny"), 700));
+      }, 4500));
+    };
+    if (bezRuchu) naMiejscu();
+    else kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+  }
+
+  // ---------- Sterowanie ----------
+  const poziomyBtn = document.querySelectorAll(".poziom");
+  poziomyBtn.forEach(p => p.addEventListener("click", () => {
+    poziomyBtn.forEach(x => x.setAttribute("aria-pressed", String(x === p)));
+    poziom = Number(p.dataset.poziom);
+    utworz();
+  }));
+  $("nastepna").addEventListener("click", utworz);
+  $("nowa").addEventListener("click", utworz);
+  $("odNowa").addEventListener("click", odNowa);
+  $("cofnij").addEventListener("click", cofnij);
+
+  // poziom można podać w adresie, np. /gry/platanina-klika?poziom=2
+  const zAdresu = Number(new URLSearchParams(location.search).get("poziom"));
+  if (zAdresu >= 1 && zAdresu <= 2){
+    poziom = zAdresu;
+    poziomyBtn.forEach(x => x.setAttribute("aria-pressed", String(Number(x.dataset.poziom) === poziom)));
+  }
+  // 3D, jeśli przeglądarka potrafi; w przeciwnym razie ta sama gra w 2D
+  trojwymiar = przygotuj3D();
+  if (trojwymiar){ svg.setAttribute("hidden", ""); $("plansza3d").hidden = false; trojwymiar.rozmiar(); }
+  pokazKoszyk();
+  utworz();
+})();
+</script>
+</body>
+</html>
