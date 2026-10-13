@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Strefa rodzica — zasady KotKlik | KotKlik</title>
-<meta name="description" content="Jak działa KotKlik: które gry są zawsze za darmo, jak działają gry tygodnia, czym będzie subskrypcja i czego nigdy nie robimy. Bez reklam i bez zakupów w grach.">
+<title>Strefa rodzica — zasady, prywatność i plany | KotKlik</title>
+<meta name="description" content="Jak działa KotKlik: teraz wszystkie gry są za darmo, co zmieni subskrypcja i czego nigdy nie zrobimy. Bez reklam i bez zakupów w grach.">
 <link rel="canonical" href="https://kotklik.pl/strefa-rodzica">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KotKlik">
 <meta property="og:locale" content="pl_PL">
 <meta property="og:title" content="Strefa rodzica — zasady KotKlik">
-<meta property="og:description" content="Które gry są zawsze za darmo, jak działają gry tygodnia i czego nigdy nie robimy.">
+<meta property="og:description" content="Teraz wszystkie gry są za darmo. Co zmieni subskrypcja i czego nigdy nie zrobimy.">
 <meta property="og:url" content="https://kotklik.pl/strefa-rodzica">
 <meta property="og:image" content="https://kotklik.pl/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -52,8 +52,8 @@ header::after{
 }
 .pasek{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
 .marka{display:flex;align-items:center;gap:12px;text-decoration:none}
-.marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
-.marka h1 span{color:var(--klik)}
+.marka .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka .logo span{color:var(--klik)}
 .kot{width:54px;height:54px;flex-shrink:0}
 .oko{transform-origin:center;animation:mrug 5.5s infinite}
 @keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
@@ -67,7 +67,7 @@ header::after{
 
 /* ---------- Nagłówek strony ---------- */
 .hero{background:var(--noc);padding:32px 0 48px}
-.hero h2{
+.hero h1{
   font-family:'Baloo 2',sans-serif;font-weight:600;color:var(--papier);
   font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.25;margin-bottom:10px;
 }
@@ -87,6 +87,8 @@ header::after{
 }
 .zasada.tydzien{border-bottom-color:var(--slonce)}
 .zasada.subskrypcja{border-bottom-color:var(--klik)}
+.zasada.teraz{border-bottom-color:var(--klik);max-width:640px;margin-bottom:32px}
+.etap{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:600;margin-bottom:4px}
 .zasada .ikona{font-size:2.2rem;display:block;margin-bottom:8px}
 .zasada h3{font-family:'Baloo 2',sans-serif;font-size:1.15rem;font-weight:600;margin-bottom:6px}
 .zasada p{color:#3A475C}
@@ -100,6 +102,9 @@ header::after{
 .lista{list-style:none;display:grid;gap:12px;max-width:680px}
 .lista li{padding-left:32px;position:relative;font-weight:600}
 .lista li span{display:block;font-weight:400;color:#3A475C}
+.lista li strong{font-weight:inherit}
+/* niewidoczny dwukropek: oddziela nagłówek od opisu w czytnikach ekranu i w wynikach wyszukiwania */
+.lista li .ukryte{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .lista.nigdy li::before{content:"✕";position:absolute;left:4px;color:#C0392B;font-weight:800}
 .lista.tak li::before{content:"✔";position:absolute;left:2px;color:#1E8A73;font-weight:800}
 .lista.plan li::before{content:"🔜";position:absolute;left:0;font-size:.95rem}
@@ -116,7 +121,7 @@ footer a{color:var(--papier)}
 
 <header>
   <div class="srodek pasek">
-    <a class="marka" href="index.html" aria-label="Strona główna KotKlik">
+    <a class="marka" href="/" aria-label="Strona główna KotKlik">
       <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
         <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
         <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
@@ -129,15 +134,15 @@ footer a{color:var(--papier)}
         <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
               stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
       </svg>
-      <h1>Kot<span>Klik</span></h1>
+      <span class="logo">Kot<span>Klik</span></span>
     </a>
-    <a class="link-rodzic" href="index.html">← Do gier</a>
+    <a class="link-rodzic" href="/">← Do gier</a>
   </div>
 </header>
 
 <section class="hero">
   <div class="srodek">
-    <h2>Strefa rodzica</h2>
+    <h1>Strefa rodzica</h1>
     <p>Tu wyjaśniamy zasady KotKlik: które gry są za darmo, co będzie płatne i czego nigdy nie zrobimy. Wolimy, żeby wszystko było jasne od pierwszego dnia.</p>
   </div>
 </section>
@@ -146,29 +151,33 @@ footer a{color:var(--papier)}
   <section class="sekcja">
     <div class="srodek">
       <h2>Jak działają gry w KotKlik</h2>
-      <p class="wstep">Część gier jest darmowa na stałe, część zmienia się co tydzień, a pełny dostęp da subskrypcja.</p>
 
+      <article class="zasada teraz">
+        <span class="ikona" aria-hidden="true">🎉</span>
+        <h3>Teraz: wszystkie gry są za darmo</h3>
+        <p>Do startu subskrypcji każda gra w KotKlik jest bezpłatna — bez limitu czasu i bez zakładania konta. Zanim subskrypcja ruszy, napiszemy o tym tutaj z wyprzedzeniem.</p>
+      </article>
+
+      <h3 class="etap">Po starcie subskrypcji</h3>
+      <p class="wstep">Tak będzie to działać, gdy subskrypcja ruszy. Do tego czasu nic się nie zmienia.</p>
       <div class="zasady">
         <article class="zasada">
           <span class="ikona" aria-hidden="true">🎁</span>
           <h3>Zawsze za darmo</h3>
-          <p class="gry" id="zawszeDarmowe">Pary Klika, Literkowa spiżarnia</p>
-          <p>Te gry zostają bezpłatne na stałe. Dziecko zawsze ma w KotKlik coś swojego.</p>
+          <p class="gry">Pary Klika, Literkowa spiżarnia</p>
+          <p>Te gry zostaną bezpłatne na stałe. Dziecko zawsze będzie miało w KotKlik coś swojego.</p>
         </article>
 
         <article class="zasada tydzien">
           <span class="ikona" aria-hidden="true">⭐</span>
           <h3>Gry tygodnia</h3>
-          <p>Co poniedziałek dwie kolejne gry są za darmo przez cały tydzień, do niedzieli włącznie.</p>
-          <p id="gryTygodniaOpis">W tym tygodniu: <span class="gry">Powtórz melodię, Kabelkowy labirynt</span>.</p>
+          <p>Co poniedziałek dwie kolejne gry będą za darmo przez cały tydzień, do niedzieli włącznie.</p>
         </article>
 
         <article class="zasada subskrypcja">
-          <span class="plakietka">Wkrótce</span>
           <span class="ikona" aria-hidden="true">🔓</span>
           <h3>Subskrypcja</h3>
-          <p>Odblokuje wszystkie gry naraz, także te, które nie są akurat grami tygodnia. Wykupić ją będzie mógł tylko rodzic, tutaj w Strefie rodzica.</p>
-          <p>Dopóki subskrypcja nie ruszy, wszystkie obecne gry są dostępne bez opłat.</p>
+          <p>Odblokuje wszystkie gry naraz. Wykupić ją będzie mógł tylko rodzic, tutaj w Strefie rodzica.</p>
         </article>
       </div>
     </div>
@@ -179,10 +188,10 @@ footer a{color:var(--papier)}
       <h2>Czego nigdy nie zrobimy</h2>
       <p class="wstep">To nasze obietnice wobec rodziców, niezależnie od tego, czy korzystacie z subskrypcji.</p>
       <ul class="lista nigdy">
-        <li>Reklam<span>Ani banerów, ani filmów, ani okienek — także w darmowych grach.</span></li>
-        <li>Zakupów w grach<span>Żadnych „kup więcej żyć”, monet ani dodatków za pieniądze.</span></li>
-        <li>Namawiania dziecka do zakupu<span>Dziecko nigdy nie zobaczy przycisku „kup”. Płatności będą tylko tutaj, za zabezpieczeniem dla dorosłych.</span></li>
-        <li>Sprzedawania danych<span>Nie przekazujemy żadnych informacji o dziecku ani o rodzinie firmom zewnętrznym.</span></li>
+        <li><strong>Reklam</strong><span class="ukryte">: </span><span>Ani banerów, ani filmów, ani okienek — także w darmowych grach.</span></li>
+        <li><strong>Zakupów w grach</strong><span class="ukryte">: </span><span>Żadnych „kup więcej żyć”, monet ani dodatków za pieniądze.</span></li>
+        <li><strong>Namawiania dziecka do zakupu</strong><span class="ukryte">: </span><span>Dziecko nigdy nie zobaczy przycisku „kup”. Płatności będą tylko tutaj, za zabezpieczeniem dla dorosłych.</span></li>
+        <li><strong>Sprzedawania danych</strong><span class="ukryte">: </span><span>Nie przekazujemy żadnych informacji o dziecku ani o rodzinie firmom zewnętrznym.</span></li>
       </ul>
     </div>
   </section>
@@ -205,9 +214,9 @@ footer a{color:var(--papier)}
       <h2>Nad czym pracujemy</h2>
       <p class="wstep">Razem z subskrypcją pojawi się w tym miejscu panel rodzica.</p>
       <ul class="lista plan">
-        <li>Konto rodzica<span>Zakłada je wyłącznie dorosły. Dziecko dalej gra bez konta.</span></li>
-        <li>Czas i historia gry<span>Zobaczysz, w co i jak długo dziecko grało.</span></li>
-        <li>Zarządzanie subskrypcją<span>Do kiedy trwa, jak ją przedłużyć lub zrezygnować w każdej chwili.</span></li>
+        <li><strong>Konto rodzica</strong><span class="ukryte">: </span><span>Zakłada je wyłącznie dorosły. Dziecko dalej gra bez konta.</span></li>
+        <li><strong>Czas i historia gry</strong><span class="ukryte">: </span><span>Zobaczysz, w co i jak długo dziecko grało.</span></li>
+        <li><strong>Zarządzanie subskrypcją</strong><span class="ukryte">: </span><span>Do kiedy trwa, jak ją przedłużyć lub zrezygnować w każdej chwili.</span></li>
       </ul>
     </div>
   </section>
@@ -221,21 +230,5 @@ footer a{color:var(--papier)}
   </div>
 </footer>
 
-<script src="gry-tygodnia.js"></script>
-<script>
-(function(){
-  if (!window.KotKlikGry) return;
-  const G = KotKlikGry;
-  const t = G.gryTygodnia();
-  document.getElementById("zawszeDarmowe").textContent =
-    G.ZAWSZE_DARMOWE.map(id => G.NAZWY[id]).join(", ");
-  const opis = document.getElementById("gryTygodniaOpis");
-  opis.textContent = "W tym tygodniu (do niedzieli " + G.data(t.doKiedy) + "): ";
-  const gry = document.createElement("span");
-  gry.className = "gry";
-  gry.textContent = t.gry.map(id => G.NAZWY[id]).join(", ") + ".";
-  opis.appendChild(gry);
-})();
-</script>
 </body>
 </html>

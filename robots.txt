@@ -1,10 +1,10 @@
 User-agent: *
 Allow: /
 
-# Boty zbierające treści do trenowania sztucznej inteligencji — bez dostępu
+# Boty zbierające treści do trenowania sztucznej inteligencji — bez dostępu.
+# Boty wyszukiwarek AI (OAI-SearchBot, ChatGPT-User, PerplexityBot) mają dostęp,
+# żeby KotKlik mógł pojawiać się w odpowiedziach dla rodziców.
 User-agent: GPTBot
-User-agent: ChatGPT-User
-User-agent: OAI-SearchBot
 User-agent: ClaudeBot
 User-agent: Claude-Web
 User-agent: anthropic-ai
@@ -14,7 +14,6 @@ User-agent: Applebot-Extended
 User-agent: Bytespider
 User-agent: Meta-ExternalAgent
 User-agent: FacebookBot
-User-agent: PerplexityBot
 User-agent: Amazonbot
 User-agent: cohere-ai
 User-agent: Diffbot

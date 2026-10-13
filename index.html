@@ -68,8 +68,8 @@ header::after{
 }
 .link-rodzic:hover{background:var(--papier);color:var(--noc)}
 .link-rodzic:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
-.marka h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
-.marka h1 span{color:var(--klik)}
+.marka .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka .logo span{color:var(--klik)}
 .kot{width:54px;height:54px;flex-shrink:0}
 .oko{transform-origin:center;animation:mrug 5.5s infinite}
 @keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
@@ -79,7 +79,7 @@ header::after{
 .hero{background:var(--noc);padding:40px 0 64px;position:relative;z-index:1}
 .hero-tresc{display:flex;flex-wrap:wrap;align-items:center;gap:32px}
 .hero-tekst{flex:1 1 320px}
-.hero-tekst h2{
+.hero-tekst h1{
   font-family:'Baloo 2',sans-serif;font-weight:600;color:var(--papier);
   font-size:clamp(1.6rem,4vw,2.3rem);margin-bottom:14px;line-height:1.25;
 }
@@ -126,6 +126,7 @@ header::after{
 .gry{padding:56px 0}
 .gry h2{font-family:'Baloo 2',sans-serif;font-size:1.5rem;font-weight:600;margin-bottom:6px}
 .gry > .srodek > p{color:var(--szara);margin-bottom:28px}
+.gry .za-darmo{color:var(--noc)}
 .grupa{margin-bottom:36px}
 .grupa:last-child{margin-bottom:0}
 .grupa[hidden]{display:none}
@@ -186,7 +187,7 @@ footer a{color:var(--papier)}
 
 <header>
   <div class="srodek pasek">
-  <a class="marka" href="index.html" aria-label="Strona główna KotKlik">
+  <a class="marka" href="/" aria-label="Strona główna KotKlik">
     <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
       <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
       <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
@@ -199,16 +200,16 @@ footer a{color:var(--papier)}
       <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
             stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
-    <h1>Kot<span>Klik</span></h1>
+    <span class="logo">Kot<span>Klik</span></span>
   </a>
-  <a class="link-rodzic" href="strefa-rodzica.html">Dla rodziców</a>
+  <a class="link-rodzic" href="/strefa-rodzica">Dla rodziców</a>
   </div>
 </header>
 
 <section class="hero">
   <div class="srodek hero-tresc">
     <div class="hero-tekst">
-      <h2>Gry, które uczą — bez reklam i bez zbierania danych</h2>
+      <h1>Gry, które uczą — bez reklam i bez zbierania danych</h1>
       <p>KotKlik to bezpieczne miejsce dla dzieci. Zero banerów, zero okienek, zero kont do zakładania. Tylko gry i kot Klik, który wszystkiego dopilnuje.</p>
     </div>
     <div class="hero-kot-wrap">
@@ -234,78 +235,65 @@ footer a{color:var(--papier)}
 <section class="gry">
   <div class="srodek">
     <h2>Wybierz grę</h2>
-    <p>Nowe gry pojawiają się tu regularnie.</p>
+    <p><strong class="za-darmo">Wszystkie gry są za darmo do startu subskrypcji.</strong> Nowe gry pojawiają się tu regularnie.</p>
 
     <div class="grupa">
-      <h3>🎁 Zawsze za darmo</h3>
       <div class="karty-gier">
-        <a class="karta-gry" href="gry/pary-klika.html">
+        <a class="karta-gry" href="/gry/pary-klika">
           <span class="emoji">🃏</span>
           <strong>Pary Klika</strong>
           <span>Znajdź wszystkie pary zwierzątek i poćwicz pamięć.</span>
           <span class="wiek">Od 5 lat</span>
         </a>
-        <a class="karta-gry" href="gry/literkowa-spizarnia.html">
+        <a class="karta-gry" href="/gry/literkowa-spizarnia">
           <span class="emoji">🔤</span>
           <strong>Literkowa spiżarnia</strong>
           <span>Układanie wyrazów z rozsypanych liter.</span>
           <span class="wiek">Od 6 lat</span>
         </a>
-      </div>
-    </div>
-
-    <div class="grupa">
-      <h3>⭐ Gry tygodnia <small id="gryTygodniaData">za darmo przez cały tydzień</small></h3>
-      <div class="karty-gier" id="gryTygodnia">
-        <a class="karta-gry" href="gry/powtorz-melodie.html" data-gra="powtorz-melodie">
+        <a class="karta-gry" href="/gry/powtorz-melodie" data-gra="powtorz-melodie">
           <span class="emoji">🎹</span>
           <strong>Powtórz melodię</strong>
           <span>Posłuchaj sekwencji dźwięków i zagraj ją na pianinie.</span>
           <span class="wiek">Od 6 lat</span>
         </a>
-        <a class="karta-gry" href="gry/kabelkowy-labirynt.html" data-gra="kabelkowy-labirynt">
+        <a class="karta-gry" href="/gry/kabelkowy-labirynt" data-gra="kabelkowy-labirynt">
           <span class="emoji">🔌</span>
           <strong>Kabelkowy labirynt</strong>
           <span>Ułóż program ze strzałek i doprowadź Klika do miski.</span>
           <span class="wiek">Od 9 lat</span>
         </a>
-        <a class="karta-gry" href="gry/muzyka-pana-klika.html" data-gra="muzyka-pana-klika">
+        <a class="karta-gry" href="/gry/muzyka-pana-klika" data-gra="muzyka-pana-klika">
           <span class="emoji">🎼</span>
           <strong>Muzyka Pana Klika</strong>
           <span>Posłuchaj fragmentów słynnych utworów i znajdź pary uchem.</span>
           <span class="wiek">Od 5 lat</span>
         </a>
-        <a class="karta-gry" href="gry/liczydlo-na-dachu.html" data-gra="liczydlo-na-dachu">
+        <a class="karta-gry" href="/gry/liczydlo-na-dachu" data-gra="liczydlo-na-dachu">
           <span class="emoji">🧮</span>
           <strong>Liczydło na dachu</strong>
           <span>Dodawanie, odejmowanie, mnożenie i dzielenie — zapal wszystkie gwiazdy.</span>
           <span class="wiek">Od 7 lat</span>
         </a>
-        <a class="karta-gry" href="gry/gdzie-jest-klik.html" data-gra="gdzie-jest-klik">
+        <a class="karta-gry" href="/gry/gdzie-jest-klik" data-gra="gdzie-jest-klik">
           <span class="emoji">🔍</span>
           <strong>Gdzie jest Klik?</strong>
           <span>Na, pod, za czy obok? Popatrz na pokój Klika i powiedz, gdzie co jest.</span>
           <span class="wiek">Od 5 lat</span>
         </a>
-        <a class="karta-gry" href="gry/zegar-klika.html" data-gra="zegar-klika">
+        <a class="karta-gry" href="/gry/zegar-klika" data-gra="zegar-klika">
           <span class="emoji">🕒</span>
           <strong>Zegar Klika</strong>
           <span>Która godzina? Odczytaj ją z zegara ze wskazówkami albo ustaw sam.</span>
           <span class="wiek">Od 6 lat</span>
         </a>
-        <a class="karta-gry" href="gry/platanina-klika.html" data-gra="platanina-klika">
+        <a class="karta-gry" href="/gry/platanina-klika" data-gra="platanina-klika">
           <span class="emoji">🧶</span>
           <strong>Plątanina Klika</strong>
           <span>Rozplącz sznurki na drewnianym kółku — z kłębków Klik zrobi na drutach szalik.</span>
           <span class="wiek">Od 7 lat</span>
         </a>
       </div>
-    </div>
-
-    <!-- Gry z rotacji, które w tym tygodniu nie są grami tygodnia. Na razie bez kłódki. -->
-    <div class="grupa" id="grupaWiecej" hidden>
-      <h3>🎲 Więcej gier</h3>
-      <div class="karty-gier" id="wiecejGier"></div>
     </div>
   </div>
 </section>
@@ -319,7 +307,7 @@ footer a{color:var(--papier)}
       <li>Wyniki zostają na Twoim urządzeniu i nigdzie nie są wysyłane</li>
       <li>Gry działają na tablecie, telefonie i komputerze</li>
     </ul>
-    <a class="wiecej" href="strefa-rodzica.html">Jak działają darmowe gry? Zajrzyj do Strefy rodzica →</a>
+    <a class="wiecej" href="/strefa-rodzica">Zasady i plany na przyszłość — zajrzyj do Strefy rodzica →</a>
   </div>
 </section>
 
@@ -328,30 +316,11 @@ footer a{color:var(--papier)}
     <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
     <p>© 2026 KotKlik.pl. Wszystkie prawa zastrzeżone — gier, grafik i tekstów nie wolno kopiować ani publikować bez naszej zgody.</p>
     <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
-    <p><a href="strefa-rodzica.html">Strefa rodzica</a></p>
+    <p><a href="/strefa-rodzica">Strefa rodzica</a></p>
   </div>
 </footer>
 
-<script src="gry-tygodnia.js"></script>
-<script>
-// Gry tygodnia: przenosimy karty zgodnie z rotacją z gry-tygodnia.js
-(function(){
-  if (!window.KotKlikGry) return;
-  const t = KotKlikGry.gryTygodnia();
-  const tydzien = document.getElementById("gryTygodnia");
-  const wiecej = document.getElementById("wiecejGier");
-  const karty = Array.from(document.querySelectorAll("[data-gra]"));
-
-  karty.forEach(k => { if (!t.gry.includes(k.dataset.gra)) wiecej.appendChild(k); });
-  t.gry.forEach(id => {
-    const k = karty.find(x => x.dataset.gra === id);
-    if (k) tydzien.appendChild(k);
-  });
-  document.getElementById("grupaWiecej").hidden = wiecej.children.length === 0;
-  document.getElementById("gryTygodniaData").textContent =
-    "za darmo do niedzieli " + KotKlikGry.data(t.doKiedy);
-})();
-</script>
+<!-- Do startu subskrypcji wszystkie gry są za darmo, więc podział na gry tygodnia (gry-tygodnia.js) jest na razie wyłączony. -->
 <script>
 (function(){
   const TEKSTY_KOTA = [
