@@ -60,11 +60,11 @@ header::after{
   background-size:26px 26px;opacity:.16;pointer-events:none;
 }
 .marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
-.marka h1{
+.marka .logo{
   font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
   color:var(--papier);letter-spacing:-.01em;
 }
-.marka h1 span{color:var(--klik)}
+.marka .logo span{color:var(--klik)}
 
 /* ---------- Kot ---------- */
 .kot{width:54px;height:54px;flex-shrink:0}
@@ -113,7 +113,7 @@ header::after{
   margin-bottom:12px;
   flex:0 0 auto;
 }
-.gra-gora h2{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.gra-gora h1{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
 .poziomy{display:flex;gap:8px;flex-wrap:wrap}
 .poziom{
   font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
@@ -197,6 +197,13 @@ header::after{
 .rodzice ul{list-style:none;display:grid;gap:10px;max-width:640px}
 .rodzice li{padding-left:30px;position:relative;font-weight:600}
 .rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+.licencje{margin-top:18px;max-width:760px;font-size:.92rem}
+.licencje summary{cursor:pointer;font-weight:700}
+.licencje p{margin:8px 0}
+.licencje ul{gap:6px;max-width:none}
+.licencje li{font-weight:400;padding-left:18px}
+.licencje li::before{content:"♪"}
+.licencje a{color:var(--noc)}
 
 footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
 footer a{color:var(--papier)}
@@ -241,7 +248,7 @@ footer a{color:var(--papier)}
 
 <div class="ekran-startowy">
 <header>
-  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+  <a class="srodek marka" href="/" aria-label="Wróć do strony głównej KotKlik">
     <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
       <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
       <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
@@ -254,7 +261,7 @@ footer a{color:var(--papier)}
       <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
             stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
-    <h1>Kot<span>Klik</span></h1>
+    <span class="logo">Kot<span>Klik</span></span>
   </a>
 </header>
 
@@ -268,7 +275,7 @@ footer a{color:var(--papier)}
 
     <div class="gra">
       <div class="gra-gora">
-        <h2>Muzyka Pana Klika</h2>
+        <h1>Muzyka Pana Klika</h1>
         <div class="poziomy" role="group" aria-label="Wybierz poziom">
           <button class="poziom" data-par="4" aria-pressed="true">Łatwy</button>
           <button class="poziom" data-par="6" aria-pressed="false">Średni</button>
@@ -285,7 +292,7 @@ footer a{color:var(--papier)}
       </div>
     </div>
 
-    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+    <a class="link-wstecz" href="/">← Wróć do KotKlik</a>
   </div>
 </section>
 </div>
@@ -298,8 +305,29 @@ footer a{color:var(--papier)}
       <li>Dziecko nie zakłada konta i nie podaje żadnych danych</li>
       <li>Gra niczego nie zapisuje — ani na urządzeniu, ani na serwerze</li>
       <li>Ćwiczy pamięć słuchową i oswaja ze słynnymi utworami muzyki klasycznej</li>
-      <li>Nagrania pochodzą z serwisu Musopen.org</li>
+      <li>Nagrania pochodzą z serwisu Musopen.org — szczegóły poniżej</li>
     </ul>
+    <details class="licencje">
+      <summary>Nagrania i licencje</summary>
+      <p>W grze odtwarzamy 15-sekundowe fragmenty wycięte z poniższych nagrań (bez innych zmian). Utwór — kompozytor — wykonawca — licencja nagrania:</p>
+      <ul>
+        <li>Carmen, Preludium do aktu I — Georges Bizet — European Archive — domena publiczna</li>
+        <li>Dla Elizy (Bagatela nr 25, WoO 59) — Ludwig van Beethoven — wykonawca nieznany — domena publiczna</li>
+        <li>Marsz turecki (Sonata fortepianowa nr 11, K. 331, cz. III) — Wolfgang Amadeus Mozart — European Archive — domena publiczna</li>
+        <li>V Symfonia c-moll, op. 67, cz. I — Ludwig van Beethoven — Davis High School Symphony Orchestra — domena publiczna</li>
+        <li>W grocie Króla Gór (Peer Gynt, suita nr 1) — Edvard Grieg — wykonawca nieznany — domena publiczna</li>
+        <li>Poranek (Peer Gynt, suita nr 1) — Edvard Grieg — Musopen Symphony — domena publiczna</li>
+        <li>Largo al factotum (Cyrulik sewilski) — Gioachino Rossini — US Navy Band — domena publiczna</li>
+        <li>Kankan (uwertura do „Orfeusza w piekle”) — Jacques Offenbach — European Archive — domena publiczna</li>
+        <li>Lot trzmiela (Bajka o carze Sałtanie) — Nikołaj Rimski-Korsakow — US Army Band — domena publiczna</li>
+        <li>Jezioro łabędzie, op. 20, akt II — Piotr Czajkowski — European Archive — domena publiczna</li>
+        <li>Walc wiedeński („Wiener Klänge im Walzertakt”) — Johann Strauss — European Archive — domena publiczna</li>
+        <li>Karnawał zwierząt, XIV. Finał — Camille Saint-Saëns — Seattle Youth Symphony — <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.pl" rel="license noopener" target="_blank">CC BY-SA 3.0</a></li>
+        <li>Taniec węgierski nr 5 (wersja orkiestrowa) — Johannes Brahms — Fulda Symphonic Orchestra — <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.pl" rel="license noopener" target="_blank">CC BY-SA 3.0</a></li>
+        <li>Wiosna (Cztery pory roku, RV 269, cz. I) — Antonio Vivaldi — John Harrison (skrzypce), Wichita State University Chamber Players, dyr. Robert Turizziani — <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.pl" rel="license noopener" target="_blank">CC BY-SA 3.0</a></li>
+      </ul>
+      <p>Fragmenty nagrań na licencji CC BY-SA udostępniamy na tej samej licencji.</p>
+    </details>
   </div>
 </section>
 

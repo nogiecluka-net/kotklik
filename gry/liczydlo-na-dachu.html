@@ -61,11 +61,11 @@ header::after{
   background-size:26px 26px;opacity:.16;pointer-events:none;
 }
 .marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
-.marka h1{
+.marka .logo{
   font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;
   color:var(--papier);letter-spacing:-.01em;
 }
-.marka h1 span{color:var(--klik)}
+.marka .logo span{color:var(--klik)}
 
 /* ---------- Kot ---------- */
 .kot{width:54px;height:54px;flex-shrink:0}
@@ -108,7 +108,7 @@ header::after{
   align-items:center;justify-content:space-between;
   margin-bottom:14px;
 }
-.gra-gora h2{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.gra-gora h1{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
 /* Działy i poziomy: przyciski w równych kolumnach, jednakowej szerokości i wysokości */
 .dzialy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
 .dzial{
@@ -249,7 +249,7 @@ footer a{color:var(--papier)}
 
 <div class="ekran-startowy">
 <header>
-  <a class="srodek marka" href="../index.html" aria-label="Wróć do strony głównej KotKlik">
+  <a class="srodek marka" href="/" aria-label="Wróć do strony głównej KotKlik">
     <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
       <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
       <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
@@ -262,7 +262,7 @@ footer a{color:var(--papier)}
       <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10"
             stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
-    <h1>Kot<span>Klik</span></h1>
+    <span class="logo">Kot<span>Klik</span></span>
   </a>
 </header>
 
@@ -275,7 +275,7 @@ footer a{color:var(--papier)}
 
     <div class="gra">
       <div class="gra-gora">
-        <h2>Liczydło na dachu</h2>
+        <h1>Liczydło na dachu</h1>
         <div class="dzialy" role="group" aria-label="Wybierz dział">
           <button class="dzial" data-dzial="pm" aria-pressed="true"><span aria-hidden="true">+ −</span> Dodawanie i odejmowanie</button>
           <button class="dzial" data-dzial="md" aria-pressed="false"><span aria-hidden="true">× ÷</span> Mnożenie i dzielenie</button>
@@ -369,7 +369,7 @@ footer a{color:var(--papier)}
       </div>
     </div>
 
-    <a class="link-wstecz" href="../index.html">← Wróć do KotKlik</a>
+    <a class="link-wstecz" href="/">← Wróć do KotKlik</a>
   </div>
 </section>
 </div>
