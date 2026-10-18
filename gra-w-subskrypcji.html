@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ta gra jest dziś w subskrypcji | KotKlik</title>
+<meta name="description" content="Ta gra jest dziś dostępna w subskrypcji KotKlik. Zagraj w inne nasze gry, które są dziś za darmo.">
+<!-- Strona pomocnicza: tu trafia dziecko, gdy kliknie grę, która dziś jest tylko w subskrypcji (np. z linku na blogu). Nie do indeksowania. -->
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/blog/blog.css">
+<style>
+.hero.subskrypcja{padding:30px 0 44px}
+.hero .powitanie{display:flex;align-items:center;gap:18px}
+.hero .powitanie .kot{width:84px;height:84px}
+.hero .powitanie p{color:#C9D4E6;font-size:1.08rem;margin-top:4px}
+.lista{padding:36px 0 56px}
+.lista h2{font-family:'Baloo 2',sans-serif;font-size:1.45rem;color:var(--noc);margin-bottom:14px}
+.karty-gier{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.karta-gry{background:#fff;border-radius:20px;padding:20px;border-bottom:6px solid var(--mieta);box-shadow:0 4px 0 rgba(0,0,0,.06);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px;transition:transform .15s}
+.karta-gry:hover{transform:translateY(-3px)}
+.karta-gry:nth-child(3n+2){border-bottom-color:var(--klik)}
+.karta-gry:nth-child(3n){border-bottom-color:var(--slonce)}
+.karta-gry .emoji{font-size:2.2rem}
+.karta-gry strong{font-family:'Baloo 2',sans-serif;font-size:1.2rem;color:var(--noc)}
+.karta-gry span{color:var(--szara);font-size:.95rem}
+.karta-gry .do-kiedy{font-size:.82rem;font-weight:700;color:var(--noc);margin-top:auto}
+.dla-rodzica{margin-top:30px;padding:16px 18px;background:#FFF1DE;border-radius:14px;font-size:.98rem}
+.dla-rodzica a{color:var(--noc);font-weight:700}
+@media(max-width:480px){.hero .powitanie .kot{width:60px;height:60px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="srodek pasek">
+    <a class="marka" href="/" aria-label="Strona główna KotKlik">
+      <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/><path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+        <circle cx="32" cy="36" r="21" fill="#FF8A3D"/><circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/><circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/><circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/><path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+        <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="logo">Kot<span>Klik</span></span>
+    </a>
+    <a class="link-rodzic" href="/">Wszystkie gry</a>
+  </div>
+</header>
+
+<section class="hero subskrypcja">
+  <div class="srodek">
+    <div class="powitanie">
+      <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/><path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+        <circle cx="32" cy="36" r="21" fill="#FF8A3D"/><circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/><circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+        <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/><circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/><path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+        <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1 id="tytul">Hej! Ta gra jest dziś dostępna tylko w subskrypcji</h1>
+        <p>Nic straconego — mam dla Ciebie inne gry, w które możesz zagrać już teraz!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="lista">
+  <div class="srodek">
+    <h2>Dziś możesz zagrać za darmo</h2>
+    <div class="karty-gier" id="darmowe"></div>
+
+    <p class="dla-rodzica"><strong>Dla rodzica:</strong> które gry są darmowe na stałe, które zmieniają się co tydzień i jak działa subskrypcja — wszystko opisujemy w <a href="/strefa-rodzica">Strefie rodzica</a>.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>© 2026 KotKlik.pl. Wszystkie prawa zastrzeżone — gier, grafik i tekstów nie wolno kopiować ani publikować bez naszej zgody.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+    <p><a href="/">Gry</a> · <a href="/blog/">Blog</a> · <a href="/strefa-rodzica">Strefa rodzica</a></p>
+  </div>
+</footer>
+
+<script src="/gry-tygodnia.js"></script>
+<script>
+(function(){
+  // Opisy kart — takie same jak na stronie głównej.
+  const KARTY = {
+    "pary-klika": ["🃏", "Znajdź wszystkie pary zwierzątek i poćwicz pamięć."],
+    "literkowa-spizarnia": ["🔤", "Układanie wyrazów z rozsypanych liter."],
+    "powtorz-melodie": ["🎹", "Posłuchaj sekwencji dźwięków i zagraj ją na pianinie."],
+    "kabelkowy-labirynt": ["🔌", "Ułóż program ze strzałek i doprowadź Klika do miski."],
+    "muzyka-pana-klika": ["🎼", "Posłuchaj fragmentów słynnych utworów i znajdź pary uchem."],
+    "liczydlo-na-dachu": ["🧮", "Dodawanie, odejmowanie, mnożenie i dzielenie — zapal wszystkie gwiazdy."],
+    "gdzie-jest-klik": ["🔍", "Na, pod, za czy obok? Popatrz na pokój Klika i powiedz, gdzie co jest."],
+    "zegar-klika": ["🕒", "Która godzina? Odczytaj ją z zegara ze wskazówkami albo ustaw sam."],
+    "platanina-klika": ["🧶", "Rozplącz sznurki na drewnianym kółku — z kłębków Klik zrobi na drutach szalik."]
+  };
+
+  const G = window.KotKlikGry;
+  const NAZWY = G.NAZWY;
+
+  // Adres: /gra-w-subskrypcji?gra=zegar-klika — nazwa gry tylko z naszej listy.
+  const gra = new URLSearchParams(location.search).get("gra");
+  if (gra && NAZWY[gra]) {
+    document.getElementById("tytul").textContent = "Hej! Gra „" + NAZWY[gra] + "” jest dziś dostępna tylko w subskrypcji";
+  }
+
+  const tydzien = G.gryTygodnia();
+  const lista = G.ZAWSZE_DARMOWE.concat(tydzien.gry).filter(id => id !== gra && NAZWY[id]);
+  const pole = document.getElementById("darmowe");
+
+  lista.forEach(id => {
+    const a = document.createElement("a");
+    a.className = "karta-gry";
+    a.href = "/gry/" + id;
+    const emoji = document.createElement("span");
+    emoji.className = "emoji";
+    emoji.setAttribute("aria-hidden", "true");
+    emoji.textContent = (KARTY[id] || ["🎮"])[0];
+    const nazwa = document.createElement("strong");
+    nazwa.textContent = NAZWY[id];
+    const opis = document.createElement("span");
+    opis.textContent = (KARTY[id] || ["", ""])[1];
+    const kiedy = document.createElement("span");
+    kiedy.className = "do-kiedy";
+    kiedy.textContent = G.ZAWSZE_DARMOWE.includes(id) ? "Zawsze za darmo" : "Gra tygodnia — za darmo do niedzieli " + G.data(tydzien.doKiedy);
+    a.append(emoji, nazwa, opis, kiedy);
+    pole.appendChild(a);
+  });
+})();
+</script>
+</body>
+</html>
