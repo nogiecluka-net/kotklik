@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orkiestra Klika — rozpoznaj instrument po dźwięku | KotKlik</title>
+<meta name="description" content="Posłuchaj fragmentu muzyki i wskaż instrument, który gra: fortepian, skrzypce, flet, trąbka, kontrabas. Prawdziwe nagrania i zdjęcia instrumentów. Bez reklam, bez logowania.">
+<link rel="canonical" href="https://kotklik.pl/gry/orkiestra-klika">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Orkiestra Klika — rozpoznaj instrument po dźwięku | KotKlik">
+<meta property="og:description" content="Posłuchaj fragmentu muzyki i wskaż instrument, który gra. Prawdziwe nagrania i zdjęcia instrumentów. Bez reklam.">
+<meta property="og:url" content="https://kotklik.pl/gry/orkiestra-klika">
+<meta property="og:image" content="https://kotklik.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KotKlik - gry edukacyjne dla dzieci. Kot Klik na tle nocnego nieba.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka .logo span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 28px}
+.dymek{
+  background:var(--papier);border-radius:20px;padding:14px 20px;max-width:560px;margin-bottom:14px;
+  position:relative;box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+.dymek .wskazowka{font-size:.9rem;color:#B45A1C;font-weight:700}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.gra{background:var(--papier);border-radius:24px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.gra-gora{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.gra-gora h1{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:flex;gap:8px;flex-wrap:wrap}
+.poziom{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:8px 16px;border:2px solid var(--noc);border-radius:999px;background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+
+/* pasek pytania: przycisk „Posłuchaj” i postęp */
+.pytanie{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.pytanie[hidden]{display:none}
+.posluchaj{
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.25rem;
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--klik);color:#fff;border:none;padding:12px 26px;border-radius:999px;cursor:pointer;
+  box-shadow:0 5px 0 #C4621F;
+}
+.posluchaj:active{transform:translateY(3px);box-shadow:0 2px 0 #C4621F}
+.posluchaj .ikona{font-size:1.4rem;display:inline-block}
+.posluchaj.gra-teraz .ikona{animation:podskok .6s ease-in-out infinite}
+@keyframes podskok{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-5px) rotate(8deg)}}
+.postep{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.postep .nuta{
+  width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-size:.95rem;background:#EADFCB;color:transparent;transition:background .3s,color .3s,transform .3s;
+}
+.postep .nuta.teraz{outline:3px solid var(--klik);outline-offset:1px}
+.postep .nuta.zlota{background:var(--slonce);color:var(--noc);transform:scale(1.1)}
+.postep .nuta.srebrna{background:#CFD8E3;color:var(--noc)}
+.polecenie{font-weight:700;color:var(--szara);flex:1 1 200px}
+
+/* karty instrumentów */
+.karty{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.karta{
+  position:relative;border:3px solid transparent;border-radius:18px;background:#fff;cursor:pointer;
+  padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  box-shadow:0 4px 0 rgba(0,0,0,.08);transition:transform .12s ease,opacity .3s,border-color .3s;
+  font-family:inherit;color:inherit;text-align:center;
+}
+.karta:active{transform:scale(.97)}
+.karta .zdjecie{height:150px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+/* prawdziwa skala: małe instrumenty są na karcie mniejsze */
+.karta img{max-width:100%;max-height:calc(150px * var(--skala,1));object-fit:contain}
+.karta .nazwa{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.25rem;line-height:1.1;color:var(--noc)}
+/* „Poznaj instrumenty” pod wynikiem: zdjęcie, nazwa i ciekawostka */
+.poznaj{margin-top:22px;text-align:left;border-top:2px dashed #EADFCB;padding-top:18px}
+.poznaj h2{font-family:'Baloo 2',sans-serif;font-size:1.3rem;text-align:center}
+.poznaj-wstep{text-align:center;color:var(--szara) !important;font-weight:600}
+.poznaj-karty{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.poznaj-karta{
+  border:3px solid transparent;border-radius:18px;background:#fff;cursor:pointer;padding:12px;
+  display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:center;text-align:left;
+  box-shadow:0 4px 0 rgba(0,0,0,.08);font-family:inherit;color:inherit;
+}
+.poznaj-karta img{width:90px;height:110px;object-fit:contain}
+.poznaj-karta .nazwa{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.2rem;color:var(--noc);display:block}
+.poznaj-karta .nazwa::after{content:" 🔊";font-size:.95rem}
+.poznaj-karta .ciekawostka{font-size:.92rem;color:#3A475C;line-height:1.45;display:block;font-weight:600}
+.poznaj-karta.gra-teraz{border-color:var(--klik)}
+.poznaj-karta.gra-teraz .nazwa::after{content:" 🎵"}
+.karta.zle{opacity:.35;animation:trzes .4s ease}
+.karta.dobrze{border-color:var(--mieta);background:#E6FBF5}
+.karta.gra-teraz{border-color:var(--klik)}
+.karta.gra-teraz .nazwa::after{content:" 🎵"}
+@keyframes trzes{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.karta.zle,.posluchaj.gra-teraz .ikona{animation:none}}
+@media (max-width:420px){
+  .karty{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .karta .zdjecie{height:110px}
+  .karta img{max-height:calc(110px * var(--skala,1))}
+}
+
+.komunikat{min-height:28px;margin-top:12px;text-align:center;font-weight:700;color:var(--noc)}
+.koniec{text-align:center;padding:12px 0 4px}
+.koniec .znowu{margin-bottom:4px}
+.koniec[hidden]{display:none}
+.koniec .tytul{font-family:'Baloo 2',sans-serif;font-size:1.6rem;font-weight:700;color:var(--noc)}
+.koniec p{font-weight:600;color:#3A475C;margin:6px 0 14px}
+.znowu{
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;
+  background:var(--klik);color:#fff;border:none;padding:10px 26px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #C4621F;
+}
+.znowu:active{transform:translateY(3px);box-shadow:0 1px 0 #C4621F}
+
+.link-wstecz{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;text-decoration:none;color:var(--papier);opacity:.92}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:680px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+.licencje{margin-top:18px;max-width:760px;font-size:.92rem}
+.licencje summary{cursor:pointer;font-weight:700}
+.licencje p{margin:8px 0}
+.licencje ul{gap:6px;max-width:none}
+.licencje li{font-weight:400;padding-left:18px}
+.licencje li::before{content:"♪"}
+.licencje a{color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+
+/* ---------- Wędrujący kot ---------- */
+.kot-wedrowiec{
+  position:fixed;bottom:16px;left:-110px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:60;pointer-events:none;transition:left 2.4s cubic-bezier(.45,.05,.25,1);
+}
+.kot-wedrowiec.widoczny{left:min(72vw,calc(100vw - 110px))}
+.kot-idacy{width:64px;height:64px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.kot-wedrowiec.chodzi .kot-idacy{animation:kot-chod .5s infinite}
+@keyframes kot-chod{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){.kot-wedrowiec{transition:none}.kot-wedrowiec.chodzi .kot-idacy{animation:none}}
+.dymek-kota{
+  background:#fff;border-radius:16px;padding:10px 16px;max-width:200px;text-align:center;
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1rem;color:var(--noc);position:relative;
+  box-shadow:0 4px 0 rgba(0,0,0,.15);opacity:0;transform:translateY(6px) scale(.85);transition:opacity .25s,transform .25s;
+}
+.dymek-kota::after{content:"";position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #fff}
+.dymek-kota.widoczna{opacity:1;transform:translateY(0) scale(1)}
+@media(max-width:600px){.hero .srodek{padding:0 8px}.gra{padding:12px 8px;border-radius:18px}}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="srodek marka" href="/" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="logo">Kot<span>Klik</span></span>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Cześć! Zbieram orkiestrę, ale pomyliły mi się instrumenty.</p>
+      <p>Posłuchaj muzyki i wskaż instrument, który gra. Po koncercie poznasz każdy instrument z osobna.</p>
+      <p class="wskazowka">🎧 Włącz dźwięk i kliknij „Posłuchaj”.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h1>Orkiestra Klika</h1>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom">
+          <button class="poziom" data-ile="3" aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-ile="4" aria-pressed="false">Średni</button>
+          <button class="poziom" data-ile="5" aria-pressed="false">Trudny</button>
+        </div>
+      </div>
+
+      <div class="pytanie" id="pytanie">
+        <button class="posluchaj" id="posluchaj"><span class="ikona" aria-hidden="true">🔊</span> Posłuchaj</button>
+        <div class="postep" id="postep" aria-label="Postęp"></div>
+      </div>
+      <p class="polecenie" id="polecenie"></p>
+
+      <div class="karty" id="karty"></div>
+      <p class="komunikat" id="komunikat" role="status"></p>
+
+      <div class="koniec" id="koniec" hidden>
+        <p class="tytul" id="koniecTytul"></p>
+        <p id="koniecOpis"></p>
+        <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+        <div class="poznaj">
+          <h2>Poznaj instrumenty</h2>
+          <p class="poznaj-wstep">Kliknij instrument, żeby jeszcze raz posłuchać, jak brzmi — i przeczytaj ciekawostkę!</p>
+          <div class="poznaj-karty" id="poznajKarty"></div>
+        </div>
+      </div>
+    </div>
+
+    <a class="link-wstecz" href="/">← Wróć do KotKlik</a>
+  </div>
+</section>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra uczy rozpoznawać instrumenty po brzmieniu — na prawdziwych nagraniach muzyki klasycznej i prawdziwych zdjęciach</li>
+      <li>Każdy instrument jest podpisany, żeby dziecko (albo dorosły do pomocy) nie miało problemu z nazwami</li>
+      <li>Po rundzie można posłuchać każdego instrumentu jeszcze raz i przeczytać o nim ciekawostkę</li>
+      <li>Na łatwym poziomie nie ma obok siebie instrumentów podobnych do siebie; na trudnym — są</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych; gra niczego nie zapisuje</li>
+    </ul>
+    <details class="licencje">
+      <summary>Nagrania, zdjęcia i licencje</summary>
+      <p>Nagrania pochodzą z serwisu Musopen.org — w grze odtwarzamy 15-sekundowe fragmenty (bez innych zmian). Zdjęcia pochodzą z Wikimedia Commons — zmniejszyliśmy je na potrzeby gry.</p>
+      <ul id="listaLicencji"></ul>
+      <p>Fragmenty nagrań i zdjęcia na licencji CC BY-SA udostępniamy na tej samej licencji.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>© 2026 KotKlik.pl. Wszystkie prawa zastrzeżone — gier, grafik i tekstów nie wolno kopiować ani publikować bez naszej zgody (nie dotyczy nagrań i zdjęć na wolnych licencjach wymienionych wyżej).</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<div class="kot-wedrowiec" id="kotWedrowiec" aria-hidden="true">
+  <div class="dymek-kota" id="dymekKota"></div>
+  <svg class="kot-idacy" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+    <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+    <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+    <circle cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+    <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+    <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+    <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+    <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+  // Instrumenty: zdjęcie i fragment (15 s) w gry/instrumenty/. Instrument bez nagrania (dzwiek:null) jeszcze nie bierze udziału w grze.
+  // skala — jak duży jest instrument na karcie (prawdziwe proporcje: skrzypce małe, kontrabas duży)
+  const BYSA3 = ["CC BY-SA 3.0", "https://creativecommons.org/licenses/by-sa/3.0/deed.pl"];
+  const BYSA4 = ["CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/deed.pl"];
+  const BY3 = ["CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/deed.pl"];
+  const CC0 = ["CC0", "https://creativecommons.org/publicdomain/zero/1.0/deed.pl"];
+  const INSTRUMENTY = [
+    { id:"fortepian", nazwa:"Fortepian", skala:1,
+      ciekawostka:"Ma aż 88 klawiszy: 52 białe i 36 czarnych. Gdy naciskasz klawisz, w środku malutki młoteczek uderza w strunę. Wielki fortepian koncertowy waży około pół tony — tyle co mała krowa!",
+      dzwiek:"fortepian.mp3", utwor:"„Sonata księżycowa”, op. 27 nr 2 — Ludwig van Beethoven", wykonawca:"wykonawca nieznany", licNagrania:"domena publiczna",
+      zdjecie:"fortepian.jpg", autorZdjecia:"Steinway & Sons", licZdjecia:BYSA3, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Steinway_%26_Sons_concert_grand_piano,_model_D-274,_manufactured_at_Steinway%27s_factory_in_Hamburg,_Germany.png" },
+    { id:"skrzypce", nazwa:"Skrzypce", skala:.55, podobne:["wiolonczela","kontrabas"],
+      ciekawostka:"Mają tylko 4 struny, a potrafią zagrać i śpiew ptaka, i burzę. Smyczek jest zrobiony z włosia z końskiego ogona! Najsłynniejsze skrzypce mają ponad 300 lat i kosztują więcej niż dom.",
+      dzwiek:"skrzypce.mp3", utwor:"Kaprys nr 20, op. 1 — Niccolò Paganini", wykonawca:"Jonathan Vered", licNagrania:"domena publiczna",
+      zdjecie:"skrzypce.jpg", autorZdjecia:"muzyczny.pl", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Skrzypce_H66HV_firmy_Hofner.jpg" },
+    { id:"wiolonczela", nazwa:"Wiolonczela", skala:.85, podobne:["skrzypce","kontrabas"],
+      ciekawostka:"To duża siostra skrzypiec. Gra się na niej na siedząco, a stoi na podłodze na metalowym kolcu. Mówi się, że ze wszystkich instrumentów brzmi najbardziej jak ludzki głos.",
+      dzwiek:"wiolonczela.mp3", utwor:"Preludium z Suity wiolonczelowej nr 1 G-dur, BWV 1007 — Johann Sebastian Bach", wykonawca:"Chris (Fopseh, Wikimedia Commons)", licNagrania:CC0,
+      zdjecie:"wiolonczela.jpg", autorZdjecia:"Metropolitan Museum of Art (instrument: Jean-Baptiste Vuillaume)", licZdjecia:CC0, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Violoncello_MET_DT7705.jpg" },
+    { id:"kontrabas", nazwa:"Kontrabas", skala:1, podobne:["skrzypce","wiolonczela"],
+      ciekawostka:"Największy i najniższy instrument smyczkowy — często jest wyższy od dorosłego! Muzyk gra na nim na stojąco albo na wysokim stołku. W utworze, którego słuchasz, kontrabas udaje tańczącego słonia.",
+      dzwiek:"kontrabas.mp3", utwor:"„Słoń” z „Karnawału zwierząt” — Camille Saint-Saëns", wykonawca:"Seattle Youth Symphony", licNagrania:BYSA3,
+      zdjecie:"kontrabas.jpg", autorZdjecia:"muzyczny.pl", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Kontrabas_AS-060-B-3-4_firmy_Hofner.jpg" },
+    { id:"flet", nazwa:"Flet", skala:1, podobne:["oboj","klarnet"],
+      ciekawostka:"Na flecie gra się, dmuchając nad dziurką — tak jak gwiżdżesz na pustej butelce. Najstarszy znaleziony flet ma ponad 40 tysięcy lat i był zrobiony z ptasiej kości!",
+      dzwiek:"flet.mp3", utwor:"„Taniec fletów” z „Dziadka do orzechów” — Piotr Czajkowski", wykonawca:"European Archive", licNagrania:"domena publiczna",
+      zdjecie:"flet.jpg", autorZdjecia:"Thea Paraskevaides", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Western_Concert_Flute.jpg" },
+    { id:"gitara", nazwa:"Gitara", skala:.85,
+      ciekawostka:"Ma 6 strun, które szarpie się palcami. Pochodzi z Hiszpanii. Pusta drewniana skrzynka z dziurą w środku działa jak głośnik — dzięki niej gitarę dobrze słychać.",
+      dzwiek:"gitara.mp3", utwor:"„Asturias” z „Suite española” — Isaac Albéniz", wykonawca:"Gordon Rowland", licNagrania:"domena publiczna",
+      zdjecie:"gitara.jpg", autorZdjecia:"muzyczny.pl", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Gitara_klasyczna_C30M_firmy_Yamaha.jpg" },
+    { id:"harfa", nazwa:"Harfa", skala:1,
+      ciekawostka:"Koncertowa harfa ma 47 strun i 7 pedałów. Czerwone struny pomagają harfiarzowi nie zgubić się wśród innych. Na harfach grano już w starożytnym Egipcie, ponad 4 tysiące lat temu.",
+      dzwiek:"harfa.mp3", utwor:"Gymnopédie nr 1 (wersja na harfę) — Erik Satie", wykonawca:"wykonawca nieznany", licNagrania:"domena publiczna",
+      zdjecie:"harfa.jpg", autorZdjecia:"N.S.M. s.p.a.", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Salvi_harp_Diana.jpg" },
+    { id:"trabka", nazwa:"Trąbka", skala:.8, podobne:["waltornia"],
+      ciekawostka:"Trębacz nie dmucha po prostu w trąbkę — on „bzyczy” ustami w ustnik jak pszczoła! Trąbka ma tylko 3 przyciski, a gra mnóstwo dźwięków. Gdyby rozprostować jej rurę, miałaby prawie półtora metra.",
+      dzwiek:"trabka.mp3", utwor:"Koncert trąbkowy Es-dur, cz. III — Joseph Haydn", wykonawca:"European Archive", licNagrania:"domena publiczna",
+      zdjecie:"trabka.jpg", autorZdjecia:"Yamaha Corporation", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Yamaha_Trumpet_YTR-8335LA_crop.jpg" },
+    { id:"klarnet", nazwa:"Klarnet", skala:.8, podobne:["oboj","flet"],
+      ciekawostka:"Ma jeden stroik — cienki kawałek trzciny, który drga, gdy się dmucha. Potrafi zagrać szeptem i bardzo głośno. W „Karnawale zwierząt” klarnet udaje kukułkę w lesie: ku-ku!",
+      dzwiek:"klarnet.mp3", utwor:"Koncert klarnetowy nr 1 f-moll, op. 73, cz. III Rondo — Carl Maria von Weber", wykonawca:"European Archive", licNagrania:"domena publiczna",
+      zdjecie:"klarnet.jpg", autorZdjecia:"Yamaha Corporation", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Yamaha_Clarinet_YCL-457II-22_(rotated).jpg" },
+    { id:"organy", nazwa:"Organy", skala:1,
+      ciekawostka:"To największy instrument świata — mają tysiące piszczałek, a najdłuższe są wyższe od trzypiętrowego domu. Organista gra rękami na kilku klawiaturach i jeszcze nogami na pedałach!",
+      dzwiek:"organy.mp3", utwor:"Toccata i fuga d-moll, BWV 565 — Johann Sebastian Bach", wykonawca:"Albert Schweitzer", licNagrania:"domena publiczna",
+      zdjecie:"organy.jpg", autorZdjecia:"Uoaei1", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Laon_Cathedral_Organ_01.JPG" },
+    { id:"oboj", nazwa:"Obój", skala:.8, podobne:["klarnet","flet"],
+      ciekawostka:"Ma podwójny stroik — dwa paseczki trzciny, które drgają o siebie. Przed każdym koncertem to właśnie obój gra jeden dźwięk, a cała orkiestra stroi się do niego.",
+      dzwiek:"oboj.mp3", utwor:"Etiuda nr 28 z 48 etiud na obój, op. 31 — Franz Wilhelm Ferling", wykonawca:"Aaron Hill", licNagrania:"domena publiczna",
+      zdjecie:"oboj.jpg", autorZdjecia:"Metropolitan Museum of Art", licZdjecia:CC0, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Oboe_MET_206955.jpg" },
+    { id:"fagot", nazwa:"Fagot", skala:1,
+      ciekawostka:"Jego rura ma około 2,5 metra, ale jest złożona na pół, żeby dało się go unieść. Gra bardzo nisko i często w muzyce udaje dziadka albo kogoś śmiesznego.",
+      dzwiek:"fagot.mp3", utwor:"Solo fagotu z „Szeherezady” — Nikołaj Rimski-Korsakow", wykonawca:"Mezzofortist (Wikimedia Commons)", licNagrania:BYSA3,
+      zdjecie:"fagot.jpg", autorZdjecia:"Wikimedia Commons", licZdjecia:BYSA3, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Fagott.jpg" },
+    { id:"waltornia", nazwa:"Waltornia", skala:.85, podobne:["trabka"],
+      ciekawostka:"Jej rura ma prawie 4 metry i jest zwinięta w kółko jak ślimak. Dawno temu był to róg myśliwski. Waltornista trzyma rękę w środku dużego lejka, żeby zmieniać brzmienie.",
+      dzwiek:"waltornia.mp3", utwor:"Utwór na waltornię i fortepian (nagranie z koncertu w Bethany Lutheran Church, 2011)", wykonawca:"Kristin Schneider", licNagrania:BY3,
+      zdjecie:"waltornia.jpg", autorZdjecia:"Yamaha Corporation", licZdjecia:BYSA4, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Yamaha_Horn_YHR-667V.png" },
+    { id:"ksylofon", nazwa:"Ksylofon", skala:.8,
+      ciekawostka:"Ma drewniane sztabki, w które uderza się pałeczkami. Im krótsza sztabka, tym wyższy dźwięk. W „Karnawale zwierząt” ksylofon udaje stukające kości dinozaurów!",
+      dzwiek:"ksylofon.mp3", utwor:"„Skamieniałości” z „Karnawału zwierząt” — Camille Saint-Saëns", wykonawca:"Seattle Youth Symphony", licNagrania:BYSA3,
+      zdjecie:"ksylofon.jpg", autorZdjecia:"Andreas Praefcke", licZdjecia:"domena publiczna", zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Xylophon_Wien_SAM.jpg" },
+    { id:"klawesyn", nazwa:"Klawesyn", skala:1, podobne:["fortepian"],
+      ciekawostka:"Wygląda jak fortepian, ale w środku struny są szarpane małymi piórkami, a nie uderzane. Dlatego brzmi trochę „brzdąkająco”. Był bardzo modny ponad 300 lat temu.",
+      dzwiek:"klawesyn.mp3", utwor:"„Harmonijny kowal” z Suity nr 5 E-dur, HWV 430 — Georg Friedrich Händel", wykonawca:"Musopen", licNagrania:CC0,
+      zdjecie:"klawesyn.jpg", autorZdjecia:"Ratigan", licZdjecia:BYSA3, zrodloZdjecia:"https://commons.wikimedia.org/wiki/File:Clavecin_flamand.png" }
+  ];
+  const DOSTEPNE = INSTRUMENTY.filter(i => i.dzwiek);
+  const PYTAN = 8;
+  const CZAS_ODSLUCHU = 9000, NAROST = 0.25, WYCISZENIE = 1.5, OPOZNIENIE_STARTU = 1000;
+
+  const $ = id => document.getElementById(id);
+  const kartyEl = $("karty"), postepEl = $("postep"), polecenie = $("polecenie"), komunikat = $("komunikat");
+  const posluchajBtn = $("posluchaj"), pytanieEl = $("pytanie"), koniecEl = $("koniec");
+  const poziomy = document.querySelectorAll(".poziom");
+
+  let ile = 3, pytania = [], nr = 0, pierwszaProba = true, wyniki = [], zablokowane = false;
+  let autostart = null, bylKlik = false;
+
+  const tasuj = t => { for (let i = t.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+  const podobne = (a, b) => (a.podobne || []).includes(b.id) || (b.podobne || []).includes(a.id);
+
+  // ---------- Dźwięk: Web Audio z łagodnym wejściem i wyciszeniem ----------
+  // Przeglądarka pozwala grać dopiero po pierwszym kliknięciu na stronie — wtedy włączamy dźwięk.
+  let ctx = null, zrodlo = null, koniecOdsluchu = null;
+  const bufory = {};
+  function kontekst(){
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function wczytaj(ins){
+    if (!bufory[ins.id]) bufory[ins.id] = fetch("instrumenty/" + ins.dzwiek).then(r => r.arrayBuffer())
+      .then(b => new Promise((ok, zle) => kontekst().decodeAudioData(b, ok, zle)))
+      .then(bufor => { bufor.wzmocnienie = glosnosc(bufor); return bufor; });
+    return bufory[ins.id];
+  }
+  // Nagrania mają różną głośność (cicha harfa, głośny ksylofon) — wyrównujemy je do podobnego poziomu,
+  // ale tak, żeby najgłośniejsze miejsce nie przesterowało
+  function glosnosc(bufor){
+    const ch = bufor.getChannelData(0), krok = Math.max(1, Math.floor(ch.length / 200000));
+    let suma = 0, ile = 0, szczyt = 0;
+    for (let i = 0; i < ch.length; i += krok){ const v = Math.abs(ch[i]); suma += v * v; ile++; if (v > szczyt) szczyt = v; }
+    const rms = Math.sqrt(suma / (ile || 1)) || 0.1;
+    return Math.max(0.5, Math.min(0.15 / rms, 0.98 / (szczyt || 1), 4));
+  }
+  function zatrzymaj(){
+    clearTimeout(koniecOdsluchu);
+    if (zrodlo){ try { zrodlo.stop(); } catch(e){} }
+    zrodlo = null;
+    posluchajBtn.classList.remove("gra-teraz");
+    document.querySelectorAll(".gra-teraz").forEach(k => k.classList.remove("gra-teraz"));
+  }
+  async function zagraj(ins, karta){
+    zatrzymaj();
+    try {
+      const c = kontekst();
+      const bufor = await wczytaj(ins);
+      zatrzymaj();
+      const z = c.createBufferSource(), g = c.createGain(), t = c.currentTime;
+      z.buffer = bufor;
+      const dlugosc = Math.min(CZAS_ODSLUCHU / 1000, bufor.duration);
+      const poziom = bufor.wzmocnienie || 0.9;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(poziom, t + NAROST);
+      g.gain.setValueAtTime(poziom, t + dlugosc - WYCISZENIE);
+      g.gain.linearRampToValueAtTime(0, t + dlugosc);
+      z.connect(g).connect(c.destination);
+      z.start(t); z.stop(t + dlugosc + 0.05);
+      zrodlo = z;
+      (karta || posluchajBtn).classList.add("gra-teraz");
+      koniecOdsluchu = setTimeout(zatrzymaj, dlugosc * 1000 + 100);
+    } catch(e){ komunikat.textContent = "Nie udało się odtworzyć dźwięku. Sprawdź, czy dźwięk jest włączony."; }
+  }
+  function brzdek(dobrze){
+    try {
+      const c = kontekst(), t = c.currentTime;
+      (dobrze ? [523.25, 659.25, 783.99] : [220, 196]).forEach((f, i) => {
+        const o = c.createOscillator(), g = c.createGain(), s = t + i * 0.1;
+        o.type = dobrze ? "sine" : "triangle"; o.frequency.value = f;
+        g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.12, s + 0.015); g.gain.exponentialRampToValueAtTime(0.001, s + 0.25);
+        o.connect(g).connect(c.destination); o.start(s); o.stop(s + 0.3);
+      });
+    } catch(e){}
+  }
+  // pierwsze kliknięcie gdziekolwiek odblokowuje dźwięk; jeśli pytanie czeka na start — od razu gramy
+  document.addEventListener("pointerdown", () => {
+    if (bylKlik) return;
+    bylKlik = true;
+    kontekst();
+    DOSTEPNE.forEach(wczytaj);
+  }, { capture: true });
+
+  // ---------- Karty zagadki: zdjęcie i nazwa ----------
+  function karta(ins){
+    const k = document.createElement("button");
+    k.className = "karta";
+    k.dataset.id = ins.id;
+    k.style.setProperty("--skala", ins.skala);
+    k.setAttribute("aria-label", ins.nazwa);
+    k.innerHTML = `<span class="zdjecie"><img src="instrumenty/${ins.zdjecie}" alt=""></span><span class="nazwa">${ins.nazwa}</span>`;
+    return k;
+  }
+
+  // Zestaw kart do pytania: zawsze poprawny instrument + inne; na łatwym bez podobnych do siebie
+  function zestaw(cel){
+    const reszta = tasuj(DOSTEPNE.filter(i => i !== cel));
+    const wybrane = [cel];
+    for (const i of reszta){
+      if (wybrane.length >= ile) break;
+      if (ile === 3 && wybrane.some(w => podobne(w, i))) continue;
+      wybrane.push(i);
+    }
+    for (const i of reszta){ if (wybrane.length >= ile) break; if (!wybrane.includes(i)) wybrane.push(i); }
+    return tasuj(wybrane);
+  }
+
+  function nowaGra(){
+    zatrzymaj();
+    clearTimeout(autostart);
+    koniecEl.hidden = true;
+    pytanieEl.hidden = false;
+    komunikat.textContent = "";
+    // każdy instrument pojawia się mniej więcej tyle samo razy, nigdy dwa razy z rzędu
+    const pula = [];
+    while (pula.length < PYTAN) pula.push(...tasuj([...DOSTEPNE]));
+    pytania = pula.slice(0, PYTAN);
+    for (let i = 1; i < pytania.length; i++) if (pytania[i] === pytania[i - 1]){ const j = (i + 1) % pytania.length; [pytania[i], pytania[j]] = [pytania[j], pytania[i]]; }
+    nr = 0; wyniki = [];
+    postepEl.innerHTML = "";
+    for (let i = 0; i < PYTAN; i++){ const n = document.createElement("span"); n.className = "nuta"; n.textContent = "♪"; postepEl.appendChild(n); }
+    pokazPytanie();
+  }
+
+  function pokazPytanie(){
+    const cel = pytania[nr];
+    pierwszaProba = true; zablokowane = false;
+    postepEl.querySelectorAll(".nuta").forEach((n, i) => n.classList.toggle("teraz", i === nr));
+    polecenie.textContent = "Pytanie " + (nr + 1) + " z " + PYTAN + ": który instrument gra?";
+    kartyEl.innerHTML = "";
+    zestaw(cel).forEach(ins => {
+      const k = karta(ins);
+      k.addEventListener("click", () => odpowiedz(ins, k));
+      kartyEl.appendChild(k);
+    });
+    // muzyka zaczyna się sama po sekundzie (po pierwszym kliknięciu na stronie — wcześniej przeglądarka na to nie pozwala)
+    clearTimeout(autostart);
+    if (bylKlik) autostart = setTimeout(() => zagraj(cel, null), OPOZNIENIE_STARTU);
+    else komunikat.textContent = "Kliknij „Posłuchaj”, żeby zacząć!";
+  }
+
+  function odpowiedz(ins, k){
+    if (zablokowane || k.classList.contains("zle")) return;
+    clearTimeout(autostart);
+    const cel = pytania[nr];
+    if (ins === cel){
+      zablokowane = true;
+      k.classList.add("dobrze");
+      brzdek(true);
+      postepEl.children[nr].classList.add(pierwszaProba ? "zlota" : "srebrna");
+      wyniki.push(pierwszaProba);
+      komunikat.textContent = (pierwszaProba ? "Brawo! " : "Tak! ") + "To " + cel.nazwa.toLowerCase() + ".";
+      setTimeout(() => {
+        zatrzymaj();
+        nr++;
+        komunikat.textContent = "";
+        if (nr < PYTAN) pokazPytanie(); else koniec();
+      }, 1800);
+    } else {
+      pierwszaProba = false;
+      k.classList.add("zle");
+      brzdek(false);
+      komunikat.textContent = "To " + ins.nazwa.toLowerCase() + ". Posłuchaj jeszcze raz i spróbuj ponownie!";
+    }
+  }
+
+  function koniec(){
+    zatrzymaj();
+    const trafione = wyniki.filter(Boolean).length;
+    polecenie.textContent = "";
+    kartyEl.innerHTML = "";
+    pytanieEl.hidden = true;
+    $("koniecTytul").textContent = trafione === PYTAN ? "Mistrz orkiestry! 🎼" : "Koniec koncertu! 🎻";
+    $("koniecOpis").textContent = "Rozpoznane za pierwszym razem: " + trafione + " z " + PYTAN + ".";
+    pokazPoznaj();
+    koniecEl.hidden = false;
+    odwiedzinyKota(trafione);
+  }
+
+  // ---------- „Poznaj instrumenty” pod wynikiem ----------
+  function pokazPoznaj(){
+    const el = $("poznajKarty");
+    el.innerHTML = "";
+    DOSTEPNE.forEach(ins => {
+      const k = document.createElement("button");
+      k.className = "poznaj-karta";
+      k.setAttribute("aria-label", ins.nazwa + " — kliknij, żeby posłuchać. " + ins.ciekawostka);
+      k.innerHTML = `<img src="instrumenty/${ins.zdjecie}" alt=""><span><span class="nazwa">${ins.nazwa}</span><span class="ciekawostka">${ins.ciekawostka}</span></span>`;
+      k.addEventListener("click", () => {
+        if (k.classList.contains("gra-teraz")){ zatrzymaj(); return; }
+        zagraj(ins, k);
+      });
+      el.appendChild(k);
+    });
+  }
+
+  posluchajBtn.addEventListener("click", () => {
+    clearTimeout(autostart);
+    if (komunikat.textContent.startsWith("Kliknij")) komunikat.textContent = "";
+    if (posluchajBtn.classList.contains("gra-teraz")){ zatrzymaj(); return; }
+    if (pytania[nr]) zagraj(pytania[nr], null);
+  });
+  poziomy.forEach(p => p.addEventListener("click", () => {
+    poziomy.forEach(x => x.setAttribute("aria-pressed", "false"));
+    p.setAttribute("aria-pressed", "true");
+    ile = Math.min(parseInt(p.dataset.ile, 10), DOSTEPNE.length);
+    nowaGra();
+  }));
+  $("znowu").addEventListener("click", nowaGra);
+
+  // ---------- Licencje (tylko instrumenty, które są w grze) ----------
+  const lic = l => Array.isArray(l) ? `<a href="${l[1]}" rel="license noopener" target="_blank">${l[0]}</a>` : l;
+  $("listaLicencji").innerHTML = DOSTEPNE.map(i =>
+    `<li><b>${i.nazwa}</b> — nagranie: ${i.utwor}, wyk. ${i.wykonawca} (${lic(i.licNagrania)}); ` +
+    `zdjęcie: <a href="${i.zrodloZdjecia}" rel="noopener" target="_blank">${i.autorZdjecia}</a> (${lic(i.licZdjecia)})</li>`).join("");
+
+  // ---------- Spacer kota z gratulacjami ----------
+  const kotWedrowiec = $("kotWedrowiec"), dymekKota = $("dymekKota");
+  const bezRuchu = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let kotTimeouty = [];
+  function odwiedzinyKota(trafione){
+    kotTimeouty.forEach(clearTimeout); kotTimeouty = [];
+    dymekKota.classList.remove("widoczna");
+    kotWedrowiec.classList.remove("widoczny", "chodzi");
+    void kotWedrowiec.offsetWidth;
+    kotWedrowiec.classList.add("widoczny", "chodzi");
+    const naMiejscu = () => {
+      kotWedrowiec.classList.remove("chodzi");
+      dymekKota.textContent = trafione === PYTAN ? "Ale masz ucho!" : trafione >= PYTAN / 2 ? "Świetny słuch!" : "Ćwicz dalej, maestro!";
+      dymekKota.classList.add("widoczna");
+      kotTimeouty.push(setTimeout(() => { dymekKota.classList.remove("widoczna"); kotTimeouty.push(setTimeout(() => kotWedrowiec.classList.remove("widoczny"), 700)); }, 4500));
+    };
+    if (bezRuchu) naMiejscu(); else kotWedrowiec.addEventListener("transitionend", naMiejscu, { once: true });
+  }
+
+  nowaGra();
+})();
+</script>
+</body>
+</html>
