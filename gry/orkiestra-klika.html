@@ -124,7 +124,7 @@ button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);ou
 /* „Poznaj instrumenty” pod wynikiem: zdjęcie, nazwa i ciekawostka */
 .poznaj{margin-top:22px;text-align:left;border-top:2px dashed #EADFCB;padding-top:18px}
 .poznaj h2{font-family:'Baloo 2',sans-serif;font-size:1.3rem;text-align:center}
-.poznaj-wstep{text-align:center;color:var(--szara) !important;font-weight:600}
+.poznaj-wstep{text-align:center;color:var(--szara);font-weight:600;margin:6px 0 14px}
 .poznaj-karty{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .poznaj-karta{
   border:3px solid transparent;border-radius:18px;background:#fff;cursor:pointer;padding:12px;
@@ -151,10 +151,40 @@ button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);ou
 
 .komunikat{min-height:28px;margin-top:12px;text-align:center;font-weight:700;color:var(--noc)}
 .koniec{text-align:center;padding:12px 0 4px}
-.koniec .znowu{margin-bottom:4px}
 .koniec[hidden]{display:none}
-.koniec .tytul{font-family:'Baloo 2',sans-serif;font-size:1.6rem;font-weight:700;color:var(--noc)}
-.koniec p{font-weight:600;color:#3A475C;margin:6px 0 14px}
+/* Ekran wyniku: Klik dyrygent, gwiazdki, nutki z rundy, deszcz nutek */
+.wynik{position:relative;overflow:hidden;border-radius:22px;padding:18px 14px 20px;
+  background:linear-gradient(180deg,#FFF1DE 0%,#FFF7EC 70%);border:3px solid #F6D9B0}
+.dyrygent{width:110px;height:110px;display:block;margin:0 auto -4px}
+.dyrygent .batuta{transform-origin:84px 70px;animation:batuta .9s ease-in-out infinite}
+@keyframes batuta{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(22deg)}}
+.gwiazdki{display:flex;justify-content:center;gap:6px;margin:4px 0 2px}
+.gwiazdka{width:46px;height:46px;opacity:0;transform:scale(.3) rotate(-30deg)}
+.gwiazdka path{fill:#E4D8C4;stroke:#C9B48F;stroke-width:2;stroke-linejoin:round}
+.gwiazdka.zapalona path{fill:var(--slonce);stroke:#E0A800}
+.gwiazdka.pokaz{animation:gwiazdka .45s cubic-bezier(.3,1.6,.5,1) forwards}
+.gwiazdka:nth-child(2){width:58px;height:58px;margin-top:-8px}
+@keyframes gwiazdka{to{opacity:1;transform:scale(1) rotate(0)}}
+.koniec .tytul{font-family:'Baloo 2',sans-serif;font-size:1.9rem;font-weight:700;color:var(--noc);line-height:1.15;margin-top:4px}
+.koniec .pochwala{font-weight:700;color:#3A475C;margin:6px auto 12px;max-width:460px;font-size:1.05rem}
+.nutki-wyniku{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.nutki-wyniku .nuta{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1rem;color:var(--noc)}
+.nutki-wyniku .nuta.zlota{background:var(--slonce)}
+.nutki-wyniku .nuta.srebrna{background:#CFD8E3}
+.koniec .liczby{font-size:.95rem;color:var(--szara);font-weight:700;margin:0 0 14px}
+.przyciski-wyniku{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.trudniej{font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;background:var(--noc);color:#fff;border:none;
+  padding:10px 22px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #0E1830}
+.trudniej:active{transform:translateY(3px);box-shadow:0 1px 0 #0E1830}
+.trudniej[hidden]{display:none}
+.deszcz{position:absolute;inset:0;pointer-events:none}
+.deszcz span{position:absolute;top:-30px;font-size:1.4rem;animation:spada linear forwards}
+@keyframes spada{to{transform:translateY(420px) rotate(var(--obrot,180deg));opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .dyrygent .batuta{animation:none}
+  .gwiazdka{opacity:1;transform:none}.gwiazdka.pokaz{animation:none}
+  .deszcz{display:none}
+}
 .znowu{
   font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;
   background:var(--klik);color:#fff;border:none;padding:10px 26px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #C4621F;
@@ -247,9 +277,30 @@ footer a{color:var(--papier)}
       <p class="komunikat" id="komunikat" role="status"></p>
 
       <div class="koniec" id="koniec" hidden>
-        <p class="tytul" id="koniecTytul"></p>
-        <p id="koniecOpis"></p>
-        <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+        <div class="wynik" id="wynik" role="status">
+          <div class="deszcz" id="deszcz" aria-hidden="true"></div>
+          <svg class="dyrygent" viewBox="0 0 110 110" aria-hidden="true">
+            <!-- Klik dyrygent: głowa jak w logo, muszka i batuta w łapce -->
+            <path d="M26 46 L22 18 L46 34 Z" fill="#FF8A3D"/><path d="M84 46 L88 18 L64 34 Z" fill="#FF8A3D"/>
+            <circle cx="55" cy="56" r="33" fill="#FF8A3D"/>
+            <circle cx="43" cy="52" r="5.5" fill="#1B2A4A"/><circle cx="67" cy="52" r="5.5" fill="#1B2A4A"/>
+            <circle cx="45" cy="50" r="1.8" fill="#fff"/><circle cx="69" cy="50" r="1.8" fill="#fff"/>
+            <path d="M55 62 l-4 3.4 h8 Z" fill="#1B2A4A"/>
+            <path d="M48 70 q7 6 14 0" stroke="#1B2A4A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <path d="M20 58 h14 M20 64 h14 M76 58 h14 M76 64 h14" stroke="#1B2A4A" stroke-width="2" stroke-linecap="round"/>
+            <path d="M44 92 L55 87 L44 82 Z M66 92 L55 87 L66 82 Z" fill="#1B2A4A"/><circle cx="55" cy="87" r="3" fill="#1B2A4A"/>
+            <g class="batuta"><line x1="84" y1="70" x2="104" y2="38" stroke="#1B2A4A" stroke-width="3" stroke-linecap="round"/><circle cx="84" cy="70" r="6" fill="#FF8A3D" stroke="#C4621F" stroke-width="2"/></g>
+          </svg>
+          <div class="gwiazdki" id="gwiazdki" aria-hidden="true"></div>
+          <p class="tytul" id="koniecTytul"></p>
+          <p class="pochwala" id="koniecOpis"></p>
+          <div class="nutki-wyniku" id="nutkiWyniku" aria-hidden="true"></div>
+          <p class="liczby" id="koniecLiczby"></p>
+          <div class="przyciski-wyniku">
+            <button class="znowu" id="znowu">Zagraj jeszcze raz</button>
+            <button class="trudniej" id="trudniej" hidden>Trudniejszy poziom →</button>
+          </div>
+        </div>
         <div class="poznaj">
           <h2>Poznaj instrumenty</h2>
           <p class="poznaj-wstep">Kliknij instrument, żeby jeszcze raz posłuchać, jak brzmi — i przeczytaj ciekawostkę!</p>
@@ -485,8 +536,10 @@ footer a{color:var(--papier)}
     return tasuj(wybrane);
   }
 
+  let wynikTimeouty = [];
   function nowaGra(){
     zatrzymaj();
+    wynikTimeouty.forEach(clearTimeout); wynikTimeouty = [];
     clearTimeout(autostart);
     koniecEl.hidden = true;
     pytanieEl.hidden = false;
@@ -550,11 +603,81 @@ footer a{color:var(--papier)}
     polecenie.textContent = "";
     kartyEl.innerHTML = "";
     pytanieEl.hidden = true;
-    $("koniecTytul").textContent = trafione === PYTAN ? "Mistrz orkiestry! 🎼" : "Koniec koncertu! 🎻";
-    $("koniecOpis").textContent = "Rozpoznane za pierwszym razem: " + trafione + " z " + PYTAN + ".";
+    // Każde dziecko kończy rundę z sukcesem (wszystkie instrumenty znalezione) — gwiazdki mówią tylko, jak bardzo
+    const gwiazdki = trafione >= PYTAN - 1 ? 3 : trafione >= PYTAN / 2 ? 2 : 1;
+    const [tytul, pochwala] =
+      trafione === PYTAN ? ["Mistrz orkiestry! 🎼", "Wszystkie instrumenty rozpoznane za pierwszym razem. Masz złote ucho!"] :
+      gwiazdki === 3     ? ["Brawo, maestro! 🎻", "Prawie wszystko za pierwszym razem — świetny słuch!"] :
+      gwiazdki === 2     ? ["Pięknie Ci poszło! 🎶", "Twoje ucho jest coraz lepsze. Posłuchaj instrumentów poniżej i zagraj jeszcze raz!"] :
+                           ["Dobry początek! 🎵", "Każdy instrument udało się znaleźć — a z każdą rundą będzie łatwiej. Posłuchaj ich poniżej!"];
+    $("koniecTytul").textContent = tytul;
+    $("koniecOpis").textContent = pochwala;
+    $("koniecLiczby").textContent = "Znalezione instrumenty: " + PYTAN + " z " + PYTAN + ". Złote nutki, czyli za pierwszym razem: " + trafione + ".";
+    $("nutkiWyniku").innerHTML = wyniki.map(z => `<span class="nuta ${z ? "zlota" : "srebrna"}">♪</span>`).join("");
+    const gw = $("gwiazdki");
+    gw.innerHTML = [0, 1, 2].map(i =>
+      `<svg class="gwiazdka${i < gwiazdki ? " zapalona" : ""}" viewBox="0 0 50 50"><path d="M25 3 L31.5 17.5 L47 19 L35.2 29.5 L38.6 45 L25 37 L11.4 45 L14.8 29.5 L3 19 L18.5 17.5 Z"/></svg>`).join("");
+    gw.setAttribute("aria-label", gwiazdki + " z 3 gwiazdek");
+    // gwiazdki pojawiają się po kolei, każda z dźwiękiem
+    [...gw.children].forEach((g, i) => wynikTimeouty.push(setTimeout(() => {
+      g.classList.add("pokaz");
+      if (i < gwiazdki) dzwonek(i);
+    }, 400 + i * 380)));
+    // przy dobrym wyniku zachęta do trudniejszego poziomu (jeśli jest trudniejszy)
+    const nastepny = [...poziomy].find(p => parseInt(p.dataset.ile, 10) > ile);
+    $("trudniej").hidden = !(gwiazdki === 3 && nastepny);
+    $("trudniej").onclick = () => nastepny && nastepny.click();
     pokazPoznaj();
     koniecEl.hidden = false;
+    fanfara(gwiazdki);
+    deszczNutek(gwiazdki);
+    koniecEl.scrollIntoView({ behavior: bezRuchu ? "auto" : "smooth", block: "start" });
     odwiedzinyKota(trafione);
+  }
+
+  // Krótka fanfara na koniec — im więcej gwiazdek, tym dłuższa
+  function fanfara(gwiazdki){
+    const melodia = gwiazdki === 3 ? [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5]
+                  : gwiazdki === 2 ? [523.25, 659.25, 783.99, 1046.5]
+                  :                  [523.25, 659.25, 783.99];
+    try {
+      const c = kontekst(), t = c.currentTime + 0.05;
+      melodia.forEach((f, i) => {
+        const o = c.createOscillator(), g = c.createGain(), s = t + i * 0.14, ost = i === melodia.length - 1;
+        o.type = "triangle"; o.frequency.value = f;
+        g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.13, s + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, s + (ost ? 0.9 : 0.22));
+        o.connect(g).connect(c.destination); o.start(s); o.stop(s + (ost ? 1 : 0.3));
+      });
+    } catch(e){}
+  }
+  // „Dzyń” przy każdej zapalonej gwiazdce, coraz wyżej
+  function dzwonek(i){
+    try {
+      const c = kontekst(), s = c.currentTime, o = c.createOscillator(), g = c.createGain();
+      o.type = "sine"; o.frequency.value = [1318.5, 1568, 2093][i];
+      g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.08, s + 0.01); g.gain.exponentialRampToValueAtTime(0.001, s + 0.5);
+      o.connect(g).connect(c.destination); o.start(s); o.stop(s + 0.55);
+    } catch(e){}
+  }
+  // Deszcz kolorowych nutek nad wynikiem
+  function deszczNutek(gwiazdki){
+    const el = $("deszcz");
+    el.innerHTML = "";
+    if (bezRuchu) return;
+    const ZNAKI = ["♪", "♫", "♬", "🎵", "⭐"], KOLORY = ["#FF8A3D", "#3ECFB2", "#FFD447", "#1B2A4A", "#E85D75"];
+    const liczba = 10 + gwiazdki * 8;
+    for (let i = 0; i < liczba; i++){
+      const n = document.createElement("span");
+      n.textContent = ZNAKI[i % ZNAKI.length];
+      n.style.left = Math.random() * 96 + "%";
+      n.style.color = KOLORY[i % KOLORY.length];
+      n.style.animationDuration = (2.2 + Math.random() * 1.8) + "s";
+      n.style.animationDelay = (Math.random() * 1.6) + "s";
+      n.style.setProperty("--obrot", (Math.random() * 360 - 180) + "deg");
+      el.appendChild(n);
+    }
+    wynikTimeouty.push(setTimeout(() => { el.innerHTML = ""; }, 5000));
   }
 
   // ---------- „Poznaj instrumenty” pod wynikiem ----------
