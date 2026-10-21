@@ -151,13 +151,15 @@ button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);ou
 /* Telefon, 3 albo 5 kart: jedna pod drugą, poziomo (zdjęcie z lewej, nazwa z prawej) — bez samotnej karty w ostatnim rzędzie */
 @media (max-width:600px){
   .karty[data-ile="3"],.karty[data-ile="5"]{grid-template-columns:1fr;gap:8px}
-  .karty[data-ile="3"] .karta,.karty[data-ile="5"] .karta{flex-direction:row;justify-content:flex-start;gap:14px;padding:6px 14px 6px 8px;text-align:left}
-  .karty[data-ile="3"] .karta .zdjecie,.karty[data-ile="5"] .karta .zdjecie{width:110px;flex:0 0 110px;align-items:center}
-  .karty[data-ile="3"] .karta .zdjecie{height:100px}
-  .karty[data-ile="3"] .karta img{max-height:calc(100px * max(var(--skala,1), .75))}
-  .karty[data-ile="5"] .karta .zdjecie{height:72px}
-  .karty[data-ile="5"] .karta img{max-height:calc(72px * max(var(--skala,1), .75))}
-  .karty[data-ile="3"] .karta .nazwa,.karty[data-ile="5"] .karta .nazwa{font-size:1.35rem}
+  /* zdjęcie i nazwa razem, wyśrodkowane w karcie */
+  .karty[data-ile="3"] .karta,.karty[data-ile="5"] .karta{flex-direction:row;justify-content:center;gap:16px;padding:4px 10px;text-align:left}
+  .karty[data-ile="3"] .karta .zdjecie,.karty[data-ile="5"] .karta .zdjecie{width:130px;flex:0 0 130px;align-items:center}
+  .karty[data-ile="3"] .karta .zdjecie{height:118px}
+  .karty[data-ile="3"] .karta img{max-height:calc(118px * max(var(--skala,1), .8))}
+  .karty[data-ile="5"] .karta .zdjecie{height:84px}
+  .karty[data-ile="5"] .karta img{max-height:calc(84px * max(var(--skala,1), .8))}
+  .karty[data-ile="3"] .karta .nazwa,.karty[data-ile="5"] .karta .nazwa{flex:0 0 140px;text-align:center;font-size:1.5rem}
+  .karty[data-ile="5"] .karta .nazwa{font-size:1.4rem}
 }
 
 .komunikat{min-height:28px;margin-top:12px;text-align:center;font-weight:700;color:var(--noc)}
