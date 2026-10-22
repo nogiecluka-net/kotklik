@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balon Klika — gra na koordynację wzrokowo-ruchową | KotKlik</title>
+<meta name="description" content="Pomóż kotu Klikowi dolecieć balonem do księżyca! Omijaj ptaki, chmury i latawce, zbieraj rybki. Gra ćwiczy koordynację wzrokowo-ruchową. Strzałki na komputerze, palec na telefonie. Bez reklam.">
+<link rel="canonical" href="https://kotklik.pl/gry/balon-klika">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Balon Klika — gra na koordynację wzrokowo-ruchową | KotKlik">
+<meta property="og:description" content="Leć balonem do księżyca, omijaj przeszkody i zbieraj rybki. Gra dla dzieci bez reklam.">
+<meta property="og:url" content="https://kotklik.pl/gry/balon-klika">
+<meta property="og:image" content="https://kotklik.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KotKlik - gry edukacyjne dla dzieci. Kot Klik na tle nocnego nieba.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka .logo span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 28px}
+.dymek{
+  background:var(--papier);border-radius:20px;padding:14px 20px;max-width:560px;margin-bottom:14px;
+  position:relative;box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.gra{background:var(--papier);border-radius:24px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.gra-gora{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.gra-gora h1{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+.poziomy{display:flex;gap:8px;flex-wrap:wrap}
+.poziom{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  padding:8px 16px;border:2px solid var(--noc);border-radius:999px;background:transparent;color:var(--noc);cursor:pointer;
+}
+.poziom[aria-pressed="true"]{background:var(--noc);color:var(--papier)}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+/* plansza: płótno i nakładki (start, pauza) */
+.plansza{position:relative;max-width:520px;margin:0 auto;border-radius:20px;overflow:hidden;box-shadow:0 4px 0 rgba(0,0,0,.12);background:#8FD3FF}
+.plansza canvas{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+.nakladka{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  text-align:center;padding:20px;background:rgba(27,42,74,.55);color:#fff;
+}
+.nakladka[hidden]{display:none}
+.nakladka h2{font-family:'Baloo 2',sans-serif;font-size:1.7rem;line-height:1.15}
+.nakladka p{font-weight:700;max-width:340px}
+.nakladka .sterowanie{font-size:.95rem;font-weight:600;opacity:.95;background:rgba(255,255,255,.14);border-radius:14px;padding:8px 14px}
+.przycisk{
+  font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.25rem;
+  background:var(--klik);color:#fff;border:none;padding:12px 32px;border-radius:999px;cursor:pointer;box-shadow:0 5px 0 #C4621F;
+}
+.przycisk:active{transform:translateY(3px);box-shadow:0 2px 0 #C4621F}
+.pasek-gry{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.pauza{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;padding:8px 18px;border-radius:999px;
+  border:2px solid var(--noc);background:transparent;color:var(--noc);cursor:pointer;
+}
+.pauza[hidden]{display:none}
+.komunikat{min-height:26px;margin-top:8px;text-align:center;font-weight:700;color:var(--noc)}
+
+/* ekran wyniku */
+.koniec{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;background:rgba(27,42,74,.45)}
+.koniec[hidden]{display:none}
+/* mistrz gry (ukończony Ekspert): złota ramka, puchar, deszcz gwiazdek */
+.wynik{overflow:hidden}
+.wynik.mistrz{background:linear-gradient(180deg,#FFE9A8 0%,#FFF7EC 75%);border-color:#E0A800;box-shadow:0 0 0 4px rgba(255,212,71,.5),0 8px 24px rgba(0,0,0,.25)}
+.puchar{width:76px;height:76px;display:block;margin:0 auto -2px;animation:puchar 1.6s ease-in-out infinite}
+.puchar[hidden]{display:none}
+@keyframes puchar{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.06)}}
+.deszcz{position:absolute;inset:0;pointer-events:none}
+.deszcz span{position:absolute;top:-30px;font-size:1.3rem;animation:spada linear forwards}
+@keyframes spada{to{transform:translateY(480px) rotate(var(--obrot,180deg));opacity:0}}
+.wynik > *:not(.deszcz){position:relative}
+@media (prefers-reduced-motion:reduce){.puchar{animation:none}.deszcz{display:none}}
+.wynik{position:relative;width:100%;max-width:400px;border-radius:22px;padding:16px 14px 18px;background:linear-gradient(180deg,#FFF1DE 0%,#FFF7EC 70%);border:3px solid #F6D9B0;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.gwiazdki{display:flex;justify-content:center;gap:6px;margin:2px 0}
+.gwiazdka{width:46px;height:46px;opacity:0;transform:scale(.3) rotate(-30deg)}
+.gwiazdka path{fill:#E4D8C4;stroke:#C9B48F;stroke-width:2;stroke-linejoin:round}
+.gwiazdka.zapalona path{fill:var(--slonce);stroke:#E0A800}
+.gwiazdka.pokaz{animation:gwiazdka .45s cubic-bezier(.3,1.6,.5,1) forwards}
+.gwiazdka:nth-child(2){width:58px;height:58px;margin-top:-8px}
+@keyframes gwiazdka{to{opacity:1;transform:scale(1) rotate(0)}}
+.koniec .tytul{font-family:'Baloo 2',sans-serif;font-size:1.8rem;font-weight:700;color:var(--noc);line-height:1.15;margin-top:4px}
+.koniec .pochwala{font-weight:700;color:#3A475C;margin:6px auto 8px;max-width:460px;font-size:1.05rem}
+.koniec .liczby{font-size:.95rem;color:var(--szara);font-weight:700;margin:0 0 14px}
+.przyciski-wyniku{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.trudniej{font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;background:var(--noc);color:#fff;border:none;padding:10px 22px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #0E1830}
+.trudniej[hidden]{display:none}
+.znowu{font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;background:var(--klik);color:#fff;border:none;padding:10px 26px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #C4621F}
+@media (prefers-reduced-motion:reduce){.gwiazdka{opacity:1;transform:none}.gwiazdka.pokaz{animation:none}}
+
+.link-wstecz{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;text-decoration:none;color:var(--papier);opacity:.92}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:680px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+@media(max-width:600px){
+  .hero .srodek{padding:0 8px}.gra{padding:12px 8px;border-radius:18px}.plansza{border-radius:14px}
+  /* 4 poziomy w jednym rzędzie, równej szerokości */
+  .poziomy{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+  .poziom{padding:7px 2px;font-size:.88rem}
+  /* wynik na planszy telefonu: mniejsze napisy, przyciski jeden pod drugim na całą szerokość */
+  .koniec{padding:10px}
+  .wynik{padding:12px 10px 14px}
+  .koniec .tytul{font-size:1.45rem}
+  .puchar{width:58px;height:58px}
+  .koniec .pochwala{font-size:.95rem;margin:4px auto 6px}
+  .koniec .liczby{margin-bottom:10px}
+  .przyciski-wyniku{flex-direction:column;gap:10px}
+  .przyciski-wyniku button{width:100%;padding:12px 10px;font-size:1.15rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="srodek marka" href="/" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="logo">Kot<span>Klik</span></span>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Lecę balonem na księżyc! Pomożesz mi ominąć ptaki, chmury i latawce?</p>
+      <p>Po drodze zbieraj rybki — to mój ulubiony prowiant.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h1>Balon Klika</h1>
+        <div class="poziomy" role="group" aria-label="Wybierz poziom">
+          <button class="poziom" data-poziom="0" aria-pressed="true">Łatwy</button>
+          <button class="poziom" data-poziom="1" aria-pressed="false">Średni</button>
+          <button class="poziom" data-poziom="2" aria-pressed="false">Trudny</button>
+          <button class="poziom" data-poziom="3" aria-pressed="false">Ekspert</button>
+        </div>
+      </div>
+
+      <div class="plansza" id="plansza">
+        <canvas id="plotno" width="480" height="640" aria-label="Plansza gry: balon Klika leci do księżyca"></canvas>
+        <div class="nakladka" id="startEkran">
+          <h2>Leć do księżyca!</h2>
+          <p>Omijaj przeszkody i zbieraj rybki. Masz 3 serduszka.</p>
+          <p class="sterowanie" id="sterowanie">⌨️ Komputer: strzałki · 👆 Telefon: przesuwaj palcem</p>
+          <button class="przycisk" id="startBtn">Start!</button>
+        </div>
+        <div class="nakladka" id="pauzaEkran" hidden>
+          <h2>Pauza</h2>
+          <button class="przycisk" id="wznowBtn">Lecimy dalej!</button>
+        </div>
+        <!-- wynik na samej planszy — na telefonie przyciski są od razu pod palcem, bez przewijania -->
+        <div class="koniec" id="koniec" hidden>
+          <div class="wynik" id="wynik" role="status">
+            <div class="deszcz" id="deszcz" aria-hidden="true"></div>
+            <!-- puchar tylko po ukończeniu poziomu Ekspert -->
+            <svg class="puchar" id="puchar" viewBox="0 0 100 100" aria-hidden="true" hidden>
+              <path d="M28 14 h44 v20 c0 16 -10 28 -22 28 c-12 0 -22 -12 -22 -28 Z" fill="#FFD447" stroke="#E0A800" stroke-width="3"/>
+              <path d="M28 20 h-12 c0 14 6 20 14 22 M72 20 h12 c0 14 -6 20 -14 22" fill="none" stroke="#E0A800" stroke-width="4" stroke-linecap="round"/>
+              <rect x="44" y="61" width="12" height="14" fill="#E0A800"/>
+              <rect x="32" y="74" width="36" height="10" rx="3" fill="#FF8A3D"/>
+              <rect x="26" y="83" width="48" height="9" rx="3" fill="#1B2A4A"/>
+              <path d="M50 24 l4 8 9 1 -7 6 2 9 -8 -5 -8 5 2 -9 -7 -6 9 -1 Z" fill="#fff"/>
+            </svg>
+            <div class="gwiazdki" id="gwiazdki" aria-hidden="true"></div>
+            <p class="tytul" id="koniecTytul"></p>
+            <p class="pochwala" id="koniecOpis"></p>
+            <p class="liczby" id="koniecLiczby"></p>
+            <div class="przyciski-wyniku">
+              <button class="znowu" id="znowu">Leć jeszcze raz</button>
+              <button class="trudniej" id="trudniej" hidden>Trudniejszy poziom →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pasek-gry">
+        <button class="pauza" id="pauzaBtn" hidden>⏸ Pauza</button>
+      </div>
+      <p class="komunikat" id="komunikat" role="status"></p>
+    </div>
+
+    <a class="link-wstecz" href="/">← Wróć do KotKlik</a>
+  </div>
+</section>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Gra ćwiczy koordynację wzrokowo-ruchową: dziecko śledzi wzrokiem nadlatujące przeszkody i jednocześnie steruje balonem</li>
+      <li>Na komputerze balonem steruje się strzałkami, na telefonie i tablecie — przesuwając palec po planszy</li>
+      <li>Każdy lot ma metę (od 40 do 75 sekund, zależnie od poziomu), więc dziecko kończy grę sukcesem; zderzenie zabiera tylko jedno z trzech serduszek</li>
+      <li>Cztery poziomy: Łatwy, Średni, Trudny i Ekspert — na wyższych przeszkody lecą szybciej i jest ich więcej, dochodzą latawce i papierowe samolociki</li>
+      <li>Grę można w każdej chwili zatrzymać przyciskiem „Pauza” albo spacją</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych; gra niczego nie zapisuje</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>© 2026 KotKlik.pl. Wszystkie prawa zastrzeżone — gier, grafik i tekstów nie wolno kopiować ani publikować bez naszej zgody.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const W = 480, H = 640;
+  const plotno = document.getElementById("plotno"), g = plotno.getContext("2d");
+  const $ = id => document.getElementById(id);
+  const KOL = { noc:"#1B2A4A", klik:"#FF8A3D", mieta:"#3ECFB2", slonce:"#FFD447", papier:"#FFF7EC" };
+
+  // Poziomy: długość lotu, co ile sekund nowa przeszkoda, prędkość spadania, jakie przeszkody
+  const POZIOMY = [
+    { czas: 40, odstep: 1.6,  predkosc: 75,  rozpedzanie: .2, samolot: 1,    typy: ["ptak", "chmura"] },
+    { czas: 45, odstep: 1.25, predkosc: 95,  rozpedzanie: .3, samolot: 1,    typy: ["ptak", "chmura"] },
+    { czas: 60, odstep: 0.95, predkosc: 130, rozpedzanie: .3, samolot: 1,    typy: ["ptak", "chmura", "latawiec"] },
+    { czas: 75, odstep: 0.72, predkosc: 165, rozpedzanie: .3, samolot: 1.25, typy: ["ptak", "chmura", "latawiec", "samolot"] },
+  ];
+  const ZYCIA = 3, NIETYKALNY = 1.6, SZYBKOSC_BALONU = 270;
+
+  let poziom = 0, stan = "start";       // start | gra | pauza | koniec
+  let gracz, przeszkody, rybki, chmurkiTla, gwiazdyTla, czasLotu, doNastepnej, doRybki, zycia, zebrane, nietykalny, wstrzas;
+  let ostatni = 0;
+
+  // ---------- pomocnicze ----------
+  const los = (a, b) => a + Math.random() * (b - a);
+  const mieszaj = (a, b, t) => a + (b - a) * t;
+  const ograniczenie = (v, a, b) => Math.max(a, Math.min(b, v));
+  function kolor(a, b, t){ // mieszanie kolorów #rrggbb
+    const p = s => [1, 3, 5].map(i => parseInt(s.slice(i, i + 2), 16));
+    const [x, y] = [p(a), p(b)];
+    return "rgb(" + x.map((v, i) => Math.round(mieszaj(v, y[i], t))).join(",") + ")";
+  }
+  function zaokr(x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+
+  // ---------- dźwięk (syntezowany, bez plików) ----------
+  let ctx = null;
+  function dzwiekOk(){ try { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); } catch(e){} return ctx; }
+  function ton(f, start, dl, glos, typ = "sine"){
+    const c = dzwiekOk(); if (!c) return;
+    const o = c.createOscillator(), gg = c.createGain(), s = c.currentTime + start;
+    o.type = typ; o.frequency.value = f;
+    gg.gain.setValueAtTime(0, s); gg.gain.linearRampToValueAtTime(glos, s + .015); gg.gain.exponentialRampToValueAtTime(.001, s + dl);
+    o.connect(gg).connect(c.destination); o.start(s); o.stop(s + dl + .05);
+  }
+  const dzwiekRybki = () => { ton(880, 0, .15, .09); ton(1318.5, .07, .2, .08); };
+  const dzwiekZderzenia = () => { ton(196, 0, .3, .12, "triangle"); ton(147, .1, .35, .1, "triangle"); };
+  const fanfara = () => [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5].forEach((f, i) => ton(f, i * .14, i === 5 ? 1 : .22, .12, "triangle"));
+  // dłuższa, uroczysta fanfara dla mistrza gry
+  const fanfaraMistrza = () => {
+    [392, 523.25, 659.25, 783.99, 659.25, 783.99, 1046.5].forEach((f, i) => ton(f, i * .16, i === 6 ? 1.4 : .24, .12, "triangle"));
+    [523.25, 659.25, 783.99].forEach(f => ton(f, 1.2, 1.4, .06, "sine"));
+  };
+  // deszcz gwiazdek i rybek nad wynikiem mistrza
+  function deszczGwiazdek(wl){
+    const el = $("deszcz"); el.innerHTML = "";
+    if (!wl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ZNAKI = ["⭐", "✨", "🌟", "🐟"];
+    for (let i = 0; i < 26; i++){
+      const n = document.createElement("span");
+      n.textContent = ZNAKI[i % ZNAKI.length];
+      n.style.left = Math.random() * 94 + "%";
+      n.style.animationDuration = (2.4 + Math.random() * 2) + "s";
+      n.style.animationDelay = (Math.random() * 2.5) + "s";
+      n.style.setProperty("--obrot", (Math.random() * 360 - 180) + "deg");
+      el.appendChild(n);
+    }
+  }
+
+  // ---------- rysowanie ----------
+  function kotek(cx, cy, s){
+    // głowa Klika jak w logo (środek głowy w cx, cy)
+    g.save(); g.translate(cx - 32 * s, cy - 36 * s); g.scale(s, s);
+    g.fillStyle = KOL.klik;
+    g.beginPath(); g.moveTo(12, 26); g.lineTo(10, 10); g.lineTo(24, 20); g.fill();
+    g.beginPath(); g.moveTo(52, 26); g.lineTo(54, 10); g.lineTo(40, 20); g.fill();
+    g.beginPath(); g.arc(32, 36, 21, 0, 7); g.fill();
+    g.fillStyle = KOL.noc; g.beginPath(); g.arc(24, 33, 4.2, 0, 7); g.arc(40, 33, 4.2, 0, 7); g.fill();
+    g.fillStyle = "#fff"; g.beginPath(); g.arc(25.4, 31.6, 1.4, 0, 7); g.fill(); g.beginPath(); g.arc(41.4, 31.6, 1.4, 0, 7); g.fill();
+    g.fillStyle = KOL.noc; g.beginPath(); g.moveTo(32, 41); g.lineTo(29, 43.6); g.lineTo(35, 43.6); g.fill();
+    g.restore();
+  }
+  function balon(x, y, przechyl){
+    g.save(); g.translate(x, y); g.rotate(przechyl);
+    // liny
+    g.strokeStyle = "#7A4A22"; g.lineWidth = 1.6;
+    g.beginPath(); g.moveTo(-20, -2); g.lineTo(-13, 26); g.moveTo(20, -2); g.lineTo(13, 26); g.moveTo(-7, 4); g.lineTo(-5, 26); g.moveTo(7, 4); g.lineTo(5, 26); g.stroke();
+    // czasza w paski
+    g.save(); g.beginPath(); g.ellipse(0, -26, 31, 36, 0, 0, 7); g.clip();
+    g.fillStyle = KOL.klik; g.fillRect(-32, -64, 64, 76);
+    g.fillStyle = KOL.slonce; g.fillRect(-32, -64, 12, 76); g.fillRect(20, -64, 12, 76);
+    g.fillStyle = KOL.mieta; g.fillRect(-7, -64, 14, 76);
+    g.fillStyle = "rgba(255,255,255,.28)"; g.beginPath(); g.ellipse(-12, -40, 7, 14, -.3, 0, 7); g.fill();
+    g.restore();
+    g.strokeStyle = "rgba(27,42,74,.35)"; g.lineWidth = 2; g.beginPath(); g.ellipse(0, -26, 31, 36, 0, 0, 7); g.stroke();
+    // Klik w koszyku
+    kotek(0, 22, .5);
+    g.fillStyle = "#A0612B"; zaokr(-15, 26, 30, 18, 4); g.fill();
+    g.strokeStyle = "#7A4A22"; g.lineWidth = 1.5; g.beginPath(); g.moveTo(-15, 33); g.lineTo(15, 33); g.moveTo(-5, 26); g.lineTo(-5, 44); g.moveTo(5, 26); g.lineTo(5, 44); g.stroke();
+    g.restore();
+  }
+  function ptak(o, t){
+    const machniecie = Math.sin(t * 12 + o.faza) * 9;
+    g.save(); g.translate(o.x, o.y); g.scale(o.vx < 0 ? -1 : 1, 1);
+    g.fillStyle = "#4A5D85";
+    g.beginPath(); g.ellipse(0, 0, 15, 9, 0, 0, 7); g.fill();
+    g.beginPath(); g.moveTo(-4, -2); g.quadraticCurveTo(-10, -14 - machniecie, -22, -10 - machniecie); g.quadraticCurveTo(-10, -4, 4, -2); g.fill();
+    g.beginPath(); g.arc(13, -5, 7, 0, 7); g.fill();
+    g.fillStyle = KOL.slonce; g.beginPath(); g.moveTo(19, -6); g.lineTo(27, -3); g.lineTo(19, -1); g.fill();
+    g.fillStyle = "#fff"; g.beginPath(); g.arc(15, -7, 2, 0, 7); g.fill();
+    g.fillStyle = KOL.noc; g.beginPath(); g.arc(15.5, -7, 1, 0, 7); g.fill();
+    g.restore();
+  }
+  function chmura(o, t){
+    g.save(); g.translate(o.x, o.y);
+    g.fillStyle = "#7E8AA3";
+    [[-18, 4, 15], [0, -6, 20], [18, 4, 15], [0, 8, 16]].forEach(([x, y, r]) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); });
+    // błyskawica miga
+    if (Math.sin(t * 6 + o.faza) > .2){
+      g.fillStyle = KOL.slonce; g.beginPath(); g.moveTo(-2, 16); g.lineTo(6, 16); g.lineTo(1, 26); g.lineTo(8, 26); g.lineTo(-5, 42); g.lineTo(-1, 30); g.lineTo(-7, 30); g.closePath(); g.fill();
+    }
+    g.fillStyle = "#fff"; g.beginPath(); g.arc(-7, 0, 3, 0, 7); g.arc(7, 0, 3, 0, 7); g.fill();
+    g.fillStyle = KOL.noc; g.beginPath(); g.arc(-7, 1, 1.6, 0, 7); g.arc(7, 1, 1.6, 0, 7); g.fill();
+    g.restore();
+  }
+  function latawiec(o, t){
+    g.save(); g.translate(o.x, o.y); g.rotate(Math.sin(t * 3 + o.faza) * .25);
+    g.fillStyle = "#E85D75"; g.beginPath(); g.moveTo(0, -20); g.lineTo(15, 0); g.lineTo(0, 22); g.lineTo(-15, 0); g.closePath(); g.fill();
+    g.fillStyle = KOL.slonce; g.beginPath(); g.moveTo(0, -20); g.lineTo(15, 0); g.lineTo(0, 0); g.closePath(); g.fill(); g.beginPath(); g.moveTo(0, 22); g.lineTo(-15, 0); g.lineTo(0, 0); g.closePath(); g.fill();
+    g.strokeStyle = "#7A4A22"; g.lineWidth = 1.5; g.beginPath(); g.moveTo(0, 22);
+    for (let i = 1; i <= 4; i++) g.quadraticCurveTo(Math.sin(t * 5 + i) * 8, 22 + i * 8 - 4, 0, 22 + i * 8);
+    g.stroke();
+    g.restore();
+  }
+  function samolot(o){
+    g.save(); g.translate(o.x, o.y); g.rotate(Math.atan2(o.vy, o.vx));
+    g.fillStyle = "#fff"; g.strokeStyle = "#9FB2CE"; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(20, 0); g.lineTo(-16, -12); g.lineTo(-8, 0); g.lineTo(-16, 12); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(20, 0); g.lineTo(-8, 0); g.stroke();
+    g.restore();
+  }
+  function ryba(o, t){
+    g.save(); g.translate(o.x, o.y); g.rotate(Math.sin(t * 4 + o.faza) * .15);
+    g.shadowColor = "rgba(255,212,71,.8)"; g.shadowBlur = 12;
+    g.fillStyle = KOL.slonce;
+    g.beginPath(); g.ellipse(0, 0, 14, 9, 0, 0, 7); g.fill();
+    g.beginPath(); g.moveTo(-10, 0); g.lineTo(-22, -9); g.lineTo(-22, 9); g.closePath(); g.fill();
+    g.shadowBlur = 0;
+    g.fillStyle = KOL.noc; g.beginPath(); g.arc(7, -2, 2, 0, 7); g.fill();
+    g.restore();
+  }
+  function serce(x, y, s, pelne){
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.beginPath(); g.moveTo(0, 6); g.bezierCurveTo(-12, -2, -8, -12, 0, -6); g.bezierCurveTo(8, -12, 12, -2, 0, 6); g.closePath();
+    g.fillStyle = pelne ? "#E85D75" : "rgba(255,255,255,.45)"; g.fill();
+    g.strokeStyle = "rgba(27,42,74,.35)"; g.lineWidth = 1.2; g.stroke();
+    g.restore();
+  }
+
+  function niebo(p){
+    // dzień → zachód słońca → noc, im bliżej księżyca
+    let gora, dol;
+    if (p < .55){ const t = p / .55; gora = kolor("#7EC8F5", "#F59A6B", t * t); dol = kolor("#D9F1FF", "#FFE0B8", t * t); }
+    else { const t = Math.min(1, (p - .55) / .35); gora = kolor("#F59A6B", "#1B2A4A", t); dol = kolor("#FFE0B8", "#3A4E7A", t); }
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, gora); gr.addColorStop(1, dol);
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    // gwiazdy w nocy
+    const noc = ograniczenie((p - .7) / .2, 0, 1);
+    if (noc > 0){ g.fillStyle = `rgba(255,247,236,${noc * .9})`; gwiazdyTla.forEach(s => { g.beginPath(); g.arc(s.x, s.y, s.r, 0, 7); g.fill(); }); }
+    // księżyc pojawia się u góry pod koniec lotu
+    if (p > .8){
+      const y = mieszaj(-70, 90, ograniczenie((p - .8) / .2, 0, 1));
+      g.fillStyle = "#FFF3C4"; g.shadowColor = "rgba(255,243,196,.8)"; g.shadowBlur = 30;
+      g.beginPath(); g.arc(W / 2, y, 52, 0, 7); g.fill(); g.shadowBlur = 0;
+      g.fillStyle = "rgba(220,205,150,.6)"; [[-16, -10, 9], [14, 8, 12], [-6, 20, 6]].forEach(([dx, dy, r]) => { g.beginPath(); g.arc(W / 2 + dx, y + dy, r, 0, 7); g.fill(); });
+    }
+    // chmurki w tle (bez znaczenia dla gry)
+    g.fillStyle = `rgba(255,255,255,${.75 * (1 - noc * .7)})`;
+    chmurkiTla.forEach(c => { [[-1, 0, 1], [0, -.5, 1.25], [1, 0, 1]].forEach(([dx, dy, r]) => { g.beginPath(); g.arc(c.x + dx * 22 * c.s, c.y + dy * 18 * c.s, 18 * c.s * r, 0, 7); g.fill(); }); });
+  }
+
+  function hud(p){
+    for (let i = 0; i < ZYCIA; i++) serce(26 + i * 30, 26, 1.25, i < zycia);
+    // pasek drogi do księżyca
+    const x0 = 120, x1 = 360, y = 26;
+    g.fillStyle = "rgba(27,42,74,.35)"; zaokr(x0, y - 6, x1 - x0, 12, 6); g.fill();
+    g.fillStyle = KOL.mieta; zaokr(x0, y - 6, Math.max(12, (x1 - x0) * p), 12, 6); g.fill();
+    g.fillStyle = "#FFF3C4"; g.beginPath(); g.arc(x1 + 14, y, 9, 0, 7); g.fill();
+    // rybki
+    ryba({ x: 410, y: 26, faza: 0 }, 0);
+    g.fillStyle = "#fff"; g.strokeStyle = "rgba(27,42,74,.6)"; g.lineWidth = 4; g.font = "800 22px 'Baloo 2', sans-serif"; g.textAlign = "left"; g.textBaseline = "middle";
+    g.strokeText(String(zebrane), 430, 28); g.fillText(String(zebrane), 430, 28);
+  }
+
+  function rysuj(t){
+    const p = stan === "start" ? 0 : ograniczenie(czasLotu / POZIOMY[poziom].czas, 0, 1);
+    g.save();
+    if (wstrzas > 0) g.translate(Math.sin(t * 60) * 6 * wstrzas, 0);
+    niebo(p);
+    rybki.forEach(r => ryba(r, t));
+    przeszkody.forEach(o => ({ ptak, chmura, latawiec, samolot })[o.typ](o, t));
+    const migaj = stan === "gra" && nietykalny > 0 && Math.floor(nietykalny * 10) % 2 === 0;
+    if (!migaj) balon(gracz.x, gracz.y + Math.sin(t * 2.5) * 3, ograniczenie(gracz.vx / 900, -.25, .25));
+    g.restore();
+    if (stan !== "start") hud(p);
+  }
+
+  // ---------- logika ----------
+  function przygotuj(){
+    gracz = { x: W / 2, y: H - 110, vx: 0, vy: 0 };
+    przeszkody = []; rybki = [];
+    chmurkiTla = Array.from({ length: 6 }, () => ({ x: los(0, W), y: los(0, H), s: los(.6, 1.3), v: los(18, 35) }));
+    gwiazdyTla = Array.from({ length: 50 }, () => ({ x: los(0, W), y: los(0, H * .7), r: los(.6, 1.8) }));
+    czasLotu = 0; doNastepnej = 1.2; doRybki = 2; zycia = ZYCIA; zebrane = 0; nietykalny = 0; wstrzas = 0;
+  }
+
+  function nowaPrzeszkoda(){
+    const P = POZIOMY[poziom], przyspieszenie = 1 + P.rozpedzanie * (czasLotu / P.czas);
+    const typ = P.typy[Math.floor(Math.random() * P.typy.length)];
+    const v = P.predkosc * przyspieszenie;
+    const o = { typ, x: los(30, W - 30), y: -40, faza: los(0, 6.28) };
+    if (typ === "ptak"){ o.vy = v * .8; o.vx = los(40, 90) * (poziom === 0 ? .6 : 1) * (Math.random() < .5 ? -1 : 1); o.r = 15; }
+    if (typ === "chmura"){ o.vy = v * .65; o.vx = los(-15, 15); o.r = 26; }
+    if (typ === "latawiec"){ o.vy = v * .9; o.vx = 0; o.r = 15; o.baza = o.x; }
+    if (typ === "samolot"){ o.vy = v * P.samolot; o.vx = los(90, 140) * (o.x < W / 2 ? 1 : -1); o.r = 13; }
+    // nie zasłaniamy całej szerokości naraz: nowa przeszkoda nie ląduje tuż obok poprzedniej
+    if (przeszkody.some(q => q.y < 40 && Math.abs(q.x - o.x) < 70)) o.x = (o.x + W / 2) % (W - 60) + 30;
+    przeszkody.push(o);
+  }
+
+  const klawisze = new Set();
+  function krok(dt, t){
+    const P = POZIOMY[poziom];
+    czasLotu += dt;
+    // sterowanie klawiszami (płynnie)
+    const kx = (klawisze.has("prawo") ? 1 : 0) - (klawisze.has("lewo") ? 1 : 0);
+    const ky = (klawisze.has("dol") ? 1 : 0) - (klawisze.has("gora") ? 1 : 0);
+    if (kx || ky || !dotyk){
+      gracz.vx = mieszaj(gracz.vx, kx * SZYBKOSC_BALONU, Math.min(1, dt * 10));
+      gracz.vy = mieszaj(gracz.vy, ky * SZYBKOSC_BALONU, Math.min(1, dt * 10));
+      gracz.x += gracz.vx * dt; gracz.y += gracz.vy * dt;
+    }
+    gracz.x = ograniczenie(gracz.x, 34, W - 34); gracz.y = ograniczenie(gracz.y, 150, H - 50);
+
+    // tło
+    chmurkiTla.forEach(c => { c.y += c.v * dt; if (c.y > H + 40){ c.y = -40; c.x = los(0, W); } });
+
+    // nowe przeszkody i rybki (pod sam koniec już nie — meta)
+    if (czasLotu < P.czas - 2.5){
+      doNastepnej -= dt; if (doNastepnej <= 0){ nowaPrzeszkoda(); doNastepnej = P.odstep * los(.75, 1.25); }
+      doRybki -= dt; if (doRybki <= 0){ rybki.push({ x: los(40, W - 40), y: -20, vy: P.predkosc * .7, faza: los(0, 6.28) }); doRybki = los(1.6, 2.8); }
+    }
+    przeszkody.forEach(o => {
+      o.y += o.vy * dt;
+      if (o.typ === "latawiec") o.x = o.baza + Math.sin(t * 1.8 + o.faza) * 55;
+      else o.x += o.vx * dt;
+      if (o.typ === "ptak" && (o.x < 20 || o.x > W - 20)) o.vx *= -1;
+    });
+    przeszkody = przeszkody.filter(o => o.y < H + 60 && o.x > -60 && o.x < W + 60);
+    rybki.forEach(r => { r.y += r.vy * dt; r.x += Math.sin(t * 2 + r.faza) * 20 * dt; });
+
+    // kolizje — łagodne: liczy się czasza balonu i koszyk, a przeszkoda trochę mniejsza niż wygląda
+    const kolka = [{ x: gracz.x, y: gracz.y - 26, r: 25 }, { x: gracz.x, y: gracz.y + 32, r: 13 }];
+    const trafia = (o, r) => kolka.some(k => Math.hypot(k.x - o.x, k.y - o.y) < k.r + r);
+    rybki = rybki.filter(r => {
+      if (trafia(r, 14)){ zebrane++; dzwiekRybki(); return false; }
+      return r.y < H + 30;
+    });
+    if (nietykalny > 0) nietykalny -= dt;
+    else {
+      const o = przeszkody.find(o => trafia(o, o.r * .8));
+      if (o){
+        zycia--; nietykalny = NIETYKALNY; wstrzas = 1; dzwiekZderzenia();
+        przeszkody = przeszkody.filter(q => q !== o);
+        $("komunikat").textContent = zycia > 0 ? "Ojej! Uważaj na " + { ptak: "ptaki", chmura: "chmury", latawiec: "latawce", samolot: "samolociki" }[o.typ] + "!" : "";
+        if (zycia <= 0) return koniec(false);
+      }
+    }
+    if (czasLotu >= P.czas) koniec(true);
+  }
+
+  function petla(ts){
+    const t = ts / 1000, dt = Math.min(.05, t - (ostatni || t)); ostatni = t;
+    if (stan === "gra") krok(dt, t);
+    // wstrząs po zderzeniu wygasa zawsze (także po mecie), inaczej ekran trząsłby się bez końca
+    if (wstrzas > 0) wstrzas = Math.max(0, wstrzas - dt * 3);
+    rysuj(t);
+    requestAnimationFrame(petla);
+  }
+
+  // ---------- stany gry ----------
+  function start(){
+    dzwiekOk();
+    przygotuj();
+    stan = "gra"; ostatni = 0;
+    $("startEkran").hidden = true; $("pauzaEkran").hidden = true; $("koniec").hidden = true;
+    $("pauzaBtn").hidden = false; $("komunikat").textContent = "";
+    $("plansza").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  function pauza(wl){
+    if (stan !== "gra" && stan !== "pauza") return;
+    stan = wl ? "pauza" : "gra"; ostatni = 0;
+    $("pauzaEkran").hidden = !wl;
+    $("pauzaBtn").textContent = wl ? "▶ Wznów" : "⏸ Pauza";
+  }
+  function koniec(sukces){
+    stan = "koniec"; wstrzas = 0; nietykalny = 0; klawisze.clear(); dotyk = null;
+    $("pauzaBtn").hidden = true; $("komunikat").textContent = "";
+    const P = POZIOMY[poziom];
+    const gwiazdki = sukces ? zycia : 0;
+    const procent = Math.round(ograniczenie(czasLotu / P.czas, 0, 1) * 100);
+    // ukończony najtrudniejszy poziom = mistrz gry (niezależnie od liczby serduszek)
+    const mistrz = sukces && poziom === POZIOMY.length - 1;
+    const [tytul, opis] = mistrz
+      ? ["Mistrz Balonu! 🏆", "Udało Ci się ukończyć poziom Ekspert — jesteś prawdziwym mistrzem tej gry! Klik jest z Ciebie bardzo dumny."]
+      : !sukces
+      ? ["Balon musi odpocząć! 🎈", `Udało się przelecieć ${procent}% drogi do księżyca. Spróbuj jeszcze raz — z każdym lotem idzie lepiej!`]
+      : gwiazdki === 3 ? ["Księżyc zdobyty! 🌙", "Ani jednego zderzenia — jesteś mistrzem balonu!"]
+      : gwiazdki === 2 ? ["Brawo, udało się! 🌙", "Prawie bez zderzeń — świetne sterowanie!"]
+      :                  ["Udało się dolecieć! 🌙", "Klik jest na księżycu. Następnym razem spróbuj ominąć więcej przeszkód!"];
+    $("koniecTytul").textContent = tytul;
+    $("koniecOpis").textContent = opis;
+    $("koniecLiczby").textContent = "Zebrane rybki: " + zebrane + (sukces ? " · Serduszka: " + zycia + " z " + ZYCIA : "");
+    const gw = $("gwiazdki");
+    gw.hidden = !sukces;
+    gw.innerHTML = [0, 1, 2].map(i => `<svg class="gwiazdka${i < gwiazdki ? " zapalona" : ""}" viewBox="0 0 50 50"><path d="M25 3 L31.5 17.5 L47 19 L35.2 29.5 L38.6 45 L25 37 L11.4 45 L14.8 29.5 L3 19 L18.5 17.5 Z"/></svg>`).join("");
+    [...gw.children].forEach((s, i) => setTimeout(() => { s.classList.add("pokaz"); if (i < gwiazdki) ton([1318.5, 1568, 2093][i], 0, .5, .07); }, 400 + i * 380));
+    const nastepny = sukces && gwiazdki >= 2 && poziom < POZIOMY.length - 1;
+    $("trudniej").hidden = !nastepny;
+    $("wynik").classList.toggle("mistrz", mistrz);
+    $("puchar").toggleAttribute("hidden", !mistrz); // SVG nie ma właściwości .hidden — tylko atrybut
+    deszczGwiazdek(mistrz);
+    $("koniec").hidden = false;
+    if (mistrz) fanfaraMistrza(); else if (sukces) fanfara();
+    $("plansza").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  // ---------- sterowanie ----------
+  const KLAWISZE = { ArrowLeft: "lewo", ArrowRight: "prawo", ArrowUp: "gora", ArrowDown: "dol" };
+  document.addEventListener("keydown", e => {
+    const k = KLAWISZE[e.key];
+    // od startu lotu strzałki sterują balonem i nie przewijają strony (także na mecie i w pauzie — inaczej trzymana strzałka „trzęsie” stroną)
+    if (k && stan !== "start"){ if (stan === "gra") klawisze.add(k); e.preventDefault(); }
+    if ((e.key === " " || e.key === "p" || e.key === "P") && (stan === "gra" || stan === "pauza")){ pauza(stan === "gra"); e.preventDefault(); }
+    if (e.key === "Enter" && stan === "start" && document.activeElement === document.body){ start(); e.preventDefault(); }
+  });
+  document.addEventListener("keyup", e => { const k = KLAWISZE[e.key]; if (k) klawisze.delete(k); });
+
+  // palec / mysz: balon przesuwa się tak, jak palec — nie trzeba go dotykać, więc palec go nie zasłania
+  let dotyk = null;
+  plotno.addEventListener("pointerdown", e => {
+    if (stan !== "gra") return;
+    try { plotno.setPointerCapture(e.pointerId); } catch(err){}
+    dotyk = { px: e.clientX, py: e.clientY, gx: gracz.x, gy: gracz.y };
+    e.preventDefault();
+  });
+  plotno.addEventListener("pointermove", e => {
+    if (!dotyk || stan !== "gra") return;
+    const skala = W / plotno.getBoundingClientRect().width * 1.15;
+    const nx = ograniczenie(dotyk.gx + (e.clientX - dotyk.px) * skala, 34, W - 34);
+    const ny = ograniczenie(dotyk.gy + (e.clientY - dotyk.py) * skala, 150, H - 50);
+    gracz.vx = (nx - gracz.x) * 30; gracz.x = nx; gracz.y = ny;
+    e.preventDefault();
+  });
+  const puszczenie = () => { dotyk = null; gracz.vx = 0; };
+  plotno.addEventListener("pointerup", puszczenie);
+  plotno.addEventListener("pointercancel", puszczenie);
+
+  // na urządzeniach dotykowych pokazujemy tylko wskazówkę o palcu
+  if (window.matchMedia("(pointer: coarse)").matches) $("sterowanie").textContent = "👆 Przesuwaj palcem po planszy — balon poleci za nim";
+  else $("sterowanie").textContent = "⌨️ Steruj strzałkami · spacja = pauza";
+
+  $("startBtn").addEventListener("click", start);
+  $("znowu").addEventListener("click", start);
+  $("wznowBtn").addEventListener("click", () => pauza(false));
+  $("pauzaBtn").addEventListener("click", () => pauza(stan === "gra"));
+  const przyciskiPoziomu = document.querySelectorAll(".poziom");
+  przyciskiPoziomu.forEach(b => b.addEventListener("click", () => {
+    przyciskiPoziomu.forEach(x => x.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    poziom = parseInt(b.dataset.poziom, 10);
+    if (stan === "gra" || stan === "pauza" || stan === "koniec") start();
+  }));
+  $("trudniej").addEventListener("click", () => przyciskiPoziomu[poziom + 1].click());
+  // gdy karta jest w tle — pauza, żeby balon nie leciał bez dziecka
+  document.addEventListener("visibilitychange", () => { if (document.hidden && stan === "gra") pauza(true); });
+
+  // ostrość na ekranach o dużej gęstości pikseli
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  plotno.width = W * dpr; plotno.height = H * dpr; g.scale(dpr, dpr);
+
+  przygotuj();
+  requestAnimationFrame(petla);
+})();
+</script>
+</body>
+</html>
