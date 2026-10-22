@@ -11,14 +11,15 @@
     "gdzie-jest-klik": "Gdzie jest Klik?",
     "zegar-klika": "Zegar Klika",
     "platanina-klika": "Plątanina Klika",
-    "orkiestra-klika": "Orkiestra Klika"
+    "orkiestra-klika": "Orkiestra Klika",
+    "balon-klika": "Balon Klika"
   };
 
   // Te gry są darmowe na stałe.
   const ZAWSZE_DARMOWE = ["pary-klika", "literkowa-spizarnia"];
 
   // Z tej listy co tydzień (od poniedziałku) wybierane są kolejne dwie gry.
-  const ROTACJA = ["powtorz-melodie", "kabelkowy-labirynt", "muzyka-pana-klika", "liczydlo-na-dachu", "gdzie-jest-klik", "zegar-klika", "platanina-klika", "orkiestra-klika"];
+  const ROTACJA = ["powtorz-melodie", "kabelkowy-labirynt", "muzyka-pana-klika", "liczydlo-na-dachu", "gdzie-jest-klik", "zegar-klika", "platanina-klika", "orkiestra-klika", "balon-klika"];
   const GIER_W_TYGODNIU = 2;
 
   // Poniedziałek, od którego liczymy tygodnie rotacji.
