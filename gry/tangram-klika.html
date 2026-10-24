@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tangram Klika — tangram dla dzieci online | KotKlik</title>
+<meta name="description" content="Tangram dla dzieci online: z 7 kolorowych klocków ułóż domek, kota, rakietę, rybę i inne obrazki. Ćwiczy myślenie przestrzenne i uczy figur geometrycznych. Myszką lub palcem, bez reklam.">
+<link rel="canonical" href="https://kotklik.pl/gry/tangram-klika">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KotKlik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Tangram Klika — tangram dla dzieci online | KotKlik">
+<meta property="og:description" content="Z 7 kolorowych klocków ułóż domek, kota, rakietę i inne obrazki. Łamigłówka dla dzieci bez reklam.">
+<meta property="og:url" content="https://kotklik.pl/gry/tangram-klika">
+<meta property="og:image" content="https://kotklik.pl/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KotKlik - gry edukacyjne dla dzieci. Kot Klik na tle nocnego nieba.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{
+  --noc:#1B2A4A;
+  --klik:#FF8A3D;
+  --mieta:#3ECFB2;
+  --slonce:#FFD447;
+  --papier:#FFF7EC;
+  --tekst:#16202E;
+  --szara:#6B7A90;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--papier);
+  color:var(--tekst);
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.srodek{width:100%;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* ---------- Pasek górny ---------- */
+header{background:var(--noc);padding:14px 0;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(var(--mieta) 1.5px,transparent 1.5px);
+  background-size:26px 26px;opacity:.16;pointer-events:none;
+}
+.marka{display:flex;align-items:center;gap:12px;position:relative;z-index:1;text-decoration:none}
+.marka .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.6rem;color:var(--papier);letter-spacing:-.01em}
+.marka .logo span{color:var(--klik)}
+.kot{width:54px;height:54px;flex-shrink:0}
+.kot .oko{transform-origin:center;animation:mrug 5.5s infinite}
+@keyframes mrug{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.kot .oko{animation:none}}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--noc);padding:8px 0 28px}
+.dymek{
+  background:var(--papier);border-radius:20px;padding:14px 20px;max-width:560px;margin-bottom:14px;
+  position:relative;box-shadow:0 6px 0 rgba(0,0,0,.18);
+}
+.dymek::before{
+  content:"";position:absolute;top:-12px;left:28px;
+  border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:14px solid var(--papier);
+}
+.dymek p{font-size:1.15rem;font-weight:600}
+.dymek p + p{margin-top:8px;font-weight:400;font-size:1rem;color:var(--szara)}
+
+/* ---------- Gra ---------- */
+.gra,.gra *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.gra{background:var(--papier);border-radius:24px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.gra-gora{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.gra-gora h1{font-family:'Baloo 2',sans-serif;font-size:1.35rem;font-weight:600}
+button:focus-visible,.link-wstecz:focus-visible{outline:3px solid var(--klik);outline-offset:3px}
+
+/* wybór figury: małe cienie, ułożone dostają gwiazdki */
+.figury{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px;max-width:760px;margin:0 auto 12px}
+.figura{
+  position:relative;aspect-ratio:1;border:2px solid #E6D7C0;border-radius:14px;background:#fff;cursor:pointer;padding:6px;
+  display:flex;align-items:center;justify-content:center;
+}
+.figura svg{width:100%;height:100%;display:block}
+.figura svg polygon{fill:#9AA6BC}
+.figura[aria-current="true"]{border-color:var(--klik);box-shadow:0 0 0 3px rgba(255,138,61,.3)}
+.figura[aria-current="true"] svg polygon{fill:var(--noc)}
+.figura.ulozona{background:#E9FBF6;border-color:var(--mieta)}
+.figura.ulozona svg polygon{fill:var(--mieta)}
+.figura .ptaszek{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:var(--slonce);color:var(--noc);font-size:.75rem;font-weight:800;display:none;align-items:center;justify-content:center;box-shadow:0 2px 0 #E0A800}
+.figura.ulozona .ptaszek{display:flex}
+
+.plansza{position:relative;max-width:760px;margin:0 auto;border-radius:20px;overflow:hidden;box-shadow:0 4px 0 rgba(0,0,0,.12);background:#FFF1DE}
+.plansza canvas{display:block;width:100%;height:auto;touch-action:none}
+.pasek-gry{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:12px}
+.narzedzie{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;padding:8px 18px;border-radius:999px;
+  border:2px solid var(--noc);background:transparent;color:var(--noc);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+}
+.komunikat{min-height:26px;margin-top:8px;text-align:center;font-weight:700;color:var(--noc)}
+
+/* ekran wyniku */
+.koniec{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;background:rgba(27,42,74,.45)}
+.koniec[hidden]{display:none}
+.wynik{position:relative;overflow:hidden;width:100%;max-width:400px;border-radius:22px;padding:16px 14px 18px;background:linear-gradient(180deg,#FFF1DE 0%,#FFF7EC 70%);border:3px solid #F6D9B0;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+/* mistrz gry (wszystkie obrazki ułożone): złota ramka, puchar, deszcz gwiazdek */
+.wynik.mistrz{background:linear-gradient(180deg,#FFE9A8 0%,#FFF7EC 75%);border-color:#E0A800;box-shadow:0 0 0 4px rgba(255,212,71,.5),0 8px 24px rgba(0,0,0,.25)}
+.puchar{width:76px;height:76px;display:block;margin:0 auto -2px;animation:puchar 1.6s ease-in-out infinite}
+.puchar[hidden]{display:none}
+@keyframes puchar{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.06)}}
+.deszcz{position:absolute;inset:0;pointer-events:none}
+.deszcz span{position:absolute;top:-30px;font-size:1.3rem;animation:spada linear forwards}
+@keyframes spada{to{transform:translateY(480px) rotate(var(--obrot,180deg));opacity:0}}
+.wynik > *:not(.deszcz){position:relative}
+@media (prefers-reduced-motion:reduce){.puchar{animation:none}.deszcz{display:none}}
+.gwiazdki{display:flex;justify-content:center;gap:6px;margin:2px 0}
+.gwiazdki[hidden]{display:none}
+.gwiazdka{width:46px;height:46px;opacity:0;transform:scale(.3) rotate(-30deg)}
+.gwiazdka path{fill:#E4D8C4;stroke:#C9B48F;stroke-width:2;stroke-linejoin:round}
+.gwiazdka.zapalona path{fill:var(--slonce);stroke:#E0A800}
+.gwiazdka.pokaz{animation:gwiazdka .45s cubic-bezier(.3,1.6,.5,1) forwards}
+.gwiazdka:nth-child(2){width:58px;height:58px;margin-top:-8px}
+@keyframes gwiazdka{to{opacity:1;transform:scale(1) rotate(0)}}
+@media (prefers-reduced-motion:reduce){.gwiazdka{opacity:1;transform:none}.gwiazdka.pokaz{animation:none}}
+.koniec .tytul{font-family:'Baloo 2',sans-serif;font-size:1.8rem;font-weight:700;color:var(--noc);line-height:1.15;margin-top:4px}
+.koniec .pochwala{font-weight:700;color:#3A475C;margin:6px auto 8px;max-width:460px;font-size:1.05rem}
+.koniec .liczby{font-size:.95rem;color:var(--szara);font-weight:700;margin:0 0 14px}
+.przyciski-wyniku{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.znowu[hidden]{display:none}
+.znowu{font-family:'Baloo 2',sans-serif;font-weight:600;font-size:1.1rem;background:var(--klik);color:#fff;border:none;padding:10px 26px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 #C4621F}
+.jeszcze{font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;background:transparent;color:var(--noc);border:2px solid var(--noc);padding:8px 18px;border-radius:999px;cursor:pointer}
+
+.link-wstecz{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;text-decoration:none;color:var(--papier);opacity:.92}
+.link-wstecz:hover{text-decoration:underline}
+
+/* ---------- Dla rodziców ---------- */
+.rodzice{background:var(--mieta);padding:40px 0}
+.rodzice h2{font-family:'Baloo 2',sans-serif;font-size:1.4rem;margin-bottom:14px}
+.rodzice ul{list-style:none;display:grid;gap:10px;max-width:680px}
+.rodzice li{padding-left:30px;position:relative;font-weight:600}
+.rodzice li::before{content:"✔";position:absolute;left:0;color:var(--noc)}
+.rodzice a{color:var(--noc)}
+footer{background:var(--noc);color:#9FB2CE;padding:28px 0;font-size:.95rem}
+footer a{color:var(--papier)}
+@media(max-width:600px){
+  .hero .srodek{padding:0 8px}.gra{padding:12px 8px;border-radius:18px}.plansza{border-radius:14px}
+  /* figury w dwóch rzędach, żeby były większe pod palcem */
+  .figury{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .figura{border-radius:12px;padding:5px}
+  .pasek-gry{gap:6px}
+  .narzedzie{padding:8px 14px;font-size:.9rem}
+  .koniec{padding:10px}
+  .wynik{padding:12px 10px 14px}
+  .koniec .tytul{font-size:1.45rem}
+  .puchar{width:58px;height:58px}
+  .koniec .pochwala{font-size:.95rem;margin:4px auto 6px}
+  .koniec .liczby{margin-bottom:10px}
+  .przyciski-wyniku{flex-direction:column;gap:10px}
+  .przyciski-wyniku button{width:100%;padding:12px 10px;font-size:1.15rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="srodek marka" href="/" aria-label="Wróć do strony głównej KotKlik">
+    <svg class="kot" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 26 L10 10 L24 20 Z" fill="#FF8A3D"/>
+      <path d="M52 26 L54 10 L40 20 Z" fill="#FF8A3D"/>
+      <circle cx="32" cy="36" r="21" fill="#FF8A3D"/>
+      <circle class="oko" cx="24" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle class="oko" cx="40" cy="33" r="4.2" fill="#1B2A4A"/>
+      <circle cx="25.4" cy="31.6" r="1.4" fill="#fff"/>
+      <circle cx="41.4" cy="31.6" r="1.4" fill="#fff"/>
+      <path d="M32 41 l-3 2.6 h6 Z" fill="#1B2A4A"/>
+      <path d="M8 36 h10 M8 41 h10 M46 36 h10 M46 41 h10" stroke="#1B2A4A" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="logo">Kot<span>Klik</span></span>
+  </a>
+</header>
+
+<section class="hero">
+  <div class="srodek">
+    <div class="dymek">
+      <p>Mam siedem kolorowych klocków! Pomożesz mi ułożyć z nich domek, rakietę i… kota?</p>
+      <p>Przeciągnij klocek na ciemny kształt. Każdy klocek pasuje tylko w jedno miejsce.</p>
+    </div>
+
+    <div class="gra">
+      <div class="gra-gora">
+        <h1>Tangram Klika</h1>
+      </div>
+
+      <div class="figury" id="figury" role="group" aria-label="Wybierz obrazek do ułożenia"></div>
+
+      <div class="plansza" id="plansza">
+        <canvas id="plotno" width="700" height="370" aria-label="Plansza tangramu: ciemny kształt do wypełnienia i siedem kolorowych klocków"></canvas>
+        <div class="koniec" id="koniec" hidden>
+          <div class="wynik" id="wynik" role="status">
+            <div class="deszcz" id="deszcz" aria-hidden="true"></div>
+            <!-- puchar tylko po ułożeniu wszystkich obrazków -->
+            <svg class="puchar" id="puchar" viewBox="0 0 100 100" aria-hidden="true" hidden>
+              <path d="M28 14 h44 v20 c0 16 -10 28 -22 28 c-12 0 -22 -12 -22 -28 Z" fill="#FFD447" stroke="#E0A800" stroke-width="3"/>
+              <path d="M28 20 h-12 c0 14 6 20 14 22 M72 20 h12 c0 14 -6 20 -14 22" fill="none" stroke="#E0A800" stroke-width="4" stroke-linecap="round"/>
+              <rect x="44" y="61" width="12" height="14" fill="#E0A800"/>
+              <rect x="32" y="74" width="36" height="10" rx="3" fill="#FF8A3D"/>
+              <rect x="26" y="83" width="48" height="9" rx="3" fill="#1B2A4A"/>
+              <path d="M50 24 l4 8 9 1 -7 6 2 9 -8 -5 -8 5 2 -9 -7 -6 9 -1 Z" fill="#fff"/>
+            </svg>
+            <div class="gwiazdki" id="gwiazdki" aria-hidden="true"></div>
+            <p class="tytul" id="koniecTytul"></p>
+            <p class="pochwala" id="koniecOpis"></p>
+            <p class="liczby" id="koniecLiczby"></p>
+            <div class="przyciski-wyniku">
+              <button class="znowu" id="dalej">Następny obrazek →</button>
+              <button class="jeszcze" id="jeszcze">Ułóż jeszcze raz</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pasek-gry">
+        <button class="narzedzie" id="podpowiedz">💡 Podpowiedź</button>
+        <button class="narzedzie" id="odNowa">↺ Od nowa</button>
+      </div>
+      <p class="komunikat" id="komunikat" role="status"></p>
+    </div>
+
+    <a class="link-wstecz" href="/">← Wróć do KotKlik</a>
+  </div>
+</section>
+
+<section class="rodzice">
+  <div class="srodek">
+    <h2>Dla rodziców i nauczycieli</h2>
+    <ul>
+      <li>Tangram to stara chińska łamigłówka: z siedmiu elementów — pięciu trójkątów, kwadratu i równoległoboku — układa się obrazki</li>
+      <li>Gra ćwiczy myślenie przestrzenne: na kształcie nie ma linii podziału, więc dziecko samo szuka, w którym miejscu cienia pasuje każdy klocek</li>
+      <li>Przy okazji oswaja z figurami geometrycznymi i pokazuje, że z dwóch małych trójkątów można złożyć większy, a z kilku figur — kwadrat</li>
+      <li>Klocki są od razu dobrze obrócone — nie trzeba ich kręcić, wystarczy przeciągnąć na właściwe miejsce</li>
+      <li>Dobrze położony klocek sam „wskakuje” na swoje miejsce, a przycisk „Podpowiedź” pokazuje, gdzie pasuje jeden z klocków — dziecko nie utknie na długo</li>
+      <li>Na komputerze klocki przesuwa się myszką, na telefonie i tablecie palcem</li>
+      <li>Żadnych reklam — ani banerów, ani filmów, ani okienek</li>
+      <li>Dziecko nie zakłada konta i nie podaje żadnych danych; gra niczego nie zapisuje</li>
+      <li>Więcej o łamigłówkach przestrzennych przeczytasz na naszym blogu: <a href="/blog/lamiglowki-logiczne-dla-dzieci">Łamigłówki logiczne dla dzieci</a></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="srodek">
+    <p>KotKlik.pl — gry edukacyjne dla dzieci.</p>
+    <p>© 2026 KotKlik.pl. Wszystkie prawa zastrzeżone — gier, grafik i tekstów nie wolno kopiować ani publikować bez naszej zgody.</p>
+    <p>Napisz do nas: <a href="mailto:kontakt@kotklik.pl">kontakt@kotklik.pl</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const plotno = $("plotno"), g = plotno.getContext("2d");
+
+  // Klocki w jednostkach planszy (przyprostokątna małego trójkąta = 1)
+  const KSZTALTY = {
+    LT: [[0,0],[2,0],[0,2]],          // duży trójkąt
+    MT: [[0,0],[2,0],[1,1]],          // średni trójkąt
+    SQ: [[0,0],[1,0],[1,1],[0,1]],    // kwadrat
+    ST: [[0,0],[1,0],[0,1]],          // mały trójkąt
+    PG: [[0,0],[1,0],[2,1],[1,1]],    // równoległobok
+  };
+  const KOLORY = { LT: ["#FF6B6B", "#4D96FF"], MT: ["#FFD166"], SQ: ["#2EC4B6"], PG: ["#F77F00"], ST: ["#F15BB5", "#9B5DE5"] };
+  const ZESTAW = ["LT", "LT", "MT", "SQ", "PG", "ST", "ST"];
+
+  // Obrazki: każdy element ma swoje miejsce (wierzchołki w jednostkach planszy). Każdy da się ułożyć z 7 klocków.
+  const FIGURY = [
+    { nazwa: "Domek", biernik: "domek", emoji: "🏠", el: [["LT",[[2,2],[0,2],[2,0]]], ["LT",[[2,2],[2,0],[4,2]]], ["MT",[[1,2],[3,2],[2,3]]], ["ST",[[1,3],[1,2],[2,3]]], ["PG",[[3,2],[3,3],[2,4],[2,3]]], ["SQ",[[1,3],[2,3],[2,4],[1,4]]], ["ST",[[3,4],[2,4],[3,3]]]] },
+    { nazwa: "Strzałka", biernik: "strzałkę", emoji: "➡️", el: [["LT",[[2,2],[2,0],[4,2]]], ["MT",[[0,1],[2,1],[1,2]]], ["ST",[[0,2],[0,1],[1,2]]], ["PG",[[2,1],[2,2],[1,3],[1,2]]], ["SQ",[[0,2],[1,2],[1,3],[0,3]]], ["ST",[[2,3],[1,3],[2,2]]], ["LT",[[2,2],[4,2],[2,4]]]] },
+    { nazwa: "Rakieta", biernik: "rakietę", emoji: "🚀", el: [["MT",[[2,1],[0,1],[1,0]]], ["LT",[[0,1],[2,1],[0,3]]], ["LT",[[2,3],[0,3],[2,1]]], ["ST",[[0,4],[-1,4],[0,3]]], ["SQ",[[0,3],[1,3],[1,4],[0,4]]], ["PG",[[1,3],[2,3],[3,4],[2,4]]], ["ST",[[1,4],[1,3],[2,4]]]] },
+    { nazwa: "Kot", biernik: "kota", emoji: "🐱", el: [["ST",[[0,1],[0,0],[1,1]]], ["ST",[[2,1],[1,1],[2,0]]], ["MT",[[0,1],[2,1],[1,2]]], ["LT",[[0,2],[2,2],[0,4]]], ["LT",[[2,4],[0,4],[2,2]]], ["PG",[[4,2],[4,3],[3,4],[3,3]]], ["SQ",[[2,3],[3,3],[3,4],[2,4]]]] },
+    { nazwa: "Statek", biernik: "statek", emoji: "🚢", el: [["LT",[[3,3],[1,3],[3,1]]], ["LT",[[3,3],[3,1],[5,3]]], ["MT",[[0,3],[2,3],[1,4]]], ["ST",[[2,4],[1,4],[2,3]]], ["SQ",[[2,3],[3,3],[3,4],[2,4]]], ["ST",[[3,3],[4,3],[3,4]]], ["PG",[[5,3],[4,3],[3,4],[4,4]]]] },
+    { nazwa: "Żaglówka", biernik: "żaglówkę", emoji: "⛵", el: [["LT",[[2.8284,0],[2.8284,2.8284],[1.4142,1.4142]]], ["LT",[[1.4142,1.4142],[1.4142,4.2426],[0,2.8284]]], ["ST",[[2.1213,2.1213],[1.4142,2.8284],[1.4142,1.4142]]], ["SQ",[[1.4142,2.8284],[2.1213,2.1213],[2.8284,2.8284],[2.1213,3.5355]]], ["MT",[[2.8284,4.2426],[1.4142,4.2426],[1.4142,2.8284]]], ["PG",[[2.1213,3.5355],[3.5355,3.5355],[4.2426,2.8284],[2.8284,2.8284]]], ["ST",[[2.8284,4.2426],[2.1213,3.5355],[3.5355,3.5355]]]] },
+    { nazwa: "Ryba", biernik: "rybę", emoji: "🐟", el: [["LT",[[1.4142,0],[1.4142,2.8284],[0,1.4142]]], ["LT",[[1.4142,2.8284],[1.4142,0],[2.8284,1.4142]]], ["SQ",[[3.5355,0.7071],[4.2426,0],[4.9497,0.7071],[4.2426,1.4142]]], ["ST",[[4.9497,0.7071],[4.2426,0],[5.6569,0]]], ["ST",[[2.8284,1.4142],[3.5355,0.7071],[3.5355,2.1213]]], ["MT",[[4.9497,2.1213],[3.5355,2.1213],[3.5355,0.7071]]], ["PG",[[5.6569,2.8284],[4.2426,2.8284],[3.5355,2.1213],[4.9497,2.1213]]]] },
+    { nazwa: "Serce", biernik: "serce", emoji: "❤️", el: [["LT",[[1.4142,0],[1.4142,2.8284],[0,1.4142]]], ["LT",[[1.4142,2.8284],[1.4142,0],[2.8284,1.4142]]], ["SQ",[[2.1213,0.7071],[2.8284,0],[3.5355,0.7071],[2.8284,1.4142]]], ["MT",[[3.5355,0.7071],[3.5355,2.1213],[2.1213,2.1213]]], ["ST",[[4.2426,1.4142],[3.5355,2.1213],[3.5355,0.7071]]], ["PG",[[1.4142,2.8284],[2.8284,2.8284],[3.5355,2.1213],[2.1213,2.1213]]], ["ST",[[2.1213,3.5355],[1.4142,2.8284],[2.8284,2.8284]]]] },
+    { nazwa: "Kwadrat", biernik: "kwadrat", emoji: "🟧", el: [["LT",[[0,0],[2.8284,0],[1.4142,1.4142]]], ["LT",[[0,2.8284],[0,0],[1.4142,1.4142]]], ["ST",[[2.1213,0.7071],[2.8284,0],[2.8284,1.4142]]], ["SQ",[[1.4142,1.4142],[2.1213,0.7071],[2.8284,1.4142],[2.1213,2.1213]]], ["ST",[[1.4142,1.4142],[2.1213,2.1213],[0.7071,2.1213]]], ["MT",[[2.8284,1.4142],[2.8284,2.8284],[1.4142,2.8284]]], ["PG",[[0,2.8284],[1.4142,2.8284],[2.1213,2.1213],[0.7071,2.1213]]]] },
+  ];
+
+  // Jeden poziom: klocki od razu dobrze obrócone, na kształcie bez linii podziału; jak blisko trzeba położyć klocek
+  const POZIOMY = [
+    { obrocone: true, linie: false, przyciaganie: .9 },
+  ];
+  // Dwa układy planszy: obok siebie (komputer) albo jeden pod drugim (telefon). Kształt po lewej / u góry, klocki po prawej / na dole.
+  const UKLADY = {
+    poziomy: { W: 14, H: 7.4, pole: [0, 0, 7.4, 7.4], taca: [7.4, 0, 14, 7.4],
+      miejsca: [[9.2, 1.75], [12.4, 1.75], [9.2, 4.15], [8.75, 6.2], [12.3, 4.15], [10.75, 6.3], [12.7, 6.3]] },
+    pionowy: { W: 7.4, H: 10.5, pole: [0, 0, 7.4, 5.0], taca: [0, 5.0, 7.4, 10.5],
+      miejsca: [[1.65, 6.6], [5.75, 6.6], [3.7, 6.2], [1.1, 9.3], [3.15, 9.2], [5.05, 9.35], [6.55, 9.35]] },
+  };
+
+  let nrFigury = 0, uklad = null, U = 50, dpr = 1;
+  let klocki = [], miejsca = [], podpowiedzi = 0, wygrana = false, blask = 0, podpowiedz = null, wybrany = null;
+  const ulozone = {};   // numer obrazka → zdobyte gwiazdki (tylko do zamknięcia strony)
+  const P = POZIOMY[0];
+
+  // ---------- geometria ----------
+  const sr = p => [p.reduce((s, v) => s + v[0], 0) / p.length, p.reduce((s, v) => s + v[1], 0) / p.length];
+  const wzgledne = p => { const c = sr(p); return p.map(([x, y]) => [x - c[0], y - c[1]]); };
+  function obroc(p, kat, odbity){
+    const a = kat * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return p.map(([x, y]) => { if (odbity) x = -x; return [x * c - y * s, x * s + y * c]; });
+  }
+  const takieSame = (a, b) => a.length === b.length && a.every(v => b.some(w => Math.abs(v[0] - w[0]) < .03 && Math.abs(v[1] - w[1]) < .03));
+  function wSrodku(pt, p){
+    let w = false;
+    for (let i = 0, j = p.length - 1; i < p.length; j = i++){
+      const [xi, yi] = p[i], [xj, yj] = p[j];
+      if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) w = !w;
+    }
+    return w;
+  }
+  const wierzcholki = k => obroc(k.baza, k.kat, k.odbity).map(([x, y]) => [x + k.x, y + k.y]);
+  // czy klocek w obecnym ułożeniu ma kształt miejsca (pomijając położenie)
+  const pasujeKsztalt = (k, m) => k.typ === m.typ && takieSame(obroc(k.baza, k.obrot, k.odbity), m.wz);
+  // jak obrócić klocek, żeby pasował do miejsca
+  function ustawienieDla(typ, m){
+    const baza = wzgledne(KSZTALTY[typ]);
+    for (const odb of typ === "PG" ? [false, true] : [false])
+      for (let r = 0; r < 8; r++) if (takieSame(obroc(baza, r, odb), m.wz)) return { obrot: r, odbity: odb };
+    return { obrot: 0, odbity: false };
+  }
+
+  // ---------- dźwięk (syntezowany, bez plików) ----------
+  let ctx = null;
+  function dzwiekOk(){ try { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); } catch(e){} return ctx; }
+  function ton(f, start, dl, glos, typ = "sine"){
+    const c = dzwiekOk(); if (!c) return;
+    const o = c.createOscillator(), gg = c.createGain(), s = c.currentTime + start;
+    o.type = typ; o.frequency.value = f;
+    gg.gain.setValueAtTime(0, s); gg.gain.linearRampToValueAtTime(glos, s + .015); gg.gain.exponentialRampToValueAtTime(.001, s + dl);
+    o.connect(gg).connect(c.destination); o.start(s); o.stop(s + dl + .05);
+  }
+  // każdy kolejny pasujący klocek brzmi trochę wyżej
+  const dzwiekPasuje = n => { const f = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77][Math.min(6, n)]; ton(f, 0, .18, .1, "triangle"); ton(f * 1.5, .06, .22, .06); };
+  const fanfara = () => [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5].forEach((f, i) => ton(f, i * .14, i === 5 ? 1 : .22, .12, "triangle"));
+  const fanfaraMistrza = () => {
+    [392, 523.25, 659.25, 783.99, 659.25, 783.99, 1046.5].forEach((f, i) => ton(f, i * .16, i === 6 ? 1.4 : .24, .12, "triangle"));
+    [523.25, 659.25, 783.99].forEach(f => ton(f, 1.2, 1.4, .06, "sine"));
+  };
+  function deszczGwiazdek(wl){
+    const el = $("deszcz"); el.innerHTML = "";
+    if (!wl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ZNAKI = ["⭐", "✨", "🌟", "🔷"];
+    for (let i = 0; i < 26; i++){
+      const n = document.createElement("span");
+      n.textContent = ZNAKI[i % ZNAKI.length];
+      n.style.left = Math.random() * 94 + "%";
+      n.style.animationDuration = (2.4 + Math.random() * 2) + "s";
+      n.style.animationDelay = (Math.random() * 2.5) + "s";
+      n.style.setProperty("--obrot", (Math.random() * 360 - 180) + "deg");
+      el.appendChild(n);
+    }
+  }
+
+  // ---------- przygotowanie obrazka ----------
+  function rozmiesc(){
+    const L = UKLADY[uklad], F = FIGURY[nrFigury];
+    // obrazek na środku pola
+    const wsz = F.el.flatMap(e => e[1]);
+    const minX = Math.min(...wsz.map(v => v[0])), maxX = Math.max(...wsz.map(v => v[0]));
+    const minY = Math.min(...wsz.map(v => v[1])), maxY = Math.max(...wsz.map(v => v[1]));
+    const dx = (L.pole[0] + L.pole[2]) / 2 - (minX + maxX) / 2, dy = (L.pole[1] + L.pole[3]) / 2 - (minY + maxY) / 2;
+    miejsca.forEach((m, i) => {
+      m.p = F.el[i][1].map(([x, y]) => [x + dx, y + dy]);
+      m.c = sr(m.p);
+    });
+    // klocki: ułożone stoją na swoich miejscach, reszta wraca na tacę
+    klocki.forEach(k => {
+      if (k.miejsce){ [k.x, k.y] = k.miejsce.c; }
+      else { [k.x, k.y] = L.miejsca[k.nr]; }
+    });
+  }
+
+  function nowyObrazek(){
+    const F = FIGURY[nrFigury];
+    miejsca = F.el.map(([typ, p]) => ({ typ, wz: wzgledne(p), p, c: sr(p), klocek: null }));
+    const licznik = {};
+    klocki = ZESTAW.map((typ, nr) => {
+      const ktory = licznik[typ] = (licznik[typ] || 0) + 1;
+      // klocek ma od razu ustawienie swojego miejsca (n-ty klocek danego typu → n-te miejsce tego typu)
+      const cel = miejsca.filter(m => m.typ === typ)[ktory - 1];
+      const { obrot, odbity } = ustawienieDla(typ, cel);
+      return { nr, typ, kolor: KOLORY[typ][ktory - 1], baza: wzgledne(KSZTALTY[typ]), obrot, kat: obrot, odbity, odbicie: odbity ? -1 : 1, x: 0, y: 0, miejsce: null, blysk: 0 };
+    });
+    podpowiedzi = 0; wygrana = false; blask = 0; podpowiedz = null; wybrany = null;
+    rozmiesc();
+    $("koniec").hidden = true;
+    $("komunikat").textContent = "Ułóż " + F.biernik + " " + F.emoji;
+    odswiezFigury();
+  }
+
+  // ---------- rysowanie ----------
+  function sciezka(p){ g.beginPath(); p.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); }
+  function zaokr(x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function wierzcholkiRysunku(k){
+    // w trakcie animacji obrotu/odbicia rysujemy kąt pośredni
+    const p = k.baza.map(([x, y]) => [x * k.odbicie, y]);
+    return obroc(p, k.kat, false).map(([x, y]) => [x + k.x, y + k.y]);
+  }
+
+  function rysuj(t){
+    const L = UKLADY[uklad];
+    g.setTransform(dpr * U, 0, 0, dpr * U, 0, 0);
+    g.fillStyle = "#FFF1DE"; g.fillRect(0, 0, L.W, L.H);
+    // taca na klocki
+    const [tx0, ty0, tx1, ty1] = L.taca;
+    g.fillStyle = "#FFE3C2"; zaokr(tx0 + .15, ty0 + .15, tx1 - tx0 - .3, ty1 - ty0 - .3, .35); g.fill();
+    // kształt do ułożenia (cień)
+    g.lineJoin = "round";
+    const cien = wygrana ? "#2C3E66" : "#1B2A4A";
+    miejsca.forEach(m => { sciezka(m.p); g.fillStyle = cien; g.fill(); g.strokeStyle = cien; g.lineWidth = .03; g.stroke(); });
+    if (P.linie && !wygrana){
+      g.strokeStyle = "rgba(255,247,236,.38)"; g.lineWidth = .035;
+      miejsca.forEach(m => { if (!m.klocek){ sciezka(m.p); g.stroke(); } });
+    }
+    // podpowiedź: miejsce świeci na żółto
+    if (podpowiedz && podpowiedz.do > t){
+      const a = .55 + .45 * Math.sin(t * 8);
+      sciezka(podpowiedz.m.p); g.fillStyle = `rgba(255,212,71,${.35 * a})`; g.fill();
+      g.strokeStyle = `rgba(255,212,71,${a})`; g.lineWidth = .08; g.stroke();
+    }
+    // klocki: ułożone pod spodem, przesuwany na wierzchu
+    const kolejnosc = klocki.filter(k => k.miejsce).concat(klocki.filter(k => !k.miejsce));
+    kolejnosc.forEach(k => {
+      const p = wierzcholkiRysunku(k);
+      const unoszony = przeciaganie && przeciaganie.k === k;
+      if (unoszony){ g.save(); g.translate(.06, .1); sciezka(p); g.fillStyle = "rgba(27,42,74,.25)"; g.fill(); g.restore(); }
+      sciezka(p); g.fillStyle = k.kolor; g.fill();
+      g.strokeStyle = "#fff"; g.lineWidth = .05; g.stroke();
+      if (k.blysk > 0){ g.strokeStyle = `rgba(255,255,255,${k.blysk})`; g.lineWidth = .05 + .15 * k.blysk; g.stroke(); }
+      if (podpowiedz && podpowiedz.do > t && podpowiedz.k === k){
+        g.strokeStyle = `rgba(255,212,71,${.6 + .4 * Math.sin(t * 8)})`; g.lineWidth = .1; g.stroke();
+      }
+    });
+    // ułożony obrazek pulsuje światłem
+    if (blask > 0){
+      g.save(); g.globalAlpha = blask * .5;
+      miejsca.forEach(m => { sciezka(m.p); g.fillStyle = "#fff"; g.fill(); });
+      g.restore();
+    }
+  }
+
+  let ostatni = 0;
+  function petla(ts){
+    const t = ts / 1000, dt = Math.min(.05, t - (ostatni || t)); ostatni = t;
+    klocki.forEach(k => {
+      // płynny obrót i odbicie
+      const roznica = k.obrot - k.kat;
+      k.kat = Math.abs(roznica) < .01 ? k.obrot : k.kat + roznica * Math.min(1, dt * 18);
+      const odb = k.odbity ? -1 : 1;
+      k.odbicie = Math.abs(odb - k.odbicie) < .02 ? odb : k.odbicie + (odb - k.odbicie) * Math.min(1, dt * 14);
+      if (k.blysk > 0) k.blysk = Math.max(0, k.blysk - dt * 2);
+    });
+    if (blask > 0) blask = Math.max(0, blask - dt * .9);
+    rysuj(t);
+    requestAnimationFrame(petla);
+  }
+
+  // ---------- układanie ----------
+  function sprobujPolozyc(k){
+    const wolne = miejsca.filter(m => !m.klocek && m.typ === k.typ);
+    const blisko = wolne.filter(m => Math.hypot(m.c[0] - k.x, m.c[1] - k.y) < P.przyciaganie);
+    const m = blisko.find(m => pasujeKsztalt(k, m));
+    if (m){
+      m.klocek = k; k.miejsce = m; [k.x, k.y] = m.c; k.blysk = 1; wybrany = null;
+      if (podpowiedz && (podpowiedz.m === m || podpowiedz.k === k)) podpowiedz = null;
+      const ile = klocki.filter(q => q.miejsce).length;
+      dzwiekPasuje(ile - 1);
+      $("komunikat").textContent = ile < klocki.length ? ["Pasuje!", "Super!", "Świetnie!", "Tak jest!"][ile % 4] : "";
+      if (ile === klocki.length) zwyciestwo();
+      return true;
+    }
+    // ten sam rodzaj klocka, ale inaczej ustawiony — pasuje gdzie indziej (np. drugi mały trójkąt)
+    if (blisko.length) $("komunikat").textContent = "Ten klocek pasuje w innym miejscu. Spróbuj gdzie indziej!";
+    return false;
+  }
+
+  function zwyciestwo(){
+    wygrana = true; blask = 1;
+    const gwiazdki = podpowiedzi === 0 ? 3 : podpowiedzi <= 2 ? 2 : 1;
+    ulozone[nrFigury] = Math.max(ulozone[nrFigury] || 0, gwiazdki);
+    odswiezFigury();
+    setTimeout(() => pokazWynik(gwiazdki), 900);
+  }
+
+  function pokazWynik(gwiazdki){
+    const F = FIGURY[nrFigury];
+    const ileUlozonych = Object.keys(ulozone).length;
+    const wszystkie = ileUlozonych === FIGURY.length;
+    const mistrz = wszystkie;
+    let tytul, opis;
+    if (mistrz){ tytul = "Mistrz Tangramu! 🏆"; opis = "Wszystkie obrazki ułożone — jesteś prawdziwym mistrzem tangramu! Klik jest z Ciebie bardzo dumny."; }
+    else {
+      tytul = "Brawo! " + F.nazwa + " " + F.emoji;
+      opis = gwiazdki === 3 ? "Ułożone bez żadnej podpowiedzi — świetnie!" : gwiazdki === 2 ? "Pięknie ułożone! Następnym razem spróbuj z jeszcze mniejszą liczbą podpowiedzi." : "Udało się! Z każdym obrazkiem będzie łatwiej.";
+    }
+    $("koniecTytul").textContent = tytul;
+    $("koniecOpis").textContent = opis;
+    $("koniecLiczby").textContent = "Ułożone obrazki: " + ileUlozonych + " z " + FIGURY.length;
+    const gw = $("gwiazdki");
+    gw.hidden = mistrz;
+    gw.innerHTML = [0, 1, 2].map(i => `<svg class="gwiazdka${i < gwiazdki ? " zapalona" : ""}" viewBox="0 0 50 50"><path d="M25 3 L31.5 17.5 L47 19 L35.2 29.5 L38.6 45 L25 37 L11.4 45 L14.8 29.5 L3 19 L18.5 17.5 Z"/></svg>`).join("");
+    [...gw.children].forEach((s, i) => setTimeout(() => { s.classList.add("pokaz"); if (i < gwiazdki) ton([1318.5, 1568, 2093][i], 0, .5, .07); }, 400 + i * 380));
+    $("dalej").hidden = wszystkie;
+    $("wynik").classList.toggle("mistrz", mistrz);
+    $("puchar").toggleAttribute("hidden", !mistrz); // SVG nie ma właściwości .hidden — tylko atrybut
+    deszczGwiazdek(mistrz);
+    $("koniec").hidden = false;
+    if (mistrz) fanfaraMistrza(); else fanfara();
+    $("komunikat").textContent = "";
+  }
+
+  // następny obrazek: pierwszy jeszcze nieułożony, licząc od bieżącego
+  function nastepny(){
+    for (let i = 1; i <= FIGURY.length; i++){
+      const n = (nrFigury + i) % FIGURY.length;
+      if (!ulozone[n]) { nrFigury = n; break; }
+    }
+    nowyObrazek();
+  }
+
+  // ---------- wybór obrazka ----------
+  function odswiezFigury(){
+    const el = $("figury");
+    if (!el.children.length){
+      FIGURY.forEach((F, i) => {
+        const wsz = F.el.flatMap(e => e[1]);
+        const minX = Math.min(...wsz.map(v => v[0])), minY = Math.min(...wsz.map(v => v[1]));
+        const w = Math.max(...wsz.map(v => v[0])) - minX, h = Math.max(...wsz.map(v => v[1])) - minY, b = Math.max(w, h);
+        const ox = (b - w) / 2 - minX, oy = (b - h) / 2 - minY;
+        // lekki obrys w kolorze wypełnienia zakleja szczeliny między elementami
+        const wiel = F.el.map(e => `<polygon points="${e[1].map(([x, y]) => (x + ox).toFixed(3) + "," + (y + oy).toFixed(3)).join(" ")}" stroke-width=".07" stroke-linejoin="round" style="stroke:currentColor"/>`).join("");
+        const btn = document.createElement("button");
+        btn.className = "figura"; btn.type = "button";
+        btn.setAttribute("aria-label", F.nazwa);
+        btn.innerHTML = `<svg viewBox="-.1 -.1 ${(b + .2).toFixed(3)} ${(b + .2).toFixed(3)}" aria-hidden="true">${wiel}</svg><span class="ptaszek" aria-hidden="true">✓</span>`;
+        btn.addEventListener("click", () => { dzwiekOk(); nrFigury = i; nowyObrazek(); $("plansza").scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+        el.appendChild(btn);
+      });
+    }
+    [...el.children].forEach((b, i) => {
+      b.setAttribute("aria-current", i === nrFigury ? "true" : "false");
+      b.classList.toggle("ulozona", !!ulozone[i]);
+      b.setAttribute("aria-label", FIGURY[i].nazwa + (ulozone[i] ? " — ułożone" : ""));
+      b.querySelector("svg").style.color = ulozone[i] ? "var(--mieta)" : i === nrFigury ? "var(--noc)" : "#9AA6BC";
+    });
+  }
+
+  // ---------- sterowanie: mysz i palec ----------
+  let przeciaganie = null;
+  function punkt(e){
+    const r = plotno.getBoundingClientRect(), L = UKLADY[uklad];
+    return [(e.clientX - r.left) / r.width * L.W, (e.clientY - r.top) / r.height * L.H];
+  }
+  function klocekPod(pt){
+    // od wierzchu: ostatnio przesuwany leży najwyżej
+    const wolne = klocki.filter(k => !k.miejsce);
+    for (let i = wolne.length - 1; i >= 0; i--) if (wSrodku(pt, wierzcholki(wolne[i]))) return wolne[i];
+    // palec bywa nieprecyzyjny: wybieramy też klocek tuż obok
+    let best = null, d = .45;
+    wolne.forEach(k => { const dd = Math.hypot(k.x - pt[0], k.y - pt[1]) - .55; if (dd < d){ d = dd; best = k; } });
+    return best;
+  }
+  plotno.addEventListener("pointerdown", e => {
+    if (wygrana) return;
+    dzwiekOk();
+    const pt = punkt(e), k = klocekPod(pt);
+    if (!k) return;
+    try { plotno.setPointerCapture(e.pointerId); } catch(err){}
+    // podniesiony klocek idzie na wierzch
+    klocki = klocki.filter(q => q !== k).concat(k);
+    przeciaganie = { k, dx: k.x - pt[0], dy: k.y - pt[1], start: pt, czas: performance.now(), ruszony: false, id: e.pointerId };
+    wybrany = k;
+    e.preventDefault();
+  });
+  plotno.addEventListener("pointermove", e => {
+    if (!przeciaganie || e.pointerId !== przeciaganie.id) return;
+    const pt = punkt(e), L = UKLADY[uklad], k = przeciaganie.k;
+    if (!przeciaganie.ruszony && Math.hypot(pt[0] - przeciaganie.start[0], pt[1] - przeciaganie.start[1]) > .18) przeciaganie.ruszony = true;
+    if (przeciaganie.ruszony){
+      k.x = Math.max(.3, Math.min(L.W - .3, pt[0] + przeciaganie.dx));
+      k.y = Math.max(.3, Math.min(L.H - .3, pt[1] + przeciaganie.dy));
+    }
+    e.preventDefault();
+  });
+  function puszczenie(e){
+    if (!przeciaganie || e.pointerId !== przeciaganie.id) return;
+    const { k, ruszony } = przeciaganie;
+    przeciaganie = null;
+    if (ruszony) sprobujPolozyc(k);
+  }
+  plotno.addEventListener("pointerup", puszczenie);
+  plotno.addEventListener("pointercancel", e => { if (przeciaganie && e.pointerId === przeciaganie.id) przeciaganie = null; });
+
+  $("podpowiedz").addEventListener("click", () => {
+    if (wygrana) return;
+    dzwiekOk();
+    // pierwsze wolne miejsce i klocek, który do niego pasuje (ten sam kształt i to samo ustawienie)
+    const m = miejsca.find(m => !m.klocek); if (!m) return;
+    const k = klocki.find(k => !k.miejsce && pasujeKsztalt(k, m));
+    podpowiedz = { m, k, do: performance.now() / 1000 + 3.2 };
+    podpowiedzi++;
+    $("komunikat").textContent = "Ten świecący klocek pasuje do świecącego miejsca.";
+    ton(880, 0, .12, .06); ton(1174.7, .08, .18, .05);
+  });
+  $("odNowa").addEventListener("click", () => { dzwiekOk(); nowyObrazek(); });
+  $("dalej").addEventListener("click", nastepny);
+  $("jeszcze").addEventListener("click", nowyObrazek);
+
+  // ---------- rozmiar planszy ----------
+  function dopasujRozmiar(){
+    const szer = $("plansza").clientWidth || 700;
+    const nowy = szer < 620 ? "pionowy" : "poziomy";
+    const L = UKLADY[nowy];
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    U = szer / L.W;
+    plotno.width = Math.round(szer * dpr); plotno.height = Math.round(szer * L.H / L.W * dpr);
+    if (nowy !== uklad){ uklad = nowy; if (miejsca.length) rozmiesc(); }
+  }
+  window.addEventListener("resize", dopasujRozmiar);
+
+  dopasujRozmiar();
+  nowyObrazek();
+  requestAnimationFrame(petla);
+})();
+</script>
+</body>
+</html>
